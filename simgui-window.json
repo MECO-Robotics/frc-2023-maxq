@@ -6,11 +6,16 @@
       "style": "0",
       "userScale": "2",
       "width": "1280",
-      "xpos": "0",
-      "ypos": "119"
+      "xpos": "461",
+      "ypos": "168"
     }
   },
   "Window": {
+    "###/LiveWindow/DriveSubsystem/Field": {
+      "Collapsed": "0",
+      "Pos": "277,40",
+      "Size": "521,267"
+    },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "5,540",
@@ -18,8 +23,18 @@
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "250,465",
-      "Size": "796,73"
+      "Pos": "254,466",
+      "Size": "796,189"
+    },
+    "###Keyboard 0 Settings": {
+      "Collapsed": "0",
+      "Pos": "10,50",
+      "Size": "300,560"
+    },
+    "###Keyboard 1 Settings": {
+      "Collapsed": "0",
+      "Pos": "16,0",
+      "Size": "300,560"
     },
     "###NetworkTables": {
       "Collapsed": "0",
