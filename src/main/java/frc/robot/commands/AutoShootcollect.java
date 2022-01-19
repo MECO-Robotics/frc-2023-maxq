@@ -7,7 +7,12 @@ package frc.robot.commands;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-/** Drives the robot autonomously in a plus sign pattern. */
+/** 
+ * Drives the robot autonomously in a prescribed pattern. 
+ *
+ * Refer to this diagram for the routine:
+ * https://docs.google.com/drawings/d/1GxrTwsLhETpqVrT3ycNIkLCBsJlLdFQTz0Ca2pnxkw0/edit 
+ */
 public class AutoShootcollect extends SequentialCommandGroup {
 
   /**
@@ -23,12 +28,12 @@ public class AutoShootcollect extends SequentialCommandGroup {
 
     addCommands(
         //shoot
-        new DriveForward(driveSubsystem, -20),
-        new SpinRightAngle(driveSubsystem, 180),
+        new DriveBackward(driveSubsystem, 20),
+        new SpinRightDistance(driveSubsystem, 20),  // 150
         new DriveForward(driveSubsystem, 20),
         //intake
-        new DriveForward(driveSubsystem, -20),
-        new SpinRightAngle(driveSubsystem, 180),
+        new DriveBackward(driveSubsystem, 20),
+        new SpinRightDistance(driveSubsystem, -20),
         new DriveForward(driveSubsystem, 20)
         //shoot
 

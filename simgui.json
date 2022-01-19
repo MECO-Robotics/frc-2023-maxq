@@ -2,6 +2,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/BallCollectionSubsystem": "Subsystem",
       "/LiveWindow/BallCollectionSubsystem/Bottom limit": "Digital Input",
       "/LiveWindow/BallCollectionSubsystem/Upper limit": "Digital Input",
       "/LiveWindow/ClimbingArmSubsystem": "Subsystem",
@@ -23,6 +24,11 @@
     "windows": {
       "/LiveWindow/DriveSubsystem/Field": {
         "image": "/Users/paulfoster/Documents/meco/frc-2022-robot/2022-field.png",
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Autonomous mode": {
         "window": {
           "visible": true
         }

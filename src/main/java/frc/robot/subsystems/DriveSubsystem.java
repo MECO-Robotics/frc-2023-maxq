@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -35,12 +36,16 @@ public class DriveSubsystem extends SubsystemBase {
   private static final int TICKS_PER_REV = 360;
   private static final double WHEEL_DIAMETER_INCHES = 6.0; // inches
   private static final double WHEEL_CIRCUM_METERS = Units.inchesToMeters(WHEEL_DIAMETER_INCHES) * Math.PI;
-  //private static final double RAMP_NEUTRAL_TO_FULL = 0.75; // seconds
+  public static final double TRACK_WIDTH_METERS = 0.71;       // 28" Wheelbase in meters. Distance from center of left wheels to center of right wheels
+
+  // This object defines the properties of how the robot turns
+  public static final DifferentialDriveKinematics DRIVE_KINEMATICS =
+      new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
 
   // Real sensors & actuators
   private MotorControllerGroup leftMotors, rightMotors;
   private Encoder leftEncoder, rightEncoder;
-  private final AnalogGyro gyro = new AnalogGyro(0);
+  private final AnalogGyro gyro = new AnalogGyro(0); // TODO Soon to be: = new ADXRS450_Gyro();
   private final DifferentialDrive drive;
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 

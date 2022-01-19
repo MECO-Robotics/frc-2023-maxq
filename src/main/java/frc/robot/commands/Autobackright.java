@@ -24,11 +24,11 @@ public class Autobackright extends SequentialCommandGroup {
     addCommands(
         new DriveForward(driveSubsystem, 20),
         // intake ball
-        new SpinRightDistance(driveSubsystem, -90),
+        new SpinRightDistance(driveSubsystem, -20),
         new DriveForward(driveSubsystem, 20),
-        new SpinRightDistance(driveSubsystem, -90),
+        new SpinRightDistance(driveSubsystem, -20),
         // shoot 2 balls 1 pre loaded and 1 intaked
-        new SpinRightDistance(driveSubsystem, 90),
+        new SpinRightDistance(driveSubsystem, 20),
         new DriveForward(driveSubsystem, 20)
 
     );
