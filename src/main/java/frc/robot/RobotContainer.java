@@ -13,6 +13,7 @@ import frc.robot.commands.MoveOctagon;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.PlusSign;
 import frc.robot.commands.RaiseBallCollectionArm;
+import frc.robot.commands.AutoShootcollect;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LowerBallCollectionArm;
 import frc.robot.commands.Stop;
@@ -46,7 +47,8 @@ public class RobotContainer {
 
   enum AutoMode {
     PlusSign,
-    Octagon
+    Octagon,
+    AutoShootCollect
   }
 
   public enum DriveMode {
@@ -61,7 +63,8 @@ public class RobotContainer {
     configureButtonBindings();
     
     // Autonomous modes
-    autoMode.setDefaultOption("Plus sign", AutoMode.PlusSign);
+    autoMode.setDefaultOption("Auto shoot collect", AutoMode.AutoShootCollect);
+    autoMode.addOption("Plus sign", AutoMode.PlusSign);
     autoMode.addOption("Octagon", AutoMode.Octagon);
     SmartDashboard.putData("Autonomous mode", autoMode);
 
@@ -120,6 +123,10 @@ public class RobotContainer {
         }
         case Octagon: {
           command = new MoveOctagon(driveSubsystem);
+          break;
+        }
+        case AutoShootCollect: {
+          command = new AutoShootcollect(driveSubsystem);
           break;
         }
       }

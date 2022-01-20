@@ -77,14 +77,14 @@ public class DriveSubsystem extends SubsystemBase {
     rightMotors = new MotorControllerGroup(right1, right2);
 
     // So positive values cause forward movement
-    rightMotors.setInverted(false);
+    rightMotors.setInverted(true);
 
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
     // Left: reverse direction (decreasing values go forward)
     leftEncoder = new Encoder(Constants.LEFT_ENCODER_1, Constants.LEFT_ENCODER_2, false);
     // Right
-    rightEncoder = new Encoder(Constants.RIGHT_ENCODER_1, Constants.RIGHT_ENCODER_2, false);
+    rightEncoder = new Encoder(Constants.RIGHT_ENCODER_1, Constants.RIGHT_ENCODER_2, true);
     
     leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);
     rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);
@@ -128,7 +128,7 @@ public class DriveSubsystem extends SubsystemBase {
     // robot controller voltage.
     driveSim.setInputs(
       leftMotors.get() * RobotController.getInputVoltage(),
-      -rightMotors.get() * RobotController.getInputVoltage());
+      rightMotors.get() * RobotController.getInputVoltage());
 
     // Advance the model by 20 ms. Note that if you are running this
     // subsystem in a separate thread or have changed the nominal timestep

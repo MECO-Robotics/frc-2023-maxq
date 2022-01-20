@@ -27,14 +27,15 @@ public class AutoShootcollect extends SequentialCommandGroup {
     // scheduled will do that.
 
     addCommands(
+
         //shoot
-        new DriveBackward(driveSubsystem, 20),
-        new SpinRightDistance(driveSubsystem, 20),  // 150
-        new DriveForward(driveSubsystem, 20),
+        new DriveBackward(driveSubsystem, 36),      // ~6'
+        new SpinRightDistance(driveSubsystem, 20),  // 150 degrees
+        new DriveForward(driveSubsystem, 36),       // ~4'
         //intake
-        new DriveBackward(driveSubsystem, 20),
-        new SpinRightDistance(driveSubsystem, -20),
-        new DriveForward(driveSubsystem, 20)
+        new DriveBackward(driveSubsystem, 36),      // ~4'
+        new SpinLeftDistance(driveSubsystem, 20),   // 150 degrees
+        new DriveForward(driveSubsystem, 36)        // ~6'
         //shoot
 
     );

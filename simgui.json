@@ -34,5 +34,8 @@
         }
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

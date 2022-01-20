@@ -1,24 +1,24 @@
 {
   "MainWindow": {
     "GLOBAL": {
-      "height": "593",
+      "height": "547",
       "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "1024",
-      "xpos": "199",
-      "ypos": "101"
+      "width": "788",
+      "xpos": "1091",
+      "ypos": "53"
     }
   },
   "Window": {
     "###/LiveWindow/DriveSubsystem/Field": {
       "Collapsed": "0",
-      "Pos": "335,45",
-      "Size": "609,367"
+      "Pos": "308,93",
+      "Size": "387,223"
     },
     "###/SmartDashboard/Autonomous mode": {
       "Collapsed": "0",
-      "Pos": "15,223",
+      "Pos": "40,191",
       "Size": "254,54"
     },
     "###FMS": {
@@ -27,9 +27,9 @@
       "Size": "235,169"
     },
     "###Joysticks": {
-      "Collapsed": "1",
-      "Pos": "244,551",
-      "Size": "436,136"
+      "Collapsed": "0",
+      "Pos": "12,339",
+      "Size": "782,189"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -42,19 +42,19 @@
       "Size": "300,560"
     },
     "###NetworkTables": {
-      "Collapsed": "1",
-      "Pos": "245,523",
+      "Collapsed": "0",
+      "Pos": "276,409",
       "Size": "750,185"
     },
     "###Other Devices": {
-      "Collapsed": "0",
-      "Pos": "1005,20",
-      "Size": "250,695"
+      "Collapsed": "1",
+      "Pos": "181,42",
+      "Size": "270,160"
     },
     "###System Joysticks": {
-      "Collapsed": "1",
-      "Pos": "39,303",
-      "Size": "111,152"
+      "Collapsed": "0",
+      "Pos": "106,79",
+      "Size": "192,218"
     },
     "###Timing": {
       "Collapsed": "0",
