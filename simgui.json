@@ -35,7 +35,15 @@
       }
     }
   },
-  "NetworkTables View": {
-    "visible": false
+  "NetworkTables": {
+    "LiveWindow": {
+      "DriveSubsystem": {
+        "Field": {
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
+    }
   }
 }

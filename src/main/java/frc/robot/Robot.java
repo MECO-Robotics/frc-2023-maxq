@@ -92,8 +92,13 @@ public class Robot extends TimedRobot {
       autonomousCommand.cancel();
     }
 
-    // Reset the position of the bot 
+    // Reset the position of the bot (in meters x,y, degrees)
+
+    // Left center field
     robotContainer.getDriveSubsystem().setPoseMeters(new Pose2d(1.5,4.0,Rotation2d.fromDegrees(0)));
+
+    // Lower left blue tarmac, facing hub
+    robotContainer.getDriveSubsystem().setPoseMeters(new Pose2d(7.532176, 2.963651, Rotation2d.fromDegrees(-69.349228)));
     
     // Start up the teleop commands
     robotContainer.getTeleopDriveCommand().schedule();

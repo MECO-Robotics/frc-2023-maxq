@@ -31,11 +31,11 @@ public class AutoShootCollectRightShoot extends SequentialCommandGroup {
 
         //shoot
         new DriveBackward(driveSubsystem, 5.5*12),      // ~6'
-        new SpinRightDistance(driveSubsystem, 28.0),  // 150 degrees
-        new DriveForward(driveSubsystem, 3*12),       // ~4'
+        new SpinRightDistance(driveSubsystem, 27.0),  // 150 degrees
+        new DriveForward(driveSubsystem, 2.5*12),       // ~4'
         //intake
-        new DriveBackward(driveSubsystem, 3*12),      // ~4'
-        new SpinLeftDistance(driveSubsystem, 30.0),   // 150 degrees
+        new DriveBackward(driveSubsystem, 2.5*12),      // ~4'
+        new SpinLeftDistance(driveSubsystem, 31.0),   // 150 degrees
         new DriveForward(driveSubsystem, 5.5*12)        // ~6'
         //shoot
 
