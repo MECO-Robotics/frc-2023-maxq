@@ -7,15 +7,18 @@ package frc.robot.commands;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-/** Drives the robot autonomously in a plus sign pattern. */
-public class Autobackright extends SequentialCommandGroup {
+/**
+ * Drives the robot autonomously in a prescribed pattern. 
+ * See https://docs.google.com/drawings/d/17LFevv80pT293MpkuqUrxbYcjTK-lv5cHN731H0MZ54/edit?usp=sharing
+ */
+public class AutoCollectTwo extends SequentialCommandGroup {
 
   /**
    * Create a new command.
    *
    * @param driveSubsystem The subsystem used by this command.
    */
-  public Autobackright(DriveSubsystem driveSubsystem) {
+  public AutoCollectTwo(DriveSubsystem driveSubsystem) {
 
     // Don't need to add the DriveSubsystem as a required subsystem because the
     // commands

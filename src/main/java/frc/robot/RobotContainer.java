@@ -13,7 +13,7 @@ import frc.robot.commands.MoveOctagon;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.PlusSign;
 import frc.robot.commands.RaiseBallCollectionArm;
-import frc.robot.commands.AutoShootcollect;
+import frc.robot.commands.AutoShootCollectRightShoot;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LowerBallCollectionArm;
 import frc.robot.commands.Stop;
@@ -126,7 +126,7 @@ public class RobotContainer {
           break;
         }
         case AutoShootCollect: {
-          command = new AutoShootcollect(driveSubsystem);
+          command = new AutoShootCollectRightShoot(driveSubsystem);
           break;
         }
       }

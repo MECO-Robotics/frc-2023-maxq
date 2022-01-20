@@ -13,14 +13,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  * Refer to this diagram for the routine:
  * https://docs.google.com/drawings/d/1GxrTwsLhETpqVrT3ycNIkLCBsJlLdFQTz0Ca2pnxkw0/edit 
  */
-public class AutoShootcollect extends SequentialCommandGroup {
+public class AutoShootCollectRightShoot extends SequentialCommandGroup {
 
   /**
    * Create a new command.
    *
    * @param driveSubsystem The subsystem used by this command.
    */
-  public AutoShootcollect(DriveSubsystem driveSubsystem) {
+  public AutoShootCollectRightShoot(DriveSubsystem driveSubsystem) {
 
     // Don't need to add the DriveSubsystem as a required subsystem because the
     // commands
