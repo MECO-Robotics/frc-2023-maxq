@@ -27,9 +27,9 @@ public class SpinLeftDistance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
+    distanceDesired = driveTrain.getLeftDistance() - distanceDesired;
     // Turn at half the auto speed so that ramp and inertia has less of an effect
-    driveTrain.tankDrive(Constants.AUTO_SPEED/2, -Constants.AUTO_SPEED/2);
+    driveTrain.tankDrive(-Constants.AUTO_SPEED/2, Constants.AUTO_SPEED/2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,6 +46,6 @@ public class SpinLeftDistance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return driveTrain.getLeftDistance() >= distanceDesired;
+    return driveTrain.getLeftDistance() <= distanceDesired;
   }
 }
