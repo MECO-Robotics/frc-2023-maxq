@@ -15,6 +15,7 @@ import frc.robot.commands.PlusSign;
 import frc.robot.commands.RaiseBallCollectionArm;
 import frc.robot.commands.AutoShootCollectRightShoot;
 import frc.robot.commands.Intake;
+import frc.robot.commands.JustMove;
 import frc.robot.commands.LowerBallCollectionArm;
 import frc.robot.commands.Stop;
 import frc.robot.commands.TeleopBallCollection;
@@ -48,7 +49,8 @@ public class RobotContainer {
   enum AutoMode {
     PlusSign,
     Octagon,
-    AutoShootCollect
+    AutoShootCollect,
+    JustMove
   }
 
   public enum DriveMode {
@@ -66,6 +68,7 @@ public class RobotContainer {
     autoMode.setDefaultOption("Auto shoot collect", AutoMode.AutoShootCollect);
     autoMode.addOption("Plus sign", AutoMode.PlusSign);
     autoMode.addOption("Octagon", AutoMode.Octagon);
+    autoMode.addOption("MOVE IT", AutoMode.JustMove);
     SmartDashboard.putData("Autonomous mode", autoMode);
 
     driveMode.setDefaultOption("Split Arcade", DriveMode.SplitArcade);
@@ -127,6 +130,10 @@ public class RobotContainer {
         }
         case AutoShootCollect: {
           command = new AutoShootCollectRightShoot(driveSubsystem);
+          break;ß
+        }
+        case JustMove: {
+          command = new JustMove(driveSubsystem);
           break;
         }
       }
