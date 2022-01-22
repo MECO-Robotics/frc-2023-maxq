@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -25,6 +26,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import frc.robot.Constants;
 
@@ -45,7 +47,9 @@ public class DriveSubsystem extends SubsystemBase {
   // Real sensors & actuators
   private MotorControllerGroup leftMotors, rightMotors;
   private Encoder leftEncoder, rightEncoder;
-  private final AnalogGyro gyro = new AnalogGyro(0); // TODO Soon to be: = new ADXRS450_Gyro();
+  private final AnalogGyro gyro = new AnalogGyro(0);
+  // There is no simulator for the WPI_PigeonIMU, so not sure how we'll simulate...
+  private final Gyro imu = new WPI_PigeonIMU(Constants.PIGEON_IMU_CAN_ID);
   private final DifferentialDrive drive;
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 
