@@ -130,7 +130,7 @@ public class RobotContainer {
         }
         case AutoShootCollect: {
           command = new AutoShootCollectRightShoot(driveSubsystem);
-          break;ß
+          break;
         }
         case JustMove: {
           command = new JustMove(driveSubsystem);

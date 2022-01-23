@@ -36,13 +36,13 @@ public class SpinRightDistance extends CommandBase {
   @Override
   public void initialize() {
     distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
-    // Turn at half the auto speed so that ramp and inertia has less of an effect
-    driveTrain.tankDrive(Constants.AUTO_SPEED/2, -Constants.AUTO_SPEED/2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Turn at half the auto speed so that ramp and inertia has less of an effect
+    driveTrain.arcadeDrive(0, Constants.AUTO_SPEED);
   }
 
   // Called once the command ends or is interrupted.
@@ -54,6 +54,7 @@ public class SpinRightDistance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.printf("SpinRightDistance: ENCODER: %f  DESIRED: %f\n", driveTrain.getLeftDistance(), distanceDesired);
     return driveTrain.getLeftDistance() >= distanceDesired;
   }
 }

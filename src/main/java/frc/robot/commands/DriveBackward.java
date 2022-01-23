@@ -33,12 +33,12 @@ public class DriveBackward extends CommandBase {
   public void initialize() {
     // Our destination is actually whever we started, minus how far we need to go
     distanceDesired = driveTrain.getLeftDistance() - distanceDesired;
-    driveTrain.arcadeDrive(-Constants.AUTO_SPEED, 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    driveTrain.arcadeDrive(-Constants.AUTO_SPEED, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -50,6 +50,7 @@ public class DriveBackward extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.printf("DriveBackward: ENCODER: %f  DESIRED: %f\n", driveTrain.getLeftDistance(), distanceDesired);
     return driveTrain.getLeftDistance() <= distanceDesired;
   }
 }

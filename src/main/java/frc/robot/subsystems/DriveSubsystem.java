@@ -49,7 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
   private Encoder leftEncoder, rightEncoder;
   private final AnalogGyro gyro = new AnalogGyro(0);
   // There is no simulator for the WPI_PigeonIMU, so not sure how we'll simulate...
-  private final Gyro imu = new WPI_PigeonIMU(Constants.PIGEON_IMU_CAN_ID);
+  //private final Gyro imu = new WPI_PigeonIMU(Constants.PIGEON_IMU_CAN_ID);
   private final DifferentialDrive drive;
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 
@@ -86,9 +86,9 @@ public class DriveSubsystem extends SubsystemBase {
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
     // Left: reverse direction (decreasing values go forward)
-    leftEncoder = new Encoder(Constants.LEFT_ENCODER_1, Constants.LEFT_ENCODER_2, false);
+    leftEncoder = new Encoder(Constants.LEFT_ENCODER_1, Constants.LEFT_ENCODER_2, true);
     // Right
-    rightEncoder = new Encoder(Constants.RIGHT_ENCODER_1, Constants.RIGHT_ENCODER_2, true);
+    rightEncoder = new Encoder(Constants.RIGHT_ENCODER_1, Constants.RIGHT_ENCODER_2, false);
     
     leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);
     rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);

@@ -25,9 +25,10 @@ public class JustMove extends SequentialCommandGroup {
     // scheduled will do that.
 
     addCommands(
-        new DriveBackward(driveSubsystem, 10)ß
+        new DriveForward(driveSubsystem, 20),
+        new DriveBackward(driveSubsystem, 20),
+        new SpinRightDistance(driveSubsystem, 20)
         
-
     );
 
   }

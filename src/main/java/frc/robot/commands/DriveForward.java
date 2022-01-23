@@ -32,13 +32,14 @@ public class DriveForward extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.printf("\n\n\n\n\nDriveForward:  %f, %f\n", distanceDesired, driveTrain.getLeftDistance());
     distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
-    driveTrain.arcadeDrive(Constants.AUTO_SPEED, 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    driveTrain.arcadeDrive(Constants.AUTO_SPEED, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -50,6 +51,7 @@ public class DriveForward extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.printf("DriveForward:  ENCODER: %f, >= DESIRED: %f\n", driveTrain.getLeftDistance(), distanceDesired);
     return driveTrain.getLeftDistance() >= distanceDesired;
   }
 }
