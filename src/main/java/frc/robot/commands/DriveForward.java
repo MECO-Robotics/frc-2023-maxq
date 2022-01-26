@@ -39,6 +39,8 @@ public class DriveForward extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Call repeatedly, even though with the same value because if only called once during 
+    // initialize(), the commmand to the CAN bus could get dropped
     driveTrain.arcadeDrive(Constants.AUTO_SPEED, 0);
   }
 
