@@ -7,16 +7,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
@@ -26,7 +25,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
+import com.kauailabs.navx.frc.AHRS;
 
 import frc.robot.Constants;
 
@@ -47,17 +46,23 @@ public class DriveSubsystem extends SubsystemBase {
   // Real sensors & actuators
   private MotorControllerGroup leftMotors, rightMotors;
   private Encoder leftEncoder, rightEncoder;
-  private final AnalogGyro gyro = new AnalogGyro(0);
-  // There is no simulator for the WPI_PigeonIMU, so not sure how we'll simulate...
-  //private final Gyro imu = new WPI_PigeonIMU(Constants.PIGEON_IMU_CAN_ID);
+  //private final AnalogGyro gyro = new AnalogGyro(0);
+  
+  // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP port,
+  // which is the wide female pin header in the middle of the Rio. Through the MXP, 
+  // the Serial Port Interface (SPI) is used.
+  private final AHRS imu = new AHRS(SPI.Port.kMXP);
+
   private final DifferentialDrive drive;
-  private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
+  private final DifferentialDriveOdometry odometry;
 
   // Sensor simulations
   private final Field2d field2d = new Field2d();
   private final EncoderSim leftEncoderSim;
   private final EncoderSim rightEncoderSim;
-  private final AnalogGyroSim gyroSim;
+  //private final AnalogGyroSim gyroSim;
+  private final SimDeviceSim imuSim;
+  
   // Drivetrain sim using standard kit of parts
   private final DifferentialDrivetrainSim driveSim = DifferentialDrivetrainSim.createKitbotSim(
     KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
@@ -96,26 +101,32 @@ public class DriveSubsystem extends SubsystemBase {
     if(RobotBase.isSimulation()) {
       leftEncoderSim = new EncoderSim(leftEncoder);
       rightEncoderSim = new EncoderSim(rightEncoder);
-      gyroSim = new AnalogGyroSim(gyro);
+      //gyroSim = new AnalogGyroSim(gyro);
+      imuSim = new SimDeviceSim("navX-Sensor[0]");
+
     } else {
       leftEncoderSim = null;
       rightEncoderSim = null;
-      gyroSim = null;
+      //gyroSim = null;
+      imuSim = null;
     }
+
+    // Set the initial position (0,0) and heading (whatever it is) of the robot on the field
+    odometry = new DifferentialDriveOdometry(imu.getRotation2d());
 
     addChild("Left Motors", leftMotors);
     addChild("Left Encoder", leftEncoder);
     addChild("Right Encoder", rightEncoder);
     addChild("Right Motors", rightMotors);
     addChild("Diff Drive", drive);
-    addChild("Gyro", gyro);
+    //addChild("Gyro", gyro);
     addChild("Field", field2d);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
+    odometry.update(imu.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
     field2d.setRobotPose(odometry.getPoseMeters());
   }
 
@@ -144,7 +155,8 @@ public class DriveSubsystem extends SubsystemBase {
     leftEncoderSim.setRate(driveSim.getLeftVelocityMetersPerSecond());
     rightEncoderSim.setDistance(driveSim.getRightPositionMeters());
     rightEncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
-    gyroSim.setAngle(-driveSim.getHeading().getDegrees());
+    //gyroSim.setAngle(-driveSim.getHeading().getDegrees());
+    imuSim.getDouble("Yaw").set(-driveSim.getHeading().getDegrees());
   }
 
   /**
@@ -187,8 +199,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void setPoseMeters(Pose2d pose) {
     field2d.setRobotPose(pose);
-    gyro.reset();
-    odometry.resetPosition(pose, gyro.getRotation2d());
+    imu.reset();
+    odometry.resetPosition(pose, imu.getRotation2d());
     resetEncoders();
     if(RobotBase.isSimulation()) {
       driveSim.setPose(pose);
@@ -200,7 +212,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getHeadingDegrees() {
-    return gyro.getAngle();
+    return imu.getAngle();
   }
 
   @Override
