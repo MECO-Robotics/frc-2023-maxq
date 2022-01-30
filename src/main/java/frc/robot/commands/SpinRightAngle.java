@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Turn right for an angle. */
 public class SpinRightAngle extends CommandBase {
-  
+
   private final DriveSubsystem driveTrain;
   private double angleDesired;
 
@@ -18,7 +18,7 @@ public class SpinRightAngle extends CommandBase {
    * Creates a new command.
    *
    * @param driveSubsystem The subsystem used by this command.
-   * @param turnDegrees How far to go forward, in inches.
+   * @param turnDegrees    How far to go forward, in inches.
    */
   public SpinRightAngle(DriveSubsystem driveSubsystem, double turnDegrees) {
     driveTrain = driveSubsystem;
@@ -31,18 +31,28 @@ public class SpinRightAngle extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Update the desired angle here because we need the current heading 
+    // Update the desired angle here because we need the current heading
     // when the command is scheduled, not during construction.
     angleDesired = driveTrain.getHeadingDegrees() + angleDesired;
 
     // Start the turn
-    driveTrain.tankDrive(Constants.AUTO_SPEED, -Constants.AUTO_SPEED);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // nothing to do here. The isFinished will determine when we've gone far enough.
+
+    double s = 0.45f;
+    double a = angleDesired - driveTrain.getHeadingDegrees();
+
+    if (a < 25) {
+      s = 0.2;
+    } else if (a < 35) {
+      s = 0.4;
+    }
+    
+    driveTrain.tankDrive(s, -s);
   }
 
   // Called once the command ends or is interrupted.
