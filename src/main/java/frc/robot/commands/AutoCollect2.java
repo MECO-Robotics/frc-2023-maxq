@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  * Drives the robot autonomously in a prescribed pattern. 
  * See https://docs.google.com/drawings/d/17LFevv80pT293MpkuqUrxbYcjTK-lv5cHN731H0MZ54/edit?usp=sharing
  */
-public class AutoCollectTwo extends SequentialCommandGroup {
+public class AutoCollect2 extends SequentialCommandGroup {
 
   /**
    * Create a new command.
    *
    * @param driveSubsystem The subsystem used by this command.
    */
-  public AutoCollectTwo(DriveSubsystem driveSubsystem) {
+  public AutoCollect2(DriveSubsystem driveSubsystem) {
 
     // Don't need to add the DriveSubsystem as a required subsystem because the
     // commands

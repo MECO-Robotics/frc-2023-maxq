@@ -103,7 +103,6 @@ public class Robot extends TimedRobot {
     // Start up the teleop commands
     robotContainer.getTeleopDriveCommand().schedule();
     robotContainer.getTeleopBallCollection().schedule();
-    robotContainer.getTeleopClimbingArm().schedule();
   }
 
   /** This function is called periodically during operator control. */

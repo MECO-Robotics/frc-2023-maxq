@@ -8,14 +8,14 @@ import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /** Drives the robot autonomously in a plus sign pattern. */
-public class AutoShootcollect extends SequentialCommandGroup {
+public class AutoShootCollect extends SequentialCommandGroup {
 
   /**
    * Create a new command.
    *
    * @param driveSubsystem The subsystem used by this command.
    */
-  public AutoShootcollect(DriveSubsystem driveSubsystem) {
+  public AutoShootCollect(DriveSubsystem driveSubsystem) {
 
     // Don't need to add the DriveSubsystem as a required subsystem because the
     // commands

@@ -19,10 +19,9 @@ import frc.robot.commands.JustMove;
 import frc.robot.commands.LowerBallCollectionArm;
 import frc.robot.commands.Stop;
 import frc.robot.commands.TeleopBallCollection;
-import frc.robot.commands.TeleopClimbingArm;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.BallCollectionSubsystem;
-import frc.robot.subsystems.ClimbingArmSubsystem;
+import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,11 +36,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final BallCollectionSubsystem ballCollectionSubsystem = new BallCollectionSubsystem();
-  private final ClimbingArmSubsystem climbingArmSubsystem = new ClimbingArmSubsystem();
+  private final ClimbingSubsystem climbingArmSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
 
   private final TeleopBallCollection teleopBallCollection = new TeleopBallCollection(ballCollectionSubsystem, controllerSubsystem);
-  private final TeleopClimbingArm teleopClimbingArm = new TeleopClimbingArm(climbingArmSubsystem, controllerSubsystem);
   
   private final SendableChooser<AutoMode> autoMode = new SendableChooser<AutoMode>();
   private final SendableChooser<DriveMode> driveMode = new SendableChooser<DriveMode>();
@@ -147,10 +145,6 @@ public class RobotContainer {
 
   public Command getTeleopBallCollection() {
     return teleopBallCollection;
-  }
-
-  public Command getTeleopClimbingArm() {
-    return teleopClimbingArm;
   }
 
   public DriveSubsystem getDriveSubsystem() {

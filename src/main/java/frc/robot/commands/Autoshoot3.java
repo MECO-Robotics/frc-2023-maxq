@@ -12,14 +12,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  * See
  * https://docs.google.com/drawings/d/17LFevv80pT293MpkuqUrxbYcjTK-lv5cHN731H0MZ54/edit?usp=sharing
  */
-public class Autoshoot3 extends SequentialCommandGroup {
+public class AutoShoot3 extends SequentialCommandGroup {
 
   /**
    * Create a new command.
    *
    * @param driveSubsystem The subsystem used by this command.
    */
-  public Autoshoot3(DriveSubsystem driveSubsystem) {
+  public AutoShoot3(DriveSubsystem driveSubsystem) {
 
     // Don't need to add the DriveSubsystem as a required subsystem because the
     // commands
