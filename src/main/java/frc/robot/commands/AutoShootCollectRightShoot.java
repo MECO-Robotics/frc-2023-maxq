@@ -24,21 +24,17 @@ public class AutoShootCollectRightShoot extends SequentialCommandGroup {
 
     // Don't need to add the DriveSubsystem as a required subsystem because the
     // commands scheduled will do that.
-
-    float factor = 0.5f;
-    // For reference, when using Spin(Right/Left)Distance, 81 inches is 360 degrees on the simulator. Need to see on Grommet what it is.
+    
     addCommands(
-new SpinRightAngle (driveSubsystem, 360)
-        //shoot
-       //new DriveBackward(driveSubsystem, 5.5*12*factor),      // ~6'
-        //new SpinRightAngle(driveSubsystem, 150),  // 150 degrees
-        //new DriveForward(driveSubsystem, 2.5*12*factor)       // ~4'
-        //intake
-    //    new DriveBackward(driveSubsystem, 2.5*12*factor),      // ~4'
-     //   new SpinLeftDistance(driveSubsystem, 31.0*factor),   // 150 degrees
-       // new DriveForward(driveSubsystem, 5.5*12*factor)        // ~6'
-        //shoot
-
+      //shoot
+      new DriveBackward(driveSubsystem, 4*12), 
+      new SpinRightAngle(driveSubsystem, 145), 
+      new DriveForward(driveSubsystem, 4*12), 
+      //intake
+      new DriveBackward(driveSubsystem, 4*12),
+      new SpinRightAngle(driveSubsystem, -145), 
+      new DriveForward(driveSubsystem, 4*12) 
+      //shoot
     );
   }
 }

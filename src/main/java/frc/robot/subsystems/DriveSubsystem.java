@@ -46,7 +46,6 @@ public class DriveSubsystem extends SubsystemBase {
   // Real sensors & actuators
   private MotorControllerGroup leftMotors, rightMotors;
   private Encoder leftEncoder, rightEncoder;
-  //private final AnalogGyro gyro = new AnalogGyro(0);
   
   // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP port,
   // which is the wide female pin header in the middle of the Rio. Through the MXP, 
@@ -60,7 +59,6 @@ public class DriveSubsystem extends SubsystemBase {
   private final Field2d field2d = new Field2d();
   private final EncoderSim leftEncoderSim;
   private final EncoderSim rightEncoderSim;
-  //private final AnalogGyroSim gyroSim;
   private final SimDeviceSim imuSim;
   
   // Drivetrain sim using standard kit of parts
@@ -101,13 +99,11 @@ public class DriveSubsystem extends SubsystemBase {
     if(RobotBase.isSimulation()) {
       leftEncoderSim = new EncoderSim(leftEncoder);
       rightEncoderSim = new EncoderSim(rightEncoder);
-      //gyroSim = new AnalogGyroSim(gyro);
       imuSim = new SimDeviceSim("navX-Sensor[0]");
 
     } else {
       leftEncoderSim = null;
       rightEncoderSim = null;
-      //gyroSim = null;
       imuSim = null;
     }
 
@@ -119,7 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
     addChild("Right Encoder", rightEncoder);
     addChild("Right Motors", rightMotors);
     addChild("Diff Drive", drive);
-    //addChild("Gyro", gyro);
+    addChild("IMU", imu);
     addChild("Field", field2d);
   }
 
@@ -155,7 +151,6 @@ public class DriveSubsystem extends SubsystemBase {
     leftEncoderSim.setRate(driveSim.getLeftVelocityMetersPerSecond());
     rightEncoderSim.setDistance(driveSim.getRightPositionMeters());
     rightEncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
-    //gyroSim.setAngle(-driveSim.getHeading().getDegrees());
     imuSim.getDouble("Yaw").set(-driveSim.getHeading().getDegrees());
   }
 

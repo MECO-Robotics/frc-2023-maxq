@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -13,6 +12,9 @@ public class SpinRightAngle extends CommandBase {
 
   private final DriveSubsystem driveTrain;
   private double angleDesired;
+
+  // True if we're turning clock-wise (CW), false if we're turning counter clock-wise (CCW)
+  private final boolean cw;
 
   /**
    * Creates a new command.
@@ -24,6 +26,12 @@ public class SpinRightAngle extends CommandBase {
     driveTrain = driveSubsystem;
     angleDesired = turnDegrees;
 
+    if(turnDegrees >= 0) {
+      cw = true;
+    } else {
+      cw = false;
+    }
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSubsystem);
   }
@@ -34,9 +42,6 @@ public class SpinRightAngle extends CommandBase {
     // Update the desired angle here because we need the current heading
     // when the command is scheduled, not during construction.
     angleDesired = driveTrain.getHeadingDegrees() + angleDesired;
-
-    // Start the turn
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,7 +49,13 @@ public class SpinRightAngle extends CommandBase {
   public void execute() {
 
     double s = 0.45f;
-    double a = angleDesired - driveTrain.getHeadingDegrees();
+    double a = 0f;
+
+    if(cw) {
+      a = angleDesired - driveTrain.getHeadingDegrees();
+    } else {
+      a = driveTrain.getHeadingDegrees() - angleDesired;
+    }
 
     if (a < 25) {
       s = 0.2;
@@ -52,6 +63,11 @@ public class SpinRightAngle extends CommandBase {
       s = 0.4;
     }
     
+    // If we're CCW, flip the motor direction
+    if(!cw) {
+      s = -s;
+    }
+
     driveTrain.tankDrive(s, -s);
   }
 
@@ -64,6 +80,10 @@ public class SpinRightAngle extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return driveTrain.getHeadingDegrees() >= angleDesired;
+    if(cw) {
+      return driveTrain.getHeadingDegrees() >= angleDesired;
+    } else {
+      return driveTrain.getHeadingDegrees() <= angleDesired;
+    }
   }
 }
