@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -52,8 +53,14 @@ public class DriveSubsystem extends SubsystemBase {
   // the Serial Port Interface (SPI) is used.
   private final AHRS imu = new AHRS(SPI.Port.kMXP);
 
+  // Converts tank or arcade drive speed requests to voltage requests to the motor controllers
   private final DifferentialDrive drive;
+
+  // Keeps track of where we are on the field based on gyro and encoder inputs.
   private final DifferentialDriveOdometry odometry;
+
+  // This member will limit acceleration to reduce skid
+  SlewRateLimiter speedFilter = new SlewRateLimiter(0.5);
 
   // Sensor simulations
   private final Field2d field2d = new Field2d();
@@ -164,12 +171,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void tankDrive(double left, double right) {
-    double factor = (double)gear / 3.0;
+    double factor = speedFilter.calculate((double)gear / 3.0);
     drive.tankDrive(left * factor, right * factor);
   }
 
   public void arcadeDrive(double throttle, double turn) {
-    double factor = (double)gear / 3.0;
+    double factor =  speedFilter.calculate((double)gear / 3.0);
     drive.arcadeDrive(throttle * factor, turn * factor);
   }
 
