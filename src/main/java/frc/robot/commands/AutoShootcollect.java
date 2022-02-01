@@ -23,13 +23,13 @@ public class AutoShootCollect extends SequentialCommandGroup {
 
     addCommands(
         //shoot
-        new DriveForward(driveSubsystem, -20),
+        new DriveStraight(driveSubsystem, -20),
         new SpinRightAngle(driveSubsystem, 180),
-        new DriveForward(driveSubsystem, 20),
+        new DriveStraight(driveSubsystem, 20),
         //intake
-        new DriveForward(driveSubsystem, -20),
+        new DriveStraight(driveSubsystem, -20),
         new SpinRightAngle(driveSubsystem, 180),
-        new DriveForward(driveSubsystem, 20)
+        new DriveStraight(driveSubsystem, 20)
         //shoot
 
     );

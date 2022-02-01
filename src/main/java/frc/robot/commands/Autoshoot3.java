@@ -27,17 +27,17 @@ public class AutoShoot3 extends SequentialCommandGroup {
 
     addCommands(  
         // shoot
-        new DriveBackward(driveSubsystem, 20),
+        new DriveStraight(driveSubsystem, -20),
         new SpinRightDistance(driveSubsystem, 20),
-        new DriveForward(driveSubsystem, 20),
+        new DriveStraight(driveSubsystem, 20),
         // intake
-        new DriveBackward(driveSubsystem, 40),
+        new DriveStraight(driveSubsystem, -40),
         new SpinLeftDistance(driveSubsystem, 20),
         // intake
         new SpinLeftDistance(driveSubsystem, 20),
-        new DriveForward(driveSubsystem, 20),
+        new DriveStraight(driveSubsystem, 20),
         new SpinLeftDistance(driveSubsystem, 20),
-        new DriveForward(driveSubsystem, 20),
+        new DriveStraight(driveSubsystem, 20),
         // shoot 2 balls
         new SpinRightDistance(driveSubsystem, 20));
 

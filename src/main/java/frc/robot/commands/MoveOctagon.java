@@ -22,7 +22,7 @@ public class MoveOctagon extends SequentialCommandGroup {
 
     for(int i = 0; i < 8; i++){                   // an octagon has 8 sides
       addCommands(
-        new DriveForward(driveSubsystem, 20),
+        new DriveStraight(driveSubsystem, 20),
         new SpinRightAngle(driveSubsystem, 40)    // each vertice in an octagon is 40 degrees
       );
     }

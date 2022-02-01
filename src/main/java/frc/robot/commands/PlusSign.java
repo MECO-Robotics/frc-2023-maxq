@@ -22,8 +22,8 @@ public class PlusSign extends SequentialCommandGroup {
 
     for(int i = 0; i < 4; i++){  
       addCommands(
-        new DriveForward(driveSubsystem, 20),
-        new DriveBackward(driveSubsystem, 20),
+        new DriveStraight(driveSubsystem, 20),
+        new DriveStraight(driveSubsystem, -20),
         new SpinRightAngle(driveSubsystem, 90)
       );
     }

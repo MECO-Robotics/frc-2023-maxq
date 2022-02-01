@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
@@ -176,6 +177,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void arcadeDrive(double throttle, double turn) {
+    // Currently, applying factor to both throttle and turn, but we may want to consider
+    // only applying to throttle.
     double factor =  speedFilter.calculate((double)gear / 3.0);
     drive.arcadeDrive(throttle * factor, turn * factor);
   }
