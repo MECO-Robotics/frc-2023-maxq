@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,6 +16,9 @@ import frc.robot.commands.MoveOctagon;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.PlusSign;
 import frc.robot.commands.RaiseBallCollectionArm;
+import frc.robot.commands.AutoCollect2;
+import frc.robot.commands.AutoShoot3;
+import frc.robot.commands.AutoShootCollect;
 import frc.robot.commands.AutoShootCollectRightShoot;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LowerBallCollectionArm;
@@ -40,14 +46,10 @@ public class RobotContainer {
 
   private final TeleopBallCollection teleopBallCollection = new TeleopBallCollection(ballCollectionSubsystem, controllerSubsystem);
   
-  private final SendableChooser<AutoMode> autoMode = new SendableChooser<AutoMode>();
-  private final SendableChooser<DriveMode> driveMode = new SendableChooser<DriveMode>();
+  private final Map<String, Command> autoCommands = new HashMap<>();
+  private final SendableChooser<String> autoCommandChoice = new SendableChooser<String>();
 
-  enum AutoMode {
-    PlusSign,
-    Octagon,
-    AutoShootCollect
-  }
+  private final SendableChooser<DriveMode> driveMode = new SendableChooser<DriveMode>();
 
   public enum DriveMode {
     SplitArcade,
@@ -60,12 +62,19 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     
-    // Autonomous modes
-    autoMode.setDefaultOption("Auto shoot collect", AutoMode.AutoShootCollect);
-    autoMode.addOption("Plus sign", AutoMode.PlusSign);
-    autoMode.addOption("Octagon", AutoMode.Octagon);
-    SmartDashboard.putData("Autonomous mode", autoMode);
+    autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
+    autoCommands.put("PlusSign", new PlusSign(driveSubsystem));
+    autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
+    autoCommands.put("AutoCollect2", new AutoCollect2(driveSubsystem));
+    autoCommands.put("AutoShoot3", new AutoShoot3(driveSubsystem));
+    autoCommands.put("AutoShootCollect", new AutoShootCollect(driveSubsystem));
 
+    for(String choiceName : autoCommands.keySet()) {
+      autoCommandChoice.addOption(choiceName, choiceName);
+    }
+    autoCommandChoice.setDefaultOption("AutoShootCollectRightShoot", "AutoShootCollectRightShoot");
+    SmartDashboard.putData("Autonomous Mode", autoCommandChoice);
+    
     driveMode.setDefaultOption("Split Arcade", DriveMode.SplitArcade);
     driveMode.addOption("Tank", DriveMode.Tank);
     driveMode.addOption("Joystick", DriveMode.Joystick);
@@ -113,22 +122,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     Command command = null;
-    if(autoMode != null && autoMode.getSelected() != null) {
-      switch(autoMode.getSelected()) {
-        case PlusSign: {
-          command = new PlusSign(driveSubsystem);
-          break;
-        }
-        case Octagon: {
-          command = new MoveOctagon(driveSubsystem);
-          break;
-        }
-        case AutoShootCollect: {
-          command = new AutoShootCollectRightShoot(driveSubsystem);
-          break;
-        }
-      }
+
+    if(autoCommandChoice != null && autoCommandChoice.getSelected() != null) {
+      command = autoCommands.get(autoCommandChoice.getSelected());
     }
+
     return command;
   }
 

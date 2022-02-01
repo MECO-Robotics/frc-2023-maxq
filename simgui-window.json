@@ -16,9 +16,14 @@
       "Pos": "662,33",
       "Size": "1261,893"
     },
-    "###/SmartDashboard/Autonomous mode": {
+    "###/LiveWindow/DriveSubsystem/IMU": {
       "Collapsed": "0",
-      "Pos": "23,286",
+      "Pos": "283,120",
+      "Size": "320,380"
+    },
+    "###/SmartDashboard/Autonomous Mode": {
+      "Collapsed": "0",
+      "Pos": "121,560",
       "Size": "254,54"
     },
     "###FMS": {

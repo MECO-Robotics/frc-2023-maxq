@@ -14,7 +14,7 @@
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/SmartDashboard/ARM DOWN": "Command",
       "/SmartDashboard/ARM UP": "Command",
-      "/SmartDashboard/Autonomous mode": "String Chooser",
+      "/SmartDashboard/Autonomous Mode": "String Chooser",
       "/SmartDashboard/Drive mode": "String Chooser",
       "/SmartDashboard/INTAKE": "Command",
       "/SmartDashboard/OUTTAKE": "Command",
@@ -28,7 +28,12 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Autonomous mode": {
+      "/LiveWindow/DriveSubsystem/IMU": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Autonomous Mode": {
         "window": {
           "visible": true
         }
@@ -38,12 +43,15 @@
   "NetworkTables": {
     "LiveWindow": {
       "DriveSubsystem": {
-        "Field": {
+        "IMU": {
           "open": true
         },
         "open": true
       },
       "open": true
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
