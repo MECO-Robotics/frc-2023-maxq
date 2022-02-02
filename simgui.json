@@ -43,9 +43,6 @@
   "NetworkTables": {
     "LiveWindow": {
       "DriveSubsystem": {
-        "IMU": {
-          "open": true
-        },
         "open": true
       },
       "open": true

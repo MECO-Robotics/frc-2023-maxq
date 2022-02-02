@@ -18,12 +18,17 @@
     },
     "###/LiveWindow/DriveSubsystem/IMU": {
       "Collapsed": "0",
-      "Pos": "283,120",
-      "Size": "320,380"
+      "Pos": "153,199",
+      "Size": "253,296"
     },
     "###/SmartDashboard/Autonomous Mode": {
       "Collapsed": "0",
-      "Pos": "121,560",
+      "Pos": "149,141",
+      "Size": "254,54"
+    },
+    "###/SmartDashboard/Drive mode": {
+      "Collapsed": "0",
+      "Pos": "161,63",
       "Size": "254,54"
     },
     "###FMS": {
@@ -47,14 +52,24 @@
       "Size": "300,560"
     },
     "###NetworkTables": {
-      "Collapsed": "1",
+      "Collapsed": "0",
       "Pos": "46,187",
       "Size": "750,487"
     },
     "###Other Devices": {
       "Collapsed": "1",
-      "Pos": "181,42",
-      "Size": "270,160"
+      "Pos": "203,36",
+      "Size": "314,298"
+    },
+    "###PWM Outputs": {
+      "Collapsed": "0",
+      "Pos": "458,96",
+      "Size": "110,81"
+    },
+    "###RoboRIO": {
+      "Collapsed": "0",
+      "Pos": "471,159",
+      "Size": "119,146"
     },
     "###System Joysticks": {
       "Collapsed": "0",
@@ -73,7 +88,7 @@
     },
     "Robot State": {
       "Collapsed": "0",
-      "Pos": "82,36",
+      "Pos": "6,36",
       "Size": "92,99"
     }
   }

@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
@@ -61,7 +60,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDriveOdometry odometry;
 
   // This member will limit acceleration to reduce skid
-  SlewRateLimiter speedFilter = new SlewRateLimiter(0.5);
+  SlewRateLimiter arcadeThrottleRamp = new SlewRateLimiter(0.6);
+  SlewRateLimiter arcadeTurnRamp = new SlewRateLimiter(0.8);
 
   // Sensor simulations
   private final Field2d field2d = new Field2d();
@@ -76,8 +76,10 @@ public class DriveSubsystem extends SubsystemBase {
     KitbotWheelSize.kSixInch,     // 6" diameter wheels.
     null);                       // No measurement noise.
 
-  // Simple "fake" 3 gear system. For this drive train, it just changes the speed range.
-  private int gear = 3;
+  // Simple "fake" 2 gear system. For this drive train, it just changes the speed range.
+  private int gear = 2;
+  private double GEAR_REDUCTION[] = new double[] { 0.66, 1.0 };
+  private double reduction = 1F;
 
   /** Creates a new Subsystem. */
   public DriveSubsystem() {
@@ -172,15 +174,17 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void tankDrive(double left, double right) {
-    double factor = speedFilter.calculate((double)gear / 3.0);
-    drive.tankDrive(left * factor, right * factor);
+    drive.tankDrive(
+      left * reduction, 
+      right * reduction);
   }
 
   public void arcadeDrive(double throttle, double turn) {
     // Currently, applying factor to both throttle and turn, but we may want to consider
     // only applying to throttle.
-    double factor =  speedFilter.calculate((double)gear / 3.0);
-    drive.arcadeDrive(throttle * factor, turn * factor);
+    drive.arcadeDrive(
+      arcadeThrottleRamp.calculate(throttle * reduction),
+      arcadeTurnRamp.calculate(turn * reduction));
   }
 
   /**
@@ -232,6 +236,17 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void setGear(double g) {
     gear = (int)g;
+        
+    // Prevent the gear from going out of range
+    // must be between 1 and the max gear, which is the number of items in the GEAR_REDUCTION array
+    int maxGear = GEAR_REDUCTION.length;
+    if(gear > maxGear) {
+      gear = maxGear;
+    } else if(gear < 1) {
+      gear = 1;
+    }
+
+    reduction = GEAR_REDUCTION[gear - 1];
   }
 
   public void shift(boolean up) {
@@ -240,6 +255,17 @@ public class DriveSubsystem extends SubsystemBase {
     } else {
       gear--;
     }
+
+    // Prevent the gear from going out of range
+    // must be between 1 and the max gear, which is the number of items in the GEAR_REDUCTION array
+    int maxGear = GEAR_REDUCTION.length;
+    if(gear > maxGear) {
+      gear = maxGear;
+    } else if(gear < 1) {
+      gear = 1;
+    }
+
+    reduction = GEAR_REDUCTION[gear - 1];
   }
 }
 

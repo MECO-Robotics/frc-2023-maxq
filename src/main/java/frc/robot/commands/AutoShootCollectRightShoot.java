@@ -29,9 +29,9 @@ public class AutoShootCollectRightShoot extends SequentialCommandGroup {
       //shoot
       new DriveStraight(driveSubsystem, -4*12), 
       new SpinRightAngle(driveSubsystem, 145), 
-      new DriveStraight(driveSubsystem, 4*12), 
+      new DriveStraight(driveSubsystem, 3.0*12), 
       //intake
-      new DriveStraight(driveSubsystem, -4*12),
+      new DriveStraight(driveSubsystem, -3.0*12),
       new SpinRightAngle(driveSubsystem, -145), 
       new DriveStraight(driveSubsystem, 4*12) 
       //shoot

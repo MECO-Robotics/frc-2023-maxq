@@ -9,17 +9,21 @@ import java.util.Map;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Shift;
 import frc.robot.commands.MoveOctagon;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.PlusSign;
+import frc.robot.commands.PneumaticCommand;
 import frc.robot.commands.RaiseBallCollectionArm;
 import frc.robot.commands.AutoCollect2;
 import frc.robot.commands.AutoShoot3;
 import frc.robot.commands.AutoShootCollect;
 import frc.robot.commands.AutoShootCollectRightShoot;
+import frc.robot.commands.ContractPneumatic;
+import frc.robot.commands.ExtendPneumatic;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LowerBallCollectionArm;
 import frc.robot.commands.Stop;
@@ -30,6 +34,7 @@ import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,7 +46,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final BallCollectionSubsystem ballCollectionSubsystem = new BallCollectionSubsystem();
-  private final ClimbingSubsystem climbingArmSubsystem = new ClimbingSubsystem();
+  //private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
 
   private final TeleopBallCollection teleopBallCollection = new TeleopBallCollection(ballCollectionSubsystem, controllerSubsystem);
@@ -62,12 +67,25 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     
+
+    // ------------------------------------------------------------------------
+    //
+    //                 PLACE ALL AUTONOMOUS COMMANDS HERE
+    //
+
+    // Create a mapping of name to command object for every autonomous command
+    // By using the class name as the name, it will be easy to remember which goes with which.
     autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
     autoCommands.put("PlusSign", new PlusSign(driveSubsystem));
     autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
     autoCommands.put("AutoCollect2", new AutoCollect2(driveSubsystem));
     autoCommands.put("AutoShoot3", new AutoShoot3(driveSubsystem));
     autoCommands.put("AutoShootCollect", new AutoShootCollect(driveSubsystem));
+
+
+    // 
+    //
+    // ------------------------------------------------------------------------
 
     for(String choiceName : autoCommands.keySet()) {
       autoCommandChoice.addOption(choiceName, choiceName);
@@ -100,18 +118,34 @@ public class RobotContainer {
 
     // This is an example of button bindings using the new approach. The rest
     // of the button bindings are actually done in the ControllerSubsystem class.
-/*
+
     JoystickButton shiftDown = new JoystickButton(
       controllerSubsystem.getPilotController(), 
-      XboxController.Button.kLeftBumper);
+      XboxController.Button.kLeftBumper.value);
 
     shiftDown.whenPressed(new Shift(driveSubsystem, false), false);
 
     JoystickButton shiftUp = new JoystickButton(
       controllerSubsystem.getPilotController(), 
-      XboxController.Button.kBumperRight.value);
+      XboxController.Button.kRightBumper.value);
 
     shiftUp.whenPressed(new Shift(driveSubsystem, true), false);
+    
+
+    /*
+    JoystickButton extend = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kY.value);
+    extend.whenHeld(new ExtendPneumatic(climbingSubsystem));
+
+    JoystickButton contract = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kX.value);
+    contract.whenHeld(new ContractPneumatic(climbingSubsystem));
+
+
+    JoystickButton forward = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kY.value);
+    forward.whenHeld(new PneumaticCommand(climbingSubsystem, Value.kForward));
+
+    JoystickButton reverse = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kX.value);
+    reverse.whenHeld(new PneumaticCommand(climbingSubsystem, Value.kReverse));
+
     */
   }
 
