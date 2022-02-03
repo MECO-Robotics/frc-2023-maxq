@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class ClimbingSubsystem extends SubsystemBase {
 
-  private final Solenoid solenoid1 = new Solenoid(PneumaticsModuleType.CTREPCM, 2);   // expand
-  private final Solenoid solenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);   // contract
+  //private final Solenoid solenoid1 = new Solenoid(PneumaticsModuleType.CTREPCM, 2);   // expand
+  //private final Solenoid solenoid2 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);   // contract
   private final DoubleSolenoid doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
   private final Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   
@@ -36,11 +36,11 @@ public class ClimbingSubsystem extends SubsystemBase {
   }
 
   public void set1(boolean on) {
-    solenoid1.set(on);
+    //solenoid1.set(on);
   }
 
   public void set2(boolean on) {
-    solenoid2.set(on);
+    //solenoid2.set(on);
   }
 
   public void control(Value value) {
