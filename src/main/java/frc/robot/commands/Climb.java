@@ -7,8 +7,8 @@ package frc.robot.commands;
 import frc.robot.subsystems.ClimbingSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** Raise the climbing hook. */
-public class ExtendClimbingHook extends CommandBase {
+/** Climb the middle and traversal rungs. */
+public class Climb extends CommandBase {
 
   private final ClimbingSubsystem climbingSubsystem;
 
@@ -17,7 +17,7 @@ public class ExtendClimbingHook extends CommandBase {
    *
    * @param ballCollectionSubsystem The subsystem used by this command.
    */
-  public ExtendClimbingHook(ClimbingSubsystem climbingSubsystem) {
+  public Climb(ClimbingSubsystem climbingSubsystem) {
     this.climbingSubsystem = climbingSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.

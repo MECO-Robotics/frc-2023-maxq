@@ -11,7 +11,13 @@ import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import frc.robot.Constants;
 
 /**
- * An arm with a roller to grab and shoot balls.
+ * 2022 Robot:
+ *    Actuators
+ *        2 pneumatic cylinders to lower/raise collection arm
+ *        1 motor for ball injest
+ *        1 motor for ball launch
+ *    Sensors
+ *        1 Encoder for ball launch
  */
 public class BallCollectionSubsystem extends SubsystemBase {
 

@@ -37,18 +37,18 @@
       "Size": "235,169"
     },
     "###Joysticks": {
-      "Collapsed": "1",
-      "Pos": "8,532",
-      "Size": "436,136"
+      "Collapsed": "0",
+      "Pos": "8,521",
+      "Size": "796,189"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
-      "Pos": "63,41",
+      "Pos": "444,52",
       "Size": "300,560"
     },
     "###Keyboard 1 Settings": {
-      "Collapsed": "0",
-      "Pos": "16,0",
+      "Collapsed": "1",
+      "Pos": "207,75",
       "Size": "300,560"
     },
     "###NetworkTables": {

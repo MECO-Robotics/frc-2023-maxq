@@ -59,9 +59,17 @@ public class DriveSubsystem extends SubsystemBase {
   // Keeps track of where we are on the field based on gyro and encoder inputs.
   private final DifferentialDriveOdometry odometry;
 
+  private double maxDemandChangePerSecond = 1.8F;
+
   // This member will limit acceleration to reduce skid
-  SlewRateLimiter arcadeThrottleRamp = new SlewRateLimiter(0.6);
-  SlewRateLimiter arcadeTurnRamp = new SlewRateLimiter(0.8);
+  // Limit is units of max drive input change per second. Drive input is 0 to 1 for stop to full speed,
+  // so a value of 1 would say it would take one second to from stop to full speed.
+  // A value of 5 would say it takes 200ms to reach full speed.
+  SlewRateLimiter arcadeThrottleRamp = new SlewRateLimiter(maxDemandChangePerSecond);
+  SlewRateLimiter arcadeTurnRamp = new SlewRateLimiter(maxDemandChangePerSecond);
+  SlewRateLimiter tankRightRamp = new SlewRateLimiter(maxDemandChangePerSecond);
+  SlewRateLimiter tankLeftRamp = new SlewRateLimiter(maxDemandChangePerSecond);
+  
 
   // Sensor simulations
   private final Field2d field2d = new Field2d();
@@ -87,11 +95,13 @@ public class DriveSubsystem extends SubsystemBase {
     // Create the WPI_VictorSPX individually and call configOpenLoopRamp on it.
     WPI_VictorSPX left1 = new WPI_VictorSPX(Constants.LEFT_DRIVE_1);
     WPI_VictorSPX left2 = new WPI_VictorSPX(Constants.LEFT_DRIVE_2);
+    WPI_VictorSPX left3 = new WPI_VictorSPX(Constants.LEFT_DRIVE_3);
     WPI_VictorSPX right1 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1);
     WPI_VictorSPX right2 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2);
+    WPI_VictorSPX right3 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3);
 
-    leftMotors = new MotorControllerGroup(left1, left2);
-    rightMotors = new MotorControllerGroup(right1, right2);
+    leftMotors = new MotorControllerGroup(left1, left2, left3);
+    rightMotors = new MotorControllerGroup(right1, right2, right3);
 
     // So positive values cause forward movement
     rightMotors.setInverted(true);
@@ -134,6 +144,11 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     odometry.update(imu.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
     field2d.setRobotPose(odometry.getPoseMeters());
+    
+    // Update the motor safety. This makes sure the system knows we're in control of the motors.
+    // If the code crashes, or somehow gets stuck in a loop, and this method isn't called then
+    // the motors will automaitcally stop.
+    drive.feed();
   }
 
   /**
@@ -175,8 +190,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void tankDrive(double left, double right) {
     drive.tankDrive(
-      left * reduction, 
-      right * reduction);
+      tankLeftRamp.calculate(left * reduction), 
+      tankRightRamp.calculate(right * reduction));
   }
 
   public void arcadeDrive(double throttle, double turn) {
@@ -224,10 +239,19 @@ public class DriveSubsystem extends SubsystemBase {
     return imu.getAngle();
   }
 
+  public double getMaxDemandChangePerSecond() {
+    return maxDemandChangePerSecond;
+  }
+
+  public void setMaxDemandChangePerSecond(double change) {
+    maxDemandChangePerSecond = change;
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     builder.addDoubleProperty("Gear", this::getGear, this::setGear);
+    builder.addDoubleProperty("Max Accel", this::getMaxDemandChangePerSecond, this::setMaxDemandChangePerSecond);
   }
 
   public double getGear() {

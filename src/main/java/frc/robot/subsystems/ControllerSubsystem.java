@@ -59,9 +59,6 @@ public class ControllerSubsystem extends SubsystemBase {
   public double getJoystickX() {
     return joystick.getX();
   }
-  public double getLiftExtenderSpeed() {
-    return liftExtenderSpeed;
-  }
 
   public boolean getArmUpButton() {
     return armUpButton;
@@ -91,8 +88,6 @@ public class ControllerSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // Pilot controls - dead band handled by the DifferentialDrive class within the DriveSubsystem
-    double pilotRaiseClimbingArm = deadzone(pilotController.getRightTriggerAxis(), 0.05);
-    double pilotLowerClimbingArm = deadzone(pilotController.getLeftTriggerAxis(), 0.05);
 
     // Gamepads use negative values for up, and positive for down
     throttle = -pilotController.getLeftY();
@@ -102,23 +97,7 @@ public class ControllerSubsystem extends SubsystemBase {
     // Copilot controls
     outtakeThrottle = deadzone(copilotController.getRightTriggerAxis(), 0.05);
     intakeThrottle = deadzone(copilotController.getLeftTriggerAxis(), 0.05);
-    armDownButton = copilotController.getAButton();
-    armUpButton = copilotController.getYButton();
-    manualArm = -copilotController.getRightY();     // Manual control of arm (ignores limit switches)
-    manualIntake = copilotController.getRightX();   // Manual control of roller can be controlled at the same time as arm
     
-    //
-    // Lift Extendor
-    //
-
-    if (pilotLowerClimbingArm > 0) {
-      liftExtenderSpeed = -pilotLowerClimbingArm;
-    } else if (pilotRaiseClimbingArm > 0) {
-      liftExtenderSpeed = pilotRaiseClimbingArm;
-    } else {
-      liftExtenderSpeed = 0;
-    }
-
   }
 
   @Override

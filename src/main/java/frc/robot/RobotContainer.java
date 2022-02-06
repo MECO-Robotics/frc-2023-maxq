@@ -22,8 +22,6 @@ import frc.robot.commands.AutoCollect2;
 import frc.robot.commands.AutoShoot3;
 import frc.robot.commands.AutoShootCollect;
 import frc.robot.commands.AutoShootCollectRightShoot;
-import frc.robot.commands.ContractPneumatic;
-import frc.robot.commands.ExtendPneumatic;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LowerBallCollectionArm;
 import frc.robot.commands.Stop;
@@ -46,7 +44,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final BallCollectionSubsystem ballCollectionSubsystem = new BallCollectionSubsystem();
-  private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
+  //private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
 
   private final TeleopBallCollection teleopBallCollection = new TeleopBallCollection(ballCollectionSubsystem, controllerSubsystem);
@@ -139,13 +137,13 @@ public class RobotContainer {
     JoystickButton contract = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kX.value);
     contract.whenHeld(new ContractPneumatic(climbingSubsystem));
 */
-
+/*
     JoystickButton forward = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kY.value);
     forward.whenHeld(new PneumaticCommand(climbingSubsystem, Value.kForward));
 
     JoystickButton reverse = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kX.value);
     reverse.whenHeld(new PneumaticCommand(climbingSubsystem, Value.kReverse));
-
+*/
     
   }
 

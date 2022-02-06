@@ -31,13 +31,11 @@ public class ContractPneumatic extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climbingSubsystem.set2(true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climbingSubsystem.set2(false);
   }
 
   // Returns true when the command should end. (this command never finishes)
