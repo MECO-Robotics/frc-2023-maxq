@@ -6,11 +6,14 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ClimbingSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-/** Climb the middle and traversal rungs. */
-public class Climb extends CommandBase {
-
-  private final ClimbingSubsystem climbingSubsystem;
+/**
+ * Climb the middle and traversal rungs. Assumes the robot is already positioned at the
+ * middle rung and the upper winch is ready to be pulled.
+ * 
+ */
+public class Climb extends SequentialCommandGroup {
 
   /**
    * Creates a new Command.
@@ -18,31 +21,8 @@ public class Climb extends CommandBase {
    * @param ballCollectionSubsystem The subsystem used by this command.
    */
   public Climb(ClimbingSubsystem climbingSubsystem) {
-    this.climbingSubsystem = climbingSubsystem;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climbingSubsystem);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-
-  }
-
-  // Returns true when the command should end. (this command never finishes)
-  @Override
-  public boolean isFinished() {
-    return false;
+    // Winch upper arm WHILE Extending lower arm?
+    
   }
 }

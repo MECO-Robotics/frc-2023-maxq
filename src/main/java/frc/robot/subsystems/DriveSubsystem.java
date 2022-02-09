@@ -8,10 +8,12 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -25,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -47,6 +50,9 @@ public class DriveSubsystem extends SubsystemBase {
   // Real sensors & actuators
   private MotorControllerGroup leftMotors, rightMotors;
   private Encoder leftEncoder, rightEncoder;
+  private RangeSensor rangeLeft = new RangeSensor(0);
+  private RangeSensor rangeMiddle = new RangeSensor(1);
+  private RangeSensor rangeRight = new RangeSensor(2);
   
   // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP port,
   // which is the wide female pin header in the middle of the Rio. Through the MXP, 
@@ -116,6 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
     leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);
     rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);
 
+
     if(RobotBase.isSimulation()) {
       leftEncoderSim = new EncoderSim(leftEncoder);
       rightEncoderSim = new EncoderSim(rightEncoder);
@@ -137,6 +144,9 @@ public class DriveSubsystem extends SubsystemBase {
     addChild("Diff Drive", drive);
     addChild("IMU", imu);
     addChild("Field", field2d);
+    addChild("Left Range", rangeLeft);
+    addChild("Middle Range", rangeMiddle);
+    addChild("Right Range", rangeRight);
   }
 
   @Override
@@ -290,6 +300,30 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     reduction = GEAR_REDUCTION[gear - 1];
+  }
+
+  /**
+   * Get the range to the closest object from the left sensor.
+   * @return The range, in millimeters
+   */
+  public double getLeftSensorRange() {
+    return rangeLeft.getRange();
+  }
+
+  /**
+   * Get the range to the closest object from the right sensor.
+   * @return The range, in millimeters
+   */
+  public double getRightSensorRange() {
+    return rangeRight.getRange();
+  }
+
+  /**
+   * Get the range to the closest object from the middle sensor.
+   * @return The range, in millimeters
+   */
+  public double getMiddleSensorRange() {
+    return rangeMiddle.getRange();
   }
 }
 

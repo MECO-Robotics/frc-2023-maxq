@@ -11,6 +11,11 @@
     }
   },
   "Window": {
+    "###/LiveWindow/DriveSubsystem/Diff Drive": {
+      "Collapsed": "0",
+      "Pos": "3,536",
+      "Size": "300,350"
+    },
     "###/LiveWindow/DriveSubsystem/Field": {
       "Collapsed": "0",
       "Pos": "662,33",
@@ -53,7 +58,7 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "46,187",
+      "Pos": "570,86",
       "Size": "750,487"
     },
     "###Other Devices": {

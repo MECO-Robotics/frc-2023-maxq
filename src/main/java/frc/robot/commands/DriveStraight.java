@@ -15,6 +15,7 @@ public class DriveStraight extends CommandBase {
   private final DriveSubsystem driveTrain;
   private double distanceDesired;
   private final boolean forward;
+  private double initialHeading;
 
   /**
    * Creates a new DriveStraight command.
@@ -35,6 +36,7 @@ public class DriveStraight extends CommandBase {
   @Override
   public void initialize() {
     distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
+    initialHeading = driveTrain.getHeadingDegrees();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,9 +48,14 @@ public class DriveStraight extends CommandBase {
     } else {
       throttle = -Constants.AUTO_SPEED;
     }
-    // Call repeatedly, even though with the same value because if only called once during 
-    // initialize(), the commmand to the CAN bus could get dropped
-    driveTrain.arcadeDrive(throttle, 0);
+
+    // To make sure we're continuing to drive straight, make slight adjustments to the
+    // turn based on Yaw error (Propotional only control). This adjustment basically says
+    // for every 1 degree of error, adjust the turn value by 0.1 input in the opposite direction
+    // If our current heading matches the initial heading, then the turn comes out to zero.
+    double turn = -(driveTrain.getHeadingDegrees() - initialHeading)/10f;
+
+    driveTrain.arcadeDrive(throttle, turn);
   }
 
   // Called once the command ends or is interrupted.

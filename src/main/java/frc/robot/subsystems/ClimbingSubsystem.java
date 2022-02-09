@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -37,10 +38,10 @@ public class ClimbingSubsystem extends SubsystemBase {
     Constants.DOUBLE_SOLENOID_FWD, 
     Constants.DOUBLE_SOLENOID_REV);
 
-  private final TalonSRX lowerLeftArmWinch = new TalonSRX(100);
-  private final TalonSRX lowerRightArmWinch = new TalonSRX(100);
-  private final TalonSRX upperLeftArmWinch = new TalonSRX(100);
-  private final TalonSRX upperRightArmWinch = new TalonSRX(100);
+  private final TalonSRX lowerLeftArmWinch = new TalonSRX(0);
+  private final TalonSRX lowerRightArmWinch = new TalonSRX(1);
+  private final TalonSRX upperLeftArmWinch = new TalonSRX(2);
+  private final TalonSRX upperRightArmWinch = new TalonSRX(3);
 
   // The number of ticks required to wind in the lower arm winch
   double lowerArmWinchInEncoderTicks = 1000;
@@ -62,13 +63,27 @@ public class ClimbingSubsystem extends SubsystemBase {
     // This is the default behavior, so we'll be deleting this line once we can test.
     compressor.enableDigital();
 
-    // We're using the VersaPlanetary Integrated Encoder (https://www.vexrobotics.com/217-5046.html) that is directly
-    // connected to the Talon SRX Motor Controller (https://store.ctr-electronics.com/talon-srx/)
-    lowerLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.QuadEncoder, 0, 250);
-    lowerRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.QuadEncoder, 0, 250);
-    upperLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.QuadEncoder, 0, 250);
-    upperRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.QuadEncoder, 0, 250);
+    // Parameters
+    //   feedbackDevice
+    //      We're using the VersaPlanetary Integrated Encoder (https://www.vexrobotics.com/217-5046.html) that is directly
+    //      connected to the Talon SRX Motor Controller (https://store.ctr-electronics.com/talon-srx/).
+    //      The Mag Encoder can do either relative (quadrature) or absolute (PWM). The relative approach can sample at a
+    //      higher rate, so using that.
+    //  pidIdx
+    //      0 for Primary closed-loop. 1 for auxiliary closed-loop.
+    //      *** Selected 0 ***
+    //  timeoutMs
+    //      Time to wait for the configuration to complete, and report if an error occurred.
+    lowerLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
+    lowerRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
+    upperLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
+    upperRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
 
+    // We want the winches to run in brake mode so that when we're not winding or unwinding it stays put.
+    lowerLeftArmWinch.setNeutralMode(NeutralMode.Brake);
+    lowerRightArmWinch.setNeutralMode(NeutralMode.Brake);
+    upperLeftArmWinch.setNeutralMode(NeutralMode.Brake);
+    upperRightArmWinch.setNeutralMode(NeutralMode.Brake);
 
     addChild("Compressor", compressor);
     addChild("Double Solenoid", doubleSolenoid);
@@ -77,7 +92,6 @@ public class ClimbingSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
   }
 
 
@@ -95,6 +109,9 @@ public class ClimbingSubsystem extends SubsystemBase {
     doubleSolenoid.set(Value.kOff);
   }
   
+
+  // ------------------------------------------------------------------------------------
+
   public void windLowerArmWinch() {
     // Use the TalonSRX builtin Position control mode, which allows us to simply tell
     // the motor controller, using the attached encoder, how many ticks to move the motor
@@ -106,20 +123,16 @@ public class ClimbingSubsystem extends SubsystemBase {
     lowerRightArmWinch.set(TalonSRXControlMode.Position, -lowerArmWinchInEncoderTicks);
   }
   
-  public void windUpperArmWinch() { }
-  public void unwindUpperArmWinch() { }
+  public void windUpperArmWinch() { 
+    upperLeftArmWinch.set(TalonSRXControlMode.Position, upperArmWinchInEncoderTicks);
+    upperRightArmWinch.set(TalonSRXControlMode.Position, upperArmWinchInEncoderTicks);
+  }
+  public void unwindUpperArmWinch() { 
+    upperLeftArmWinch.set(TalonSRXControlMode.Position, -upperArmWinchInEncoderTicks);
+    upperRightArmWinch.set(TalonSRXControlMode.Position, -upperArmWinchInEncoderTicks);
+  }
 
-
-
-
-
-
-
-
-
-
-
-
+  // ------------------------------------------------------------------------------------
 
   public void control(Value value) {
     doubleSolenoid.set(value);
