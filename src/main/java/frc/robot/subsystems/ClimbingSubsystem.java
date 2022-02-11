@@ -132,6 +132,29 @@ public class ClimbingSubsystem extends SubsystemBase {
     upperRightArmWinch.set(TalonSRXControlMode.Position, -upperArmWinchInEncoderTicks);
   }
 
+  public boolean isTheLowerWinchFinishedWinding(){
+        
+    // running is the motor voltage checking if the motor is on or if it is off.
+    double running = upperLeftArmWinch.getMotorOutputVoltage();
+    if (running == 0){
+      return true;
+      
+
+    }
+    else{
+      return false;
+
+
+
+    }
+
+
+  }
+  //deez nutz
+  // boyzzzzzzzz
+
+
+
   // ------------------------------------------------------------------------------------
 
   public void control(Value value) {
@@ -155,5 +178,4 @@ public class ClimbingSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  
 }
