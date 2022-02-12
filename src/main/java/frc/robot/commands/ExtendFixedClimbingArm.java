@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.subsystems.ClimbingSubsystem.WinchState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** 
@@ -47,14 +48,14 @@ public class ExtendFixedClimbingArm extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    
+  }
 
   // Returns true when the command should end. (this command never finishes)
   @Override
   public boolean isFinished() {
-    // If the motor speed is zero, we're done. This is checked after
-    // the initialize() and execute() methods, which will set the arm
-    // speed to non-zero.
-    return climbingSubsystem.isTheLowerWinchFinishedWinding();
+    // We're done when the lower arm winch is unwound.
+    return climbingSubsystem.getLowerArmWinchState() == WinchState.Unwound;
   }
 }

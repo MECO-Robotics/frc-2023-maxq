@@ -18,9 +18,6 @@ import frc.robot.commands.Outtake;
 import frc.robot.commands.PlusSign;
 import frc.robot.commands.PneumaticCommand;
 import frc.robot.commands.RaiseBallCollectionArm;
-import frc.robot.commands.AutoCollect2;
-import frc.robot.commands.AutoShoot3;
-import frc.robot.commands.AutoShootCollect;
 import frc.robot.commands.AutoShootCollectRightShoot;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LowerBallCollectionArm;
@@ -76,9 +73,6 @@ public class RobotContainer {
     autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
     autoCommands.put("PlusSign", new PlusSign(driveSubsystem));
     autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
-    autoCommands.put("AutoCollect2", new AutoCollect2(driveSubsystem));
-    autoCommands.put("AutoShoot3", new AutoShoot3(driveSubsystem));
-    autoCommands.put("AutoShootCollect", new AutoShootCollect(driveSubsystem));
 
 
     // 

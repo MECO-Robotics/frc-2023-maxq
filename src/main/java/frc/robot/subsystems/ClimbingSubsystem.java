@@ -4,10 +4,17 @@
 
 package frc.robot.subsystems;
 
+import java.time.Instant;
+import java.util.Date;
+
+import javax.print.attribute.standard.DateTimeAtCompleted;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.time.StopWatch;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import edu.wpi.first.wpilibj.Compressor;
@@ -49,6 +56,11 @@ public class ClimbingSubsystem extends SubsystemBase {
   // The number of ticks required to wind in the lower arm winch
   double upperArmWinchInEncoderTicks = 1000;
 
+  
+  private MotorStallMonitor lowerRightArmWinchStallMonitor = new MotorStallMonitor(lowerRightArmWinch);
+  private MotorStallMonitor lowerLeftArmWinchStallMonitor = new MotorStallMonitor(lowerLeftArmWinch);
+  private MotorStallMonitor upperLeftArmWinchStallMonitor = new MotorStallMonitor(upperLeftArmWinch);
+  private MotorStallMonitor upperRightArmWinchStallMonitor = new MotorStallMonitor(upperRightArmWinch);
 
 
   // Need to remove & test. Docs indicate this isn't needed
@@ -91,7 +103,34 @@ public class ClimbingSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+
+    // Check if either lower motor has stalled. If it has, stop the motors and set the winch state
+    // accordingly.
+    lowerLeftArmWinchStallMonitor.periodic();
+    lowerRightArmWinchStallMonitor.periodic();
+    if(lowerLeftArmWinchStallMonitor.isStalled() || lowerRightArmWinchStallMonitor.isStalled()) {
+      lowerLeftArmWinch.set(ControlMode.PercentOutput, 0);
+      lowerRightArmWinch.set(ControlMode.PercentOutput, 0);
+      if(lowerArmWinchState == WinchState.Unwinding) {
+        lowerArmWinchState = WinchState.Unwound;
+      } else if(lowerArmWinchState == WinchState.Winding) {
+        lowerArmWinchState = WinchState.Wound;
+      }
+    }
+
+    // Check if either lower motor has stalled. If it has, stop the motors and set the winch state
+    // accordingly.
+    upperLeftArmWinchStallMonitor.periodic();
+    upperRightArmWinchStallMonitor.periodic();
+    if(upperLeftArmWinchStallMonitor.isStalled() || upperRightArmWinchStallMonitor.isStalled()) {
+      upperLeftArmWinch.set(ControlMode.PercentOutput, 0);
+      upperRightArmWinch.set(ControlMode.PercentOutput, 0);
+      if(upperArmWinchState == WinchState.Unwinding){
+        upperArmWinchState = WinchState.Unwound;
+      } else if(upperArmWinchState == WinchState.Winding) {
+        upperArmWinchState = WinchState.Wound;
+      }
+    }
   }
 
 
@@ -112,48 +151,56 @@ public class ClimbingSubsystem extends SubsystemBase {
 
   // ------------------------------------------------------------------------------------
 
-  public void windLowerArmWinch() {
+  public enum WinchState { Wound, Unwinding, Unwound, Winding }
+
+  WinchState lowerArmWinchState = WinchState.Wound;
+  WinchState upperArmWinchState = WinchState.Wound;
+
+  public WinchState getUpperArmWinchState() {
+    if(upperArmWinchState == WinchState.Unwinding && upperLeftArmWinch.getMotorOutputVoltage() == 0 && upperRightArmWinch.getMotorOutputVoltage() == 0) {
+      upperArmWinchState = WinchState.Unwound;
+    } else if(upperArmWinchState == WinchState.Winding && upperLeftArmWinch.getMotorOutputVoltage() == 0 && upperRightArmWinch.getMotorOutputVoltage() == 0) {
+      upperArmWinchState = WinchState.Wound;
+    }
+  return upperArmWinchState;
+}
+
+public WinchState getLowerArmWinchState() {
+  
+  // Check for stall!!! by monitoring the current draw
+  lowerLeftArmWinch.getStatorCurrent();
+  
+  if(lowerArmWinchState == WinchState.Unwinding && lowerLeftArmWinch.getMotorOutputVoltage() == 0 && lowerRightArmWinch.getMotorOutputVoltage() == 0) {
+    lowerArmWinchState = WinchState.Unwound;
+  } else if(lowerArmWinchState == WinchState.Winding && lowerLeftArmWinch.getMotorOutputVoltage() == 0 && lowerRightArmWinch.getMotorOutputVoltage() == 0) {
+    lowerArmWinchState = WinchState.Wound;
+  }
+  return lowerArmWinchState;
+}
+
+public void windLowerArmWinch() {
+    lowerArmWinchState = WinchState.Winding;
     // Use the TalonSRX builtin Position control mode, which allows us to simply tell
     // the motor controller, using the attached encoder, how many ticks to move the motor
     lowerLeftArmWinch.set(TalonSRXControlMode.Position, lowerArmWinchInEncoderTicks);
     lowerRightArmWinch.set(TalonSRXControlMode.Position, lowerArmWinchInEncoderTicks);
   }
   public void unwindLowerArmWinch() {
+    lowerArmWinchState = WinchState.Unwinding;
     lowerLeftArmWinch.set(TalonSRXControlMode.Position, -lowerArmWinchInEncoderTicks);
     lowerRightArmWinch.set(TalonSRXControlMode.Position, -lowerArmWinchInEncoderTicks);
   }
   
   public void windUpperArmWinch() { 
+    upperArmWinchState = WinchState.Winding;
     upperLeftArmWinch.set(TalonSRXControlMode.Position, upperArmWinchInEncoderTicks);
     upperRightArmWinch.set(TalonSRXControlMode.Position, upperArmWinchInEncoderTicks);
   }
   public void unwindUpperArmWinch() { 
+    upperArmWinchState = WinchState.Unwinding;
     upperLeftArmWinch.set(TalonSRXControlMode.Position, -upperArmWinchInEncoderTicks);
     upperRightArmWinch.set(TalonSRXControlMode.Position, -upperArmWinchInEncoderTicks);
   }
-
-  public boolean isTheLowerWinchFinishedWinding(){
-        
-    // running is the motor voltage checking if the motor is on or if it is off.
-    double running = upperLeftArmWinch.getMotorOutputVoltage();
-    if (running == 0){
-      return true;
-      
-
-    }
-    else{
-      return false;
-
-
-
-    }
-
-
-  }
-  //deez nutz
-  // boyzzzzzzzz
-
-
 
   // ------------------------------------------------------------------------------------
 

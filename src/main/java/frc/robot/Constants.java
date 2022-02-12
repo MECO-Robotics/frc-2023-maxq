@@ -47,6 +47,8 @@ public final class Constants {
     public static final int UPPER_LEFT_WINCH = 2;
     public static final int UPPER_RIGHT_WINCH = 3;
 
+    public static final double HIGH_CURRENT_THRESHOLD = 20.0;
+
 
     //
     //          CARGO MANIPULATOR SUBSYSTEM
