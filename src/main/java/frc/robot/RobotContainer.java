@@ -9,27 +9,24 @@ import java.util.Map;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.Shift;
-import frc.robot.commands.MoveOctagon;
-import frc.robot.commands.Outtake;
-import frc.robot.commands.PlusSign;
-import frc.robot.commands.PneumaticCommand;
-import frc.robot.commands.RaiseBallCollectionArm;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShootCollectRightShoot;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LowerBallCollectionArm;
+import frc.robot.commands.MoveOctagon;
+import frc.robot.commands.Outtake;
+import frc.robot.commands.PlusSign;
+import frc.robot.commands.RaiseBallCollectionArm;
+import frc.robot.commands.Shift;
 import frc.robot.commands.Stop;
 import frc.robot.commands.TeleopBallCollection;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.BallCollectionSubsystem;
-import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
