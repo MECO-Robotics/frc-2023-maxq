@@ -4,20 +4,20 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.BallCollectionSubsystem;
+import frc.robot.subsystems.CargoSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Spins the intake roller to pull in balls */
 public class Outtake extends CommandBase {
 
-  private final BallCollectionSubsystem ballCollector;
+  private final CargoSubsystem ballCollector;
 
   /**
    * Creates a new Command.
    *
    * @param ballCollectionSubsystem The subsystem used by this command.
    */
-  public Outtake(BallCollectionSubsystem ballCollectionSubsystem) {
+  public Outtake(CargoSubsystem ballCollectionSubsystem) {
     ballCollector = ballCollectionSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -27,7 +27,7 @@ public class Outtake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ballCollector.moveIntake(0.0, 0.7);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +38,7 @@ public class Outtake extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    ballCollector.moveIntake(0.0, 0.0);
+
   }
 
   // Returns true when the command should end. (this command never finishes)

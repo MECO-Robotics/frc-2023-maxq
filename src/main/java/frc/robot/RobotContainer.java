@@ -15,16 +15,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShootCollectRightShoot;
 import frc.robot.commands.Intake;
-import frc.robot.commands.LowerBallCollectionArm;
+import frc.robot.commands.LowerCargoWrist;
 import frc.robot.commands.MoveOctagon;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.PlusSign;
-import frc.robot.commands.RaiseBallCollectionArm;
+import frc.robot.commands.RaiseCargoWrist;
 import frc.robot.commands.Shift;
 import frc.robot.commands.Stop;
 import frc.robot.commands.TeleopBallCollection;
 import frc.robot.commands.TeleopDrive;
-import frc.robot.subsystems.BallCollectionSubsystem;
+import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -37,11 +37,11 @@ import frc.robot.subsystems.DriveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final BallCollectionSubsystem ballCollectionSubsystem = new BallCollectionSubsystem();
-  //private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
+  // private final CargoSubsystem ballCollectionSubsystem = new CargoSubsystem();
+  // private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
 
-  private final TeleopBallCollection teleopBallCollection = new TeleopBallCollection(ballCollectionSubsystem, controllerSubsystem);
+  // private final TeleopBallCollection teleopBallCollection = new TeleopBallCollection(ballCollectionSubsystem, controllerSubsystem);
   
   private final Map<String, Command> autoCommands = new HashMap<>();
   private final SendableChooser<String> autoCommandChoice = new SendableChooser<String>();
@@ -87,12 +87,12 @@ public class RobotContainer {
     driveMode.addOption("Joystick", DriveMode.Joystick);
     SmartDashboard.putData("Drive mode", driveMode);
 
-    SmartDashboard.putData("ARM UP", new RaiseBallCollectionArm(ballCollectionSubsystem));
-    SmartDashboard.putData("ARM DOWN", new LowerBallCollectionArm(ballCollectionSubsystem));
+    // SmartDashboard.putData("ARM UP", new RaiseCargoWrist(ballCollectionSubsystem));
+    // SmartDashboard.putData("ARM DOWN", new LowerCargoWrist(ballCollectionSubsystem));
     SmartDashboard.putData("SHIFT DOWN", new Shift(driveSubsystem, false));
     SmartDashboard.putData("SHIFT UP", new Shift(driveSubsystem, true));
-    SmartDashboard.putData("INTAKE", new Intake(ballCollectionSubsystem));
-    SmartDashboard.putData("OUTTAKE", new Outtake(ballCollectionSubsystem));
+    // SmartDashboard.putData("INTAKE", new Intake(ballCollectionSubsystem));
+    // SmartDashboard.putData("OUTTAKE", new Outtake(ballCollectionSubsystem));
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
   }
@@ -157,9 +157,9 @@ public class RobotContainer {
     return new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected());
   }
 
-  public Command getTeleopBallCollection() {
-    return teleopBallCollection;
-  }
+  // public Command getTeleopBallCollection() {
+  //   return teleopBallCollection;
+  // }
 
   public DriveSubsystem getDriveSubsystem() {
     return driveSubsystem;

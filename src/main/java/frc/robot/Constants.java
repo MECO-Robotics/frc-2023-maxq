@@ -55,13 +55,18 @@ public final class Constants {
     //
 
     // PWM Values
-    public static final int ARM_LIFT = 0;
-    public static final int LIFT_EXTENDER = 2;
-    public static final int INTAKE = 1;
+    public static final int INTAKE_ROLLER_PWM_CHANNEL = 1;
 
 
-    public static final int TOP_LIMIT_SWITCH = 4;
-    public static final int BOTTOM_LIMIT_SWITCH = 5;
+    //pnuematics
+
+    public static final int FORWARD_CHANNEL_WRIST = 2;
+    public static final int BACKWARD_CHANNEL_WRIST = 3;
+
+    public static final int FORWARD_CHANNEL_ELBOW = 4;
+    public static final int BACKWARD_CHANNEL_ELBOW = 5;
+
+
 
     /**
      * How fast we should travel for autonomous commands.

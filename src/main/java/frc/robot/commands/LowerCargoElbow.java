@@ -4,20 +4,20 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.BallCollectionSubsystem;
+import frc.robot.subsystems.CargoSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Raises the arm. */
-public class LowerBallCollectionArm extends CommandBase {
+public class LowerCargoElbow extends CommandBase {
 
-  private final BallCollectionSubsystem ballCollector;
+  private final CargoSubsystem ballCollector;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param ballCollectionSubsystem The subsystem used by this command.
    */
-  public LowerBallCollectionArm(BallCollectionSubsystem ballCollectionSubsystem) {
+  public LowerCargoElbow(CargoSubsystem ballCollectionSubsystem) {
     ballCollector = ballCollectionSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,14 +28,14 @@ public class LowerBallCollectionArm extends CommandBase {
   @Override
   public void initialize() {
     // Trigger moving up
-    ballCollector.moveArm(false, true);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // Just keep checking the arm movement, without the up button pressed
-    ballCollector.moveArm(false, false);
+
   }
 
   // Called once the command ends or is interrupted.
@@ -49,15 +49,7 @@ public class LowerBallCollectionArm extends CommandBase {
     // the initialize() and execute() methods, which will set the arm
     // speed to non-zero.
    
-    if (ballCollector.getCurrentArmMotorSpeed() == 0.0){
-      System.out.println("finished");
-      return true;
-      
-    }
-
-    else {
-      return false;
-    }
+    return false;
     
   }
  
