@@ -16,17 +16,12 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
  * Actuators
  * 2 pneumatic cylinders to lower/raise collection arm
  * 1 motor for ball injest
- * 1 motor for ball launch
- * Sensors
- * 1 Encoder for ball launch
  */
 public class CargoSubsystem extends SubsystemBase {
 
   Spark intakeRoller = new Spark(Constants.INTAKE_ROLLER_PWM_CHANNEL);
-  DoubleSolenoid wrist = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_WRIST,
-      Constants.BACKWARD_CHANNEL_WRIST);
-  DoubleSolenoid elbow = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_ELBOW,
-      Constants.BACKWARD_CHANNEL_ELBOW);
+  DoubleSolenoid wrist = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_WRIST, Constants.BACKWARD_CHANNEL_WRIST);
+  DoubleSolenoid elbow = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_ELBOW, Constants.BACKWARD_CHANNEL_ELBOW);
 
   /** Creates a new subsystem. */
   public CargoSubsystem() {
@@ -42,36 +37,55 @@ public class CargoSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  public void raiseCargoElbow() {
-    // make sure that the wirst is down before raising the elbow
-    if (wrist.get() == Value.kForward) {
+  public boolean isElbowDown() {
+    return elbow.get() == Value.kForward;
+  }
 
+  public boolean isElbowUp() {
+    return elbow.get() == Value.kReverse;
+  }
+
+  public void raiseElbow() {
+    // make sure that the wrist is down before raising the elbow
+    if (isWristDown()) {
+      elbow.set(Value.kReverse);
     } else {
-      wrist.set(Value.kReverse);
+      System.out.println("ERROR: INVALID REQUEST to raie the elbow, but the wrist is up");
     }
+  }
 
+  public void lowerElbow() {
     elbow.set(Value.kForward);
-
   }
 
-  public void lowerCargoElbow() {
-    elbow.set(Value.kReverse);
+  public boolean isWristUp() {
+    return wrist.get() == Value.kReverse;
   }
 
-  public void raiseCargoWrist() {
-    // make sure not to raise the wrist when elbow is up
+  public boolean isWristDown() {
+    return wrist.get() == Value.kForward;
+  }
+
+  public void raiseWrist() {
+    // make sure to only raise the wrist when elbow is down
+    if(isElbowDown()) {
+      wrist.set(Value.kReverse);
+    } else {
+      System.out.println("ERROR: INVALID REQUEST to raise cargo wrist, but the elbow is down");
+    }
+  }
+
+  public void lowerWrist() {
     wrist.set(Value.kForward);
-
   }
 
-  public void lowerCargoWrist() {
-    wrist.set(Value.kReverse);
-  }
-
-  public void intakeRoller(double speed) {
+  /**
+   * Use 1 for intake, -1 for eject, 0 to stop motor
+   * @param speed
+   */
+  public void setIntakeRoller(double speed) {
     // once you let go of the button it turns off
     intakeRoller.set(speed);
-
   }
 
 }
