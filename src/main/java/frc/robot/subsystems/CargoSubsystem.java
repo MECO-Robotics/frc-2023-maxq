@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 /**
- * 2022 Robot:
+ * The Cargo Subsystem enables cargo (rubber balls) to be collected and deposited in the lower hub.
  * Actuators
- * 2 pneumatic cylinders to lower/raise collection arm
- * 1 motor for ball injest
+ *   2 pneumatic cylinders to lower/raise collection arm
+ *   1 motor for ball injest
  */
 public class CargoSubsystem extends SubsystemBase {
 
@@ -34,6 +34,9 @@ public class CargoSubsystem extends SubsystemBase {
 
   /** Creates a new subsystem. */
   public CargoSubsystem() {
+    addChild("Intake", intakeRoller);
+    addChild("Wrist", wrist);
+    addChild("Elbow", elbow);
   }
 
   @Override

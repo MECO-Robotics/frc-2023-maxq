@@ -31,7 +31,7 @@ public class ClimbingSubsystem extends SubsystemBase {
   // cylinder that raises (forward) or lowers (contracts) the upper arm
   // Using the CTRE Pneumatics Control Module (PCM). 
   // Need to move these numbers to Constants.
-  private final DoubleSolenoid doubleSolenoid = new DoubleSolenoid(
+  private final DoubleSolenoid upperArmSolenoid = new DoubleSolenoid(
     PneumaticsModuleType.CTREPCM, 
     Constants.DOUBLE_SOLENOID_FWD, 
     Constants.DOUBLE_SOLENOID_REV);
@@ -89,7 +89,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     upperRightArmWinch.setNeutralMode(NeutralMode.Brake);
 
     addChild("Compressor", compressor);
-    addChild("Double Solenoid", doubleSolenoid);
+    addChild("Upper Arm Solenoid", upperArmSolenoid);
   }
 
   @Override
@@ -129,14 +129,14 @@ public class ClimbingSubsystem extends SubsystemBase {
   //                
 
   public void extendPneumaticArm() {
-    doubleSolenoid.set(Value.kForward);
+    upperArmSolenoid.set(Value.kForward);
   }
 
   public void contractPneumaticArm() {
-    doubleSolenoid.set(Value.kReverse);
+    upperArmSolenoid.set(Value.kReverse);
   }
   public void disengagePneumaticArm() {
-    doubleSolenoid.set(Value.kOff);
+    upperArmSolenoid.set(Value.kOff);
   }
   
 
@@ -196,19 +196,19 @@ public void windLowerArmWinch() {
   // ------------------------------------------------------------------------------------
 
   public void control(Value value) {
-    doubleSolenoid.set(value);
+    upperArmSolenoid.set(value);
   }
   
   public void forward() {
-    doubleSolenoid.set(Value.kForward);
+    upperArmSolenoid.set(Value.kForward);
   }
 
   public void reverse() {
-    doubleSolenoid.set(Value.kReverse);
+    upperArmSolenoid.set(Value.kReverse);
   }
 
   public void off() {
-    doubleSolenoid.set(Value.kOff);
+    upperArmSolenoid.set(Value.kOff);
   }
 
   @Override
