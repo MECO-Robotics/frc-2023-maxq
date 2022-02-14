@@ -10,18 +10,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** Spins the intake roller to pull in balls */
 public class Intake extends CommandBase {
 
-  private final CargoSubsystem ballCollector;
+  private final CargoSubsystem cargo;
 
   /**
    * Creates a new Command.
    *
-   * @param ballCollectionSubsystem The subsystem used by this command.
+   * @param cargoSubsystem The subsystem used by this command.
    */
-  public Intake(CargoSubsystem ballCollectionSubsystem) {
-    ballCollector = ballCollectionSubsystem;
+  public Intake(CargoSubsystem cargoSubsystem) {
+    cargo = cargoSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(ballCollectionSubsystem);
+    addRequirements(cargoSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -31,15 +31,11 @@ public class Intake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // Just keep checking the arm movement, without the up button pressed
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-  }
+  public void end(boolean interrupted) { }
 
   // Returns true when the command should end. (this command never finishes)
   @Override

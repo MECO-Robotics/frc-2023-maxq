@@ -14,17 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShootCollectRightShoot;
-import frc.robot.commands.Intake;
-import frc.robot.commands.LowerCargoWrist;
 import frc.robot.commands.MoveOctagon;
-import frc.robot.commands.Outtake;
 import frc.robot.commands.PlusSign;
-import frc.robot.commands.RaiseCargoWrist;
 import frc.robot.commands.Shift;
 import frc.robot.commands.Stop;
-import frc.robot.commands.TeleopBallCollection;
 import frc.robot.commands.TeleopDrive;
-import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 

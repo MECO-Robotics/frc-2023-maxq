@@ -10,18 +10,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** Spins the intake roller to pull in balls */
 public class Outtake extends CommandBase {
 
-  private final CargoSubsystem ballCollector;
+  private final CargoSubsystem cargo;
 
   /**
    * Creates a new Command.
    *
-   * @param ballCollectionSubsystem The subsystem used by this command.
+   * @param cargoSubsystem The subsystem used by this command.
    */
-  public Outtake(CargoSubsystem ballCollectionSubsystem) {
-    ballCollector = ballCollectionSubsystem;
+  public Outtake(CargoSubsystem cargoSubsystem) {
+    cargo = cargoSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(ballCollectionSubsystem);
+    addRequirements(cargoSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -38,7 +38,6 @@ public class Outtake extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
   }
 
   // Returns true when the command should end. (this command never finishes)

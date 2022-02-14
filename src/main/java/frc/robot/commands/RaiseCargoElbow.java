@@ -10,33 +10,28 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** Raises the arm. */
 public class RaiseCargoElbow extends CommandBase {
 
-  private final CargoSubsystem ballCollector;
+  private final CargoSubsystem cargo;
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param ballCollectionSubsystem The subsystem used by this command.
+   * @param cargoSubsystem The subsystem used by this command.
    */
-  public RaiseCargoElbow(CargoSubsystem ballCollectionSubsystem) {
-    ballCollector = ballCollectionSubsystem;
+  public RaiseCargoElbow(CargoSubsystem cargoSubsystem) {
+    cargo = cargoSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(ballCollectionSubsystem);
+    addRequirements(cargoSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Trigger moving up
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    // Just keep checking the arm movement, without the up button pressed
-
-  }
+  public void execute() { }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -45,12 +40,7 @@ public class RaiseCargoElbow extends CommandBase {
   // Returns true when the command should end. (this command never finishes)
   @Override
   public boolean isFinished() {
-    // If the motor speed is zero, we're done. This is checked after
-    // the initialize() and execute() methods, which will set the arm
-    // speed to non-zero.
-   
     return false;
-    
   }
- 
+  
 }
