@@ -83,7 +83,7 @@ public class CargoSubsystem extends SubsystemBase {
       elbow.set(Value.kReverse);
       elbowActuationTickCounter = ACTUATION_TICKS;
     } else {
-      System.out.println("ERROR: INVALID REQUEST to raie the elbow, but the wrist is up");
+      System.out.println("ERROR: INVALID REQUEST to raise the elbow, but the wrist is up");
     }
   }
 
@@ -113,7 +113,7 @@ public class CargoSubsystem extends SubsystemBase {
       wrist.set(Value.kReverse);
       wristActuationTickCounter = ACTUATION_TICKS;
     } else {
-      System.out.println("ERROR: INVALID REQUEST to raise cargo wrist, but the elbow is down");
+      System.out.println("ERROR: INVALID REQUEST to raise cargo wrist, but the elbow is up");
     }
   }
 
