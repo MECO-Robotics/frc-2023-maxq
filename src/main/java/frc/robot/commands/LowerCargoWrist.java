@@ -27,6 +27,7 @@ public class LowerCargoWrist extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+  cargo.lowerWrist();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,7 +41,7 @@ public class LowerCargoWrist extends CommandBase {
   // Returns true when the command should end. (this command never finishes)
   @Override
   public boolean isFinished() {
-    return false;
+    return cargo.isWristDown();
   }
  
 }
