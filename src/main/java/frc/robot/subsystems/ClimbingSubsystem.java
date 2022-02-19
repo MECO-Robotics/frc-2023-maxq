@@ -33,8 +33,8 @@ public class ClimbingSubsystem extends SubsystemBase {
   // Need to move these numbers to Constants.
   private final DoubleSolenoid upperArmSolenoid = new DoubleSolenoid(
     PneumaticsModuleType.CTREPCM, 
-    Constants.DOUBLE_SOLENOID_FWD, 
-    Constants.DOUBLE_SOLENOID_REV);
+    Constants.DOUBLE_SOLENOID_FWD_PCM, 
+    Constants.DOUBLE_SOLENOID_REV_PCM);
 
   private final TalonSRX lowerLeftArmWinch = new TalonSRX(0);
   private final TalonSRX lowerRightArmWinch = new TalonSRX(1);

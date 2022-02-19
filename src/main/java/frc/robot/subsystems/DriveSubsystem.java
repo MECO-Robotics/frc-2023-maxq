@@ -47,9 +47,9 @@ public class DriveSubsystem extends SubsystemBase {
   // Real sensors & actuators
   private MotorControllerGroup leftMotors, rightMotors;
   private Encoder leftEncoder, rightEncoder;
-  private RangeSensor rangeLeft = new RangeSensor(0);
-  private RangeSensor rangeMiddle = new RangeSensor(1);
-  private RangeSensor rangeRight = new RangeSensor(2);
+  private RangeSensor rangeLeft = new RangeSensor(Constants.LEFT_ULTRASONIC_ANLG);
+  private RangeSensor rangeMiddle = new RangeSensor(Constants.MID_ULTRASONIC_ANLG);
+  private RangeSensor rangeRight = new RangeSensor(Constants.RIGHT_ULTRASONIC_ANLG);
   
   // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP port,
   // which is the wide female pin header in the middle of the Rio. Through the MXP, 
@@ -96,12 +96,12 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
 
     // Create the WPI_VictorSPX individually and call configOpenLoopRamp on it.
-    WPI_VictorSPX left1 = new WPI_VictorSPX(Constants.LEFT_DRIVE_1);
-    WPI_VictorSPX left2 = new WPI_VictorSPX(Constants.LEFT_DRIVE_2);
-    WPI_VictorSPX left3 = new WPI_VictorSPX(Constants.LEFT_DRIVE_3);
-    WPI_VictorSPX right1 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1);
-    WPI_VictorSPX right2 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2);
-    WPI_VictorSPX right3 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3);
+    WPI_VictorSPX left1 = new WPI_VictorSPX(Constants.LEFT_DRIVE_1_CAN);
+    WPI_VictorSPX left2 = new WPI_VictorSPX(Constants.LEFT_DRIVE_2_CAN);
+    WPI_VictorSPX left3 = new WPI_VictorSPX(Constants.LEFT_DRIVE_3_CAN);
+    WPI_VictorSPX right1 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1_CAN);
+    WPI_VictorSPX right2 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2_CAN);
+    WPI_VictorSPX right3 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3_CAN);
 
     leftMotors = new MotorControllerGroup(left1, left2, left3);
     rightMotors = new MotorControllerGroup(right1, right2, right3);
@@ -112,9 +112,9 @@ public class DriveSubsystem extends SubsystemBase {
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
     // Left: reverse direction (decreasing values go forward)
-    leftEncoder = new Encoder(Constants.LEFT_ENCODER_1, Constants.LEFT_ENCODER_2, true);
+    leftEncoder = new Encoder(Constants.LEFT_DRIVE_ENCODER_1_DIO, Constants.LEFT_DRIVE_ENCODER_2_DIO, true);
     // Right
-    rightEncoder = new Encoder(Constants.RIGHT_ENCODER_1, Constants.RIGHT_ENCODER_2, false);
+    rightEncoder = new Encoder(Constants.RIGHT_DRIVE_ENCODER_1_DIO, Constants.RIGHT_DRIVE_ENCODER_2_DIO, false);
     
     leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);
     rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);

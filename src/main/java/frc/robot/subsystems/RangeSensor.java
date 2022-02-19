@@ -27,6 +27,14 @@ public class RangeSensor implements Sendable {
     // of 100 ms. Traveling at slow speed of .25 m/s, the range of samples
     // over 0.1 seconds is 0.025m or 25 mm, which is 1 inch.
     private final MedianFilter filter = new MedianFilter(5);
+    
+    /**
+     * Construction without a channel number is not allowed
+     */
+    private RangeSensor() {
+        ultrasonicSensor = null;
+        ultrasonicSensorSim = null;
+    }
 
     public RangeSensor(int analogChannel) {
         ultrasonicSensor = new AnalogInput(analogChannel);

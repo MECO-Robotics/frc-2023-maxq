@@ -8,13 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.AutoShootCollectRightShoot;
+import frc.robot.commands.Intake;
 import frc.robot.commands.MoveOctagon;
+import frc.robot.commands.Outtake;
 import frc.robot.commands.PlusSign;
 import frc.robot.commands.Shift;
 import frc.robot.commands.Stop;
@@ -34,8 +38,6 @@ public class RobotContainer {
   // private final CargoSubsystem ballCollectionSubsystem = new CargoSubsystem();
   // private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
-
-  // private final TeleopBallCollection teleopBallCollection = new TeleopBallCollection(ballCollectionSubsystem, controllerSubsystem);
   
   private final Map<String, Command> autoCommands = new HashMap<>();
   private final SendableChooser<String> autoCommandChoice = new SendableChooser<String>();
@@ -102,34 +104,50 @@ public class RobotContainer {
     // This is an example of button bindings using the new approach. The rest
     // of the button bindings are actually done in the ControllerSubsystem class.
 
-    JoystickButton shiftDown = new JoystickButton(
+    configureTeleopDriveButtonBindings();
+    
+    configureTeleopCargoButtonBindings();
+
+    configureTeleopClimbButtonBindings();
+  }
+
+  /**
+   * Setup the buttons for controlling climbing during teleop
+   */
+  private void configureTeleopClimbButtonBindings() {
+  }
+
+  /**
+   * Setup the buttons for collecting and shooting cargo
+   */
+  private void configureTeleopCargoButtonBindings() {
+    XboxController copilot = controllerSubsystem.getCopilotController();
+    POVButton upPovButton = new POVButton(copilot, 0);
+    POVButton righttPovButton = new POVButton(copilot, 90);
+    POVButton downnPovButton = new POVButton(copilot, 180);
+    POVButton leftPovButton = new POVButton(copilot, 270);
+
+    // Uncomment when cargo subsystem is available
+    // upPovButton.whenHeld(new Intake(cargoSubsystem));
+    // downnPovButton.whenHeld(new Outtake(cargoSubsystem));
+  }
+
+  /**
+   * Setup the buttons for teleop drive.
+   */
+  private void configureTeleopDriveButtonBindings() {
+
+    JoystickButton leftBumper = new JoystickButton(
       controllerSubsystem.getPilotController(), 
       XboxController.Button.kLeftBumper.value);
 
-    shiftDown.whenPressed(new Shift(driveSubsystem, false), false);
+    leftBumper.whenPressed(new Shift(driveSubsystem, false), false);
 
-    JoystickButton shiftUp = new JoystickButton(
+    JoystickButton rightBumper = new JoystickButton(
       controllerSubsystem.getPilotController(), 
       XboxController.Button.kRightBumper.value);
 
-    shiftUp.whenPressed(new Shift(driveSubsystem, true), false);
-    
-
-    /*
-    JoystickButton extend = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kY.value);
-    extend.whenHeld(new ExtendPneumatic(climbingSubsystem));
-
-    JoystickButton contract = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kX.value);
-    contract.whenHeld(new ContractPneumatic(climbingSubsystem));
-*/
-/*
-    JoystickButton forward = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kY.value);
-    forward.whenHeld(new PneumaticCommand(climbingSubsystem, Value.kForward));
-
-    JoystickButton reverse = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kX.value);
-    reverse.whenHeld(new PneumaticCommand(climbingSubsystem, Value.kReverse));
-*/
-    
+    rightBumper.whenPressed(new Shift(driveSubsystem, true), false);
   }
 
   /**
@@ -150,10 +168,6 @@ public class RobotContainer {
   public Command getTeleopDriveCommand() {
     return new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected());
   }
-
-  // public Command getTeleopBallCollection() {
-  //   return teleopBallCollection;
-  // }
 
   public DriveSubsystem getDriveSubsystem() {
     return driveSubsystem;

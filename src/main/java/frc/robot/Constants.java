@@ -19,33 +19,37 @@ public final class Constants {
     //
 
     // Victor SPX CAN Values
-    public static final int LEFT_DRIVE_1 = 0;
-    public static final int LEFT_DRIVE_2 = 1;
-    public static final int LEFT_DRIVE_3 = 2;
-    public static final int RIGHT_DRIVE_1 = 3;
-    public static final int RIGHT_DRIVE_2 = 4;
-    public static final int RIGHT_DRIVE_3 = 5;
+    public static final int LEFT_DRIVE_1_CAN = 0;
+    public static final int LEFT_DRIVE_2_CAN = 1;
+    public static final int LEFT_DRIVE_3_CAN = 2;
+    public static final int RIGHT_DRIVE_1_CAN = 3;
+    public static final int RIGHT_DRIVE_2_CAN = 4;
+    public static final int RIGHT_DRIVE_3_CAN = 5;
 
     // DIO Values
-    public static final int RIGHT_ENCODER_1 = 0;
-    public static final int RIGHT_ENCODER_2 = 1;
-    public static final int LEFT_ENCODER_1 = 2;
-    public static final int LEFT_ENCODER_2 = 3;
+    public static final int RIGHT_DRIVE_ENCODER_1_DIO = 0;
+    public static final int RIGHT_DRIVE_ENCODER_2_DIO = 1;
+    public static final int LEFT_DRIVE_ENCODER_1_DIO = 2;
+    public static final int LEFT_DRIVE_ENCODER_2_DIO = 3;
 
+    // Analog Inputs
+    public static final int LEFT_ULTRASONIC_ANLG = 0;
+    public static final int MID_ULTRASONIC_ANLG = 1;
+    public static final int RIGHT_ULTRASONIC_ANLG = 2;
 
     //
     //          CLIMBING SUBSYSTEM
     //
 
     // Arm joint pneumatic cylinder - Pneumatic Control Module (PCM) CAN Values
-    public static final int DOUBLE_SOLENOID_FWD = 0;
-    public static final int DOUBLE_SOLENOID_REV = 1;
+    public static final int DOUBLE_SOLENOID_FWD_PCM = 0;
+    public static final int DOUBLE_SOLENOID_REV_PCM = 1;
 
     // Winch motors - Talon SRX CAN Values
-    public static final int LOWER_LEFT_WINCH = 0;
-    public static final int LOWER_RIGHT_WINCH = 1;
-    public static final int UPPER_LEFT_WINCH = 2;
-    public static final int UPPER_RIGHT_WINCH = 3;
+    public static final int LOWER_LEFT_WINCH_CAN = 0;
+    public static final int LOWER_RIGHT_WINCH_CAN = 1;
+    public static final int UPPER_LEFT_WINCH_CAN = 2;
+    public static final int UPPER_RIGHT_WINCH_CAN = 3;
 
     public static final double HIGH_CURRENT_THRESHOLD = 20.0;
 
@@ -55,16 +59,16 @@ public final class Constants {
     //
 
     // PWM Values
-    public static final int INTAKE_ROLLER_PWM_CHANNEL = 1;
+    public static final int INTAKE_ROLLER_PWM = 1;
 
 
     //pnuematics
 
-    public static final int FORWARD_CHANNEL_WRIST = 2;
-    public static final int BACKWARD_CHANNEL_WRIST = 3;
+    public static final int FORWARD_CHANNEL_WRIST_PCM = 2;
+    public static final int BACKWARD_CHANNEL_WRIST_PCM = 3;
 
-    public static final int FORWARD_CHANNEL_ELBOW = 4;
-    public static final int BACKWARD_CHANNEL_ELBOW = 5;
+    public static final int FORWARD_CHANNEL_ELBOW_PCM = 4;
+    public static final int BACKWARD_CHANNEL_ELBOW_PCM = 5;
 
 
 

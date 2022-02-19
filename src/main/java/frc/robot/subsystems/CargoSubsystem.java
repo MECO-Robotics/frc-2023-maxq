@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
  */
 public class CargoSubsystem extends SubsystemBase {
 
-  private final Spark intakeRoller = new Spark(Constants.INTAKE_ROLLER_PWM_CHANNEL);
-  private final DoubleSolenoid wrist = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_WRIST, Constants.BACKWARD_CHANNEL_WRIST);
-  private final DoubleSolenoid elbow = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_ELBOW, Constants.BACKWARD_CHANNEL_ELBOW);
+  private final Spark intakeRoller = new Spark(Constants.INTAKE_ROLLER_PWM);
+  private final DoubleSolenoid wrist = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_WRIST_PCM, Constants.BACKWARD_CHANNEL_WRIST_PCM);
+  private final DoubleSolenoid elbow = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_ELBOW_PCM, Constants.BACKWARD_CHANNEL_ELBOW_PCM);
 
   // The number of 20ms ticks required to extend or contract a cylinder
   // 50 X 20ms = 1000ms = 1 second (Need to validate this is the right duration)
