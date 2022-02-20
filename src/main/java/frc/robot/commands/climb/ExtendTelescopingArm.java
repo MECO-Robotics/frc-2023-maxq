@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.climb;
 
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem.WinchState;
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  *       The code will allow you to raise and lower the fixed arm with the winch.
  * 
  */
-public class ExtendFixedClimbingArm extends CommandBase {
+public class ExtendTelescopingArm extends CommandBase {
 
   private final ClimbingSubsystem climbingSubsystem;
   
@@ -22,7 +22,7 @@ public class ExtendFixedClimbingArm extends CommandBase {
    *
    * @param ClimbingSubsystem The subsystem used by this command.
    */
-  public ExtendFixedClimbingArm(ClimbingSubsystem subsystem) {
+  public ExtendTelescopingArm(ClimbingSubsystem subsystem) {
     climbingSubsystem = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -34,7 +34,7 @@ public class ExtendFixedClimbingArm extends CommandBase {
   public void initialize() {
     // Trigger moving up
     //get current encoder position of the lower arm/fixed arm winch
-    climbingSubsystem.unwindtelescopingArmWinch();
+    climbingSubsystem.telescopingArmWinchOut();
     
 
   }
@@ -56,6 +56,6 @@ public class ExtendFixedClimbingArm extends CommandBase {
   @Override
   public boolean isFinished() {
     // We're done when the lower arm winch is unwound.
-    return climbingSubsystem.gettelescopingArmWinchState() == WinchState.Unwound;
+    return climbingSubsystem.getTelescopingArmWinchState() == WinchState.Unwound;
   }
 }

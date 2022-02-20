@@ -121,6 +121,9 @@ public class DriveSubsystem extends SubsystemBase {
 
 
     if(RobotBase.isSimulation()) {
+      // At some point, we'll need to reconfigure the drive sim from the defaults since we're using a custom drive train
+      // driveSim = new DifferentialDrivetrainSim(DCMotor.getCIM(3), 10f, jKgMetersSquared, massKg, wheelRadiusMeters, trackWidthMeters, measurementStdDevs)
+
       leftEncoderSim = new EncoderSim(leftEncoder);
       rightEncoderSim = new EncoderSim(rightEncoder);
       imuSim = new SimDeviceSim("navX-Sensor[0]");
