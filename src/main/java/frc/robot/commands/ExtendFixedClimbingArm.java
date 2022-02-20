@@ -34,7 +34,7 @@ public class ExtendFixedClimbingArm extends CommandBase {
   public void initialize() {
     // Trigger moving up
     //get current encoder position of the lower arm/fixed arm winch
-    climbingSubsystem.unwindLowerArmWinch();
+    climbingSubsystem.unwindtelescopingArmWinch();
     
 
   }
@@ -56,6 +56,6 @@ public class ExtendFixedClimbingArm extends CommandBase {
   @Override
   public boolean isFinished() {
     // We're done when the lower arm winch is unwound.
-    return climbingSubsystem.getLowerArmWinchState() == WinchState.Unwound;
+    return climbingSubsystem.gettelescopingArmWinchState() == WinchState.Unwound;
   }
 }

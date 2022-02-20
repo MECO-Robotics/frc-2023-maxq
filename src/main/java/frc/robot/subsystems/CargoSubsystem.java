@@ -78,6 +78,9 @@ public class CargoSubsystem extends SubsystemBase {
   }
 
   public void raiseElbow() {
+    if(isElbowUp()){
+      return;
+    }
     // make sure that the wrist is down before raising the elbow
     if (isWristDown()) {
       elbow.set(Value.kReverse);
@@ -88,6 +91,9 @@ public class CargoSubsystem extends SubsystemBase {
   }
 
   public void lowerElbow() {
+    if(isElbowDown()){
+      return;
+    }
     elbow.set(Value.kForward);
     elbowActuationTickCounter = ACTUATION_TICKS;
   }
@@ -108,6 +114,9 @@ public class CargoSubsystem extends SubsystemBase {
   }
 
   public void raiseWrist() {
+    if(isWristUp()){
+      return;
+    }
     // make sure to only raise the wrist when elbow is down
     if(isElbowDown()) {
       wrist.set(Value.kReverse);
@@ -118,6 +127,9 @@ public class CargoSubsystem extends SubsystemBase {
   }
 
   public void lowerWrist() {
+    if(isWristDown()){
+      return;
+    }
     wrist.set(Value.kForward);
     wristActuationTickCounter = ACTUATION_TICKS;
   }

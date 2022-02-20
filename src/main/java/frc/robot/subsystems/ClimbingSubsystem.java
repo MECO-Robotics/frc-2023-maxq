@@ -19,52 +19,45 @@ import frc.robot.Constants;
 /**
  * 2022 Robot:
  *    Actuators
- *        2 pneumatic cylinders to lower/raise secondary arm
- *        1 motor for lower arm winch
- *        1 motor for upper arm winch
+ *        2 pneumatic cylinders to telescoping/raise secondary arm
+ *        1 motor for telescoping arm winch
+ *        1 motor for rotating arm winch
  *    Sensors
  *        1 Encoder for each winch
  */
 public class ClimbingSubsystem extends SubsystemBase {
 
   // This solenoid controls the forward and reverse movement of the pneumatic
-  // cylinder that raises (forward) or lowers (contracts) the upper arm
+  // cylinder that raises (forward) or telescopings (contracts) the rotating arm
   // Using the CTRE Pneumatics Control Module (PCM). 
   // Need to move these numbers to Constants.
-  private final DoubleSolenoid upperArmSolenoid = new DoubleSolenoid(
+  private final DoubleSolenoid rotatingArmSolenoid = new DoubleSolenoid(
     PneumaticsModuleType.CTREPCM, 
     Constants.DOUBLE_SOLENOID_FWD_PCM, 
     Constants.DOUBLE_SOLENOID_REV_PCM);
 
-  private final TalonSRX lowerLeftArmWinch = new TalonSRX(0);
-  private final TalonSRX lowerRightArmWinch = new TalonSRX(1);
-  private final TalonSRX upperLeftArmWinch = new TalonSRX(2);
-  private final TalonSRX upperRightArmWinch = new TalonSRX(3);
+  private final TalonSRX telescopingLeftArmWinch = new TalonSRX(0);
+  private final TalonSRX telescopingRightArmWinch = new TalonSRX(1);
+  private final TalonSRX rotatingLeftArmWinch = new TalonSRX(2);
+  private final TalonSRX rotatingRightArmWinch = new TalonSRX(3);
 
-  // The number of ticks required to wind in the lower arm winch
-  double lowerArmWinchInEncoderTicks = 1000;
+  // The number of ticks required to wind in the telescoping arm winch
+  double telescopingArmWinchInEncoderTicks = 1000;
 
-  // The number of ticks required to wind in the lower arm winch
-  double upperArmWinchInEncoderTicks = 1000;
+  // The number of ticks required to wind in the telescoping arm winch
+  double rotatingArmWinchInEncoderTicks = 1000;
 
   
-  private MotorStallMonitor lowerRightArmWinchStallMonitor = new MotorStallMonitor(lowerRightArmWinch);
-  private MotorStallMonitor lowerLeftArmWinchStallMonitor = new MotorStallMonitor(lowerLeftArmWinch);
-  private MotorStallMonitor upperLeftArmWinchStallMonitor = new MotorStallMonitor(upperLeftArmWinch);
-  private MotorStallMonitor upperRightArmWinchStallMonitor = new MotorStallMonitor(upperRightArmWinch);
+  private MotorStallMonitor telescopingRightArmWinchStallMonitor = new MotorStallMonitor(telescopingRightArmWinch);
+  private MotorStallMonitor telescopingLeftArmWinchStallMonitor = new MotorStallMonitor(telescopingLeftArmWinch);
+  private MotorStallMonitor rotatingLeftArmWinchStallMonitor = new MotorStallMonitor(rotatingLeftArmWinch);
+  private MotorStallMonitor rotatingRightArmWinchStallMonitor = new MotorStallMonitor(rotatingRightArmWinch);
 
 
   // Need to remove & test. Docs indicate this isn't needed
-  private final Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   
   /** Creates a new subsystem. */
   public ClimbingSubsystem() {
-
-    // Automatically turn on compressor when pressure switch indicates pressure is too low and off when pressure is too high
-    // This line also turns on the compressor when the robot is enabled. It requires a pressure sensor connected to the 
-    // Pneumatics Control Module (PCM)
-    // This is the default behavior, so we'll be deleting this line once we can test.
-    compressor.enableDigital();
 
     // Parameters
     //   feedbackDevice
@@ -77,49 +70,48 @@ public class ClimbingSubsystem extends SubsystemBase {
     //      *** Selected 0 ***
     //  timeoutMs
     //      Time to wait for the configuration to complete, and report if an error occurred.
-    lowerLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
-    lowerRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
-    upperLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
-    upperRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
+    telescopingLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
+    telescopingRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
+    rotatingLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
+    rotatingRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
 
     // We want the winches to run in brake mode so that when we're not winding or unwinding it stays put.
-    lowerLeftArmWinch.setNeutralMode(NeutralMode.Brake);
-    lowerRightArmWinch.setNeutralMode(NeutralMode.Brake);
-    upperLeftArmWinch.setNeutralMode(NeutralMode.Brake);
-    upperRightArmWinch.setNeutralMode(NeutralMode.Brake);
+    telescopingLeftArmWinch.setNeutralMode(NeutralMode.Brake);
+    telescopingRightArmWinch.setNeutralMode(NeutralMode.Brake);
+    rotatingLeftArmWinch.setNeutralMode(NeutralMode.Brake);
+    rotatingRightArmWinch.setNeutralMode(NeutralMode.Brake);
 
-    addChild("Compressor", compressor);
-    addChild("Upper Arm Solenoid", upperArmSolenoid);
+    addChild("rotating Arm Solenoid", rotatingArmSolenoid);
   }
 
   @Override
   public void periodic() {
 
-    // Check if either lower motor has stalled. If it has, stop the motors and set the winch state
+    // Check if either telescoping motor has stalled. If it has, stop the motors and set the winch state
     // accordingly.
-    lowerLeftArmWinchStallMonitor.periodic();
-    lowerRightArmWinchStallMonitor.periodic();
-    if(lowerLeftArmWinchStallMonitor.isStalled() || lowerRightArmWinchStallMonitor.isStalled()) {
-      lowerLeftArmWinch.set(ControlMode.PercentOutput, 0);
-      lowerRightArmWinch.set(ControlMode.PercentOutput, 0);
-      if(lowerArmWinchState == WinchState.Unwinding) {
-        lowerArmWinchState = WinchState.Unwound;
-      } else if(lowerArmWinchState == WinchState.Winding) {
-        lowerArmWinchState = WinchState.Wound;
+    telescopingLeftArmWinchStallMonitor.periodic();
+    telescopingRightArmWinchStallMonitor.periodic();
+    if(telescopingLeftArmWinchStallMonitor.isStalled() || telescopingRightArmWinchStallMonitor.isStalled()) {
+      telescopingLeftArmWinch.set(ControlMode.PercentOutput, 0);
+      telescopingRightArmWinch.set(ControlMode.PercentOutput, 0);
+      if(telescopingArmWinchState == WinchState.Unwinding) {
+        telescopingArmWinchState = WinchState.Unwound;
+      } else if(telescopingArmWinchState == WinchState.Winding) {
+        telescopingArmWinchState = WinchState.Wound;
       }
     }
 
-    // Check if either lower motor has stalled. If it has, stop the motors and set the winch state
+    // Check if either telescoping motor has stalled. If it has, stop the motors and set the winch state
     // accordingly.
-    upperLeftArmWinchStallMonitor.periodic();
-    upperRightArmWinchStallMonitor.periodic();
-    if(upperLeftArmWinchStallMonitor.isStalled() || upperRightArmWinchStallMonitor.isStalled()) {
-      upperLeftArmWinch.set(ControlMode.PercentOutput, 0);
-      upperRightArmWinch.set(ControlMode.PercentOutput, 0);
-      if(upperArmWinchState == WinchState.Unwinding){
-        upperArmWinchState = WinchState.Unwound;
-      } else if(upperArmWinchState == WinchState.Winding) {
-        upperArmWinchState = WinchState.Wound;
+    rotatingLeftArmWinchStallMonitor.periodic();
+    rotatingRightArmWinchStallMonitor.periodic();
+    if(rotatingLeftArmWinchStallMonitor.isStalled() || rotatingRightArmWinchStallMonitor.isStalled()) {
+      rotatingLeftArmWinch.set(ControlMode.PercentOutput, 0);
+      rotatingRightArmWinch.set(ControlMode.PercentOutput, 0);
+      if(rotatingArmWinchState == WinchState.Unwinding){
+        rotatingArmWinchState = WinchState.Unwound;
+      } else if(rotatingArmWinchState == WinchState.Winding) {
+        rotatingArmWinchState = WinchState.Wound;
       }
     }
   }
@@ -128,15 +120,24 @@ public class ClimbingSubsystem extends SubsystemBase {
   //
   //                
 
-  public void extendPneumaticArm() {
-    upperArmSolenoid.set(Value.kForward);
+  /**
+   * Set the pneumatic cylinder to extend (forward), and let out the 
+   * rotating arm winch.
+   */
+  public void raiseRotatingArm() {
+    rotatingArmSolenoid.set(Value.kForward);
+
+    // TOOD: Let out rotating arm winch.
+    //    2 options:
+    //      A) Switch to Coast mode
+    //      B) Run motor at a speed that isn't faster than the cylinder can move the arm
   }
 
   public void contractPneumaticArm() {
-    upperArmSolenoid.set(Value.kReverse);
+    rotatingArmSolenoid.set(Value.kReverse);
   }
   public void disengagePneumaticArm() {
-    upperArmSolenoid.set(Value.kOff);
+    rotatingArmSolenoid.set(Value.kOff);
   }
   
 
@@ -144,71 +145,71 @@ public class ClimbingSubsystem extends SubsystemBase {
 
   public enum WinchState { Wound, Unwinding, Unwound, Winding }
 
-  WinchState lowerArmWinchState = WinchState.Wound;
-  WinchState upperArmWinchState = WinchState.Wound;
+  WinchState telescopingArmWinchState = WinchState.Wound;
+  WinchState rotatingArmWinchState = WinchState.Wound;
 
-  public WinchState getUpperArmWinchState() {
-    if(upperArmWinchState == WinchState.Unwinding && upperLeftArmWinch.getMotorOutputVoltage() == 0 && upperRightArmWinch.getMotorOutputVoltage() == 0) {
-      upperArmWinchState = WinchState.Unwound;
-    } else if(upperArmWinchState == WinchState.Winding && upperLeftArmWinch.getMotorOutputVoltage() == 0 && upperRightArmWinch.getMotorOutputVoltage() == 0) {
-      upperArmWinchState = WinchState.Wound;
+  public WinchState getrotatingArmWinchState() {
+    if(rotatingArmWinchState == WinchState.Unwinding && rotatingLeftArmWinch.getMotorOutputVoltage() == 0 && rotatingRightArmWinch.getMotorOutputVoltage() == 0) {
+      rotatingArmWinchState = WinchState.Unwound;
+    } else if(rotatingArmWinchState == WinchState.Winding && rotatingLeftArmWinch.getMotorOutputVoltage() == 0 && rotatingRightArmWinch.getMotorOutputVoltage() == 0) {
+      rotatingArmWinchState = WinchState.Wound;
     }
-  return upperArmWinchState;
+  return rotatingArmWinchState;
 }
 
-public WinchState getLowerArmWinchState() {
+public WinchState gettelescopingArmWinchState() {
   
   // Check for stall!!! by monitoring the current draw
-  lowerLeftArmWinch.getStatorCurrent();
+  telescopingLeftArmWinch.getStatorCurrent();
   
-  if(lowerArmWinchState == WinchState.Unwinding && lowerLeftArmWinch.getMotorOutputVoltage() == 0 && lowerRightArmWinch.getMotorOutputVoltage() == 0) {
-    lowerArmWinchState = WinchState.Unwound;
-  } else if(lowerArmWinchState == WinchState.Winding && lowerLeftArmWinch.getMotorOutputVoltage() == 0 && lowerRightArmWinch.getMotorOutputVoltage() == 0) {
-    lowerArmWinchState = WinchState.Wound;
+  if(telescopingArmWinchState == WinchState.Unwinding && telescopingLeftArmWinch.getMotorOutputVoltage() == 0 && telescopingRightArmWinch.getMotorOutputVoltage() == 0) {
+    telescopingArmWinchState = WinchState.Unwound;
+  } else if(telescopingArmWinchState == WinchState.Winding && telescopingLeftArmWinch.getMotorOutputVoltage() == 0 && telescopingRightArmWinch.getMotorOutputVoltage() == 0) {
+    telescopingArmWinchState = WinchState.Wound;
   }
-  return lowerArmWinchState;
+  return telescopingArmWinchState;
 }
 
-public void windLowerArmWinch() {
-    lowerArmWinchState = WinchState.Winding;
+public void windtelescopingArmWinch() {
+    telescopingArmWinchState = WinchState.Winding;
     // Use the TalonSRX builtin Position control mode, which allows us to simply tell
     // the motor controller, using the attached encoder, how many ticks to move the motor
-    lowerLeftArmWinch.set(TalonSRXControlMode.Position, lowerArmWinchInEncoderTicks);
-    lowerRightArmWinch.set(TalonSRXControlMode.Position, lowerArmWinchInEncoderTicks);
+    telescopingLeftArmWinch.set(TalonSRXControlMode.Position, telescopingArmWinchInEncoderTicks);
+    telescopingRightArmWinch.set(TalonSRXControlMode.Position, telescopingArmWinchInEncoderTicks);
   }
-  public void unwindLowerArmWinch() {
-    lowerArmWinchState = WinchState.Unwinding;
-    lowerLeftArmWinch.set(TalonSRXControlMode.Position, -lowerArmWinchInEncoderTicks);
-    lowerRightArmWinch.set(TalonSRXControlMode.Position, -lowerArmWinchInEncoderTicks);
+  public void unwindtelescopingArmWinch() {
+    telescopingArmWinchState = WinchState.Unwinding;
+    telescopingLeftArmWinch.set(TalonSRXControlMode.Position, -telescopingArmWinchInEncoderTicks);
+    telescopingRightArmWinch.set(TalonSRXControlMode.Position, -telescopingArmWinchInEncoderTicks);
   }
   
-  public void windUpperArmWinch() { 
-    upperArmWinchState = WinchState.Winding;
-    upperLeftArmWinch.set(TalonSRXControlMode.Position, upperArmWinchInEncoderTicks);
-    upperRightArmWinch.set(TalonSRXControlMode.Position, upperArmWinchInEncoderTicks);
+  public void windrotatingArmWinch() { 
+    rotatingArmWinchState = WinchState.Winding;
+    rotatingLeftArmWinch.set(TalonSRXControlMode.Position, rotatingArmWinchInEncoderTicks);
+    rotatingRightArmWinch.set(TalonSRXControlMode.Position, rotatingArmWinchInEncoderTicks);
   }
-  public void unwindUpperArmWinch() { 
-    upperArmWinchState = WinchState.Unwinding;
-    upperLeftArmWinch.set(TalonSRXControlMode.Position, -upperArmWinchInEncoderTicks);
-    upperRightArmWinch.set(TalonSRXControlMode.Position, -upperArmWinchInEncoderTicks);
+  public void unwindrotatingArmWinch() { 
+    rotatingArmWinchState = WinchState.Unwinding;
+    rotatingLeftArmWinch.set(TalonSRXControlMode.Position, -rotatingArmWinchInEncoderTicks);
+    rotatingRightArmWinch.set(TalonSRXControlMode.Position, -rotatingArmWinchInEncoderTicks);
   }
 
   // ------------------------------------------------------------------------------------
 
   public void control(Value value) {
-    upperArmSolenoid.set(value);
+    rotatingArmSolenoid.set(value);
   }
   
   public void forward() {
-    upperArmSolenoid.set(Value.kForward);
+    rotatingArmSolenoid.set(Value.kForward);
   }
 
   public void reverse() {
-    upperArmSolenoid.set(Value.kReverse);
+    rotatingArmSolenoid.set(Value.kReverse);
   }
 
   public void off() {
-    upperArmSolenoid.set(Value.kOff);
+    rotatingArmSolenoid.set(Value.kOff);
   }
 
   @Override
