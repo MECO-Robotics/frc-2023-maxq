@@ -13,16 +13,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class RotatingArmLowerToPosition extends CommandBase {
 
   private final ClimbingSubsystem climb;
-  
+  private final double position;
   /**
    *
    * @param ClimbingSubsystem The subsystem used by this command.
    */
-  public RotatingArmLowerToPosition(ClimbingSubsystem subsystem) {
+  public RotatingArmLowerToPosition(ClimbingSubsystem subsystem, double position) {
     climb = subsystem;
-
+    this.position = position;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climb);
+    
   }
 
   // Called when the command is initially scheduled.
@@ -32,6 +33,7 @@ public class RotatingArmLowerToPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    climb.rotatingArmSetWinch(position);
   }
 
   // Called once the command ends or is interrupted.

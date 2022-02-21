@@ -5,10 +5,15 @@
 package frc.robot.commands.climb;
 
 import frc.robot.subsystems.ClimbingSubsystem;
+
+import java.util.concurrent.DelayQueue;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /**
- * Climb the middle and traversal rungs. Assumes the robot is already positioned at the
+ * Climb the middle and traversal rungs. Assumes the robot is already positioned
+ * at the
  * middle rung and the upper winch is ready to be pulled.
  * 
  */
@@ -21,7 +26,13 @@ public class Climb extends SequentialCommandGroup {
    */
   public Climb(ClimbingSubsystem climbingSubsystem) {
 
-    // Winch upper arm WHILE Extending lower arm?
-    
+    addCommands(
+        new TelescopingArmSet(climbingSubsystem, 1),
+        new WaitCommand(2),
+        new RotatingArmLowerToPosition(climbingSubsystem, .9),
+        new WaitCommand(2),
+        new RotatingArmLowerToPosition(climbingSubsystem, 0),
+        new RotatingArmLowerToPosition(climbingSubsystem, .5));
   }
+
 }
