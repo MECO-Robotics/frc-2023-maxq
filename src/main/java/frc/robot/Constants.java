@@ -42,16 +42,22 @@ public final class Constants {
     //
 
     // Arm joint pneumatic cylinder - Pneumatic Control Module (PCM) CAN Values
-    public static final int DOUBLE_SOLENOID_FWD_PCM = 0;
-    public static final int DOUBLE_SOLENOID_REV_PCM = 1;
+    public static final int ROTATING_ARM_DOUBLE_SOLENOID_FWD_PCM = 0;
+    public static final int ROTATING_ARM_DOUBLE_SOLENOID_REV_PCM = 1;
 
     // Winch motors - Talon SRX CAN Values
-    public static final int LOWER_LEFT_WINCH_CAN = 0;
-    public static final int LOWER_RIGHT_WINCH_CAN = 1;
-    public static final int UPPER_LEFT_WINCH_CAN = 2;
-    public static final int UPPER_RIGHT_WINCH_CAN = 3;
+    public static final int TELESCOPING_LEFT_WINCH_CAN = 0;
+    public static final int TELESCOPING_RIGHT_WINCH_CAN = 1;
+    public static final int ROTATING_LEFT_WINCH_CAN = 2;
+    public static final int ROTATING_RIGHT_WINCH_CAN = 3;
 
     public static final double HIGH_CURRENT_THRESHOLD = 20.0;
+
+    // The number of ticks required to fully unwind or wind the telescoping arm winch
+    public static final double TELESCOPING_ARM_WINCH_LENGTH_TICKS = 1000;
+
+    // The number of ticks required to fully unwind or wind the telescoping arm winch
+    public static final double ROTATING_ARM_WINCH_LENGTH_TICKS = 1000;
 
 
     //

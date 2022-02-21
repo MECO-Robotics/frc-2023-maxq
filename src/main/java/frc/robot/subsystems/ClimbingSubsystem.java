@@ -32,31 +32,22 @@ public class ClimbingSubsystem extends SubsystemBase {
   // Need to move these numbers to Constants.
   private final DoubleSolenoid rotatingArmSolenoid = new DoubleSolenoid(
       PneumaticsModuleType.CTREPCM,
-      Constants.DOUBLE_SOLENOID_FWD_PCM,
-      Constants.DOUBLE_SOLENOID_REV_PCM);
+      Constants.ROTATING_ARM_DOUBLE_SOLENOID_FWD_PCM,
+      Constants.ROTATING_ARM_DOUBLE_SOLENOID_REV_PCM);
 
-  private final TalonSRX telescopingLeftArmWinch = new TalonSRX(0);
-  private final TalonSRX telescopingRightArmWinch = new TalonSRX(1);
-  private final TalonSRX rotatingLeftArmWinch = new TalonSRX(2);
-  private final TalonSRX rotatingRightArmWinch = new TalonSRX(3);
-
-  // The number of ticks required to wind in the telescoping arm winch
-  double telescopingArmWinchInEncoderTicks = 1000;
-
-  // The number of ticks required to wind in the telescoping arm winch
-  double rotatingArmWinchInEncoderTicks = 1000;
+  private final TalonSRX telescopingLeftArmWinch = new TalonSRX(Constants.TELESCOPING_LEFT_WINCH_CAN);
+  private final TalonSRX telescopingRightArmWinch = new TalonSRX(Constants.TELESCOPING_RIGHT_WINCH_CAN);
+  private final TalonSRX rotatingLeftArmWinch = new TalonSRX(Constants.ROTATING_LEFT_WINCH_CAN);
+  private final TalonSRX rotatingRightArmWinch = new TalonSRX(Constants.ROTATING_RIGHT_WINCH_CAN);
 
   private MotorStallMonitor telescopingRightArmWinchStallMonitor = new MotorStallMonitor(telescopingRightArmWinch);
   private MotorStallMonitor telescopingLeftArmWinchStallMonitor = new MotorStallMonitor(telescopingLeftArmWinch);
   private MotorStallMonitor rotatingLeftArmWinchStallMonitor = new MotorStallMonitor(rotatingLeftArmWinch);
   private MotorStallMonitor rotatingRightArmWinchStallMonitor = new MotorStallMonitor(rotatingRightArmWinch);
 
-  public enum WinchState {
-    Wound, Unwinding, Unwound, Winding
-  }
-
-  private WinchState telescopingArmWinchState = WinchState.Wound;
-  private WinchState rotatingArmWinchState = WinchState.Wound;
+  // Positin of the winches in terms of relative distance: 0 - 1.
+  private double rotatingArmWinchPosition = 0;
+  private double telescopingArmWinchPosition = 0;
 
   // Need to remove & test. Docs indicate this isn't needed
 
@@ -72,12 +63,9 @@ public class ClimbingSubsystem extends SubsystemBase {
     // The Mag Encoder can do either relative (quadrature) or absolute (PWM). The
     // relative approach can sample at a
     // higher rate, so using that.
-    // pidIdx
-    // 0 for Primary closed-loop. 1 for auxiliary closed-loop.
-    // *** Selected 0 ***
-    // timeoutMs
-    // Time to wait for the configuration to complete, and report if an error
-    // occurred.
+    // pidIdx - 0 for Primary closed-loop. 1 for auxiliary closed-loop.
+    //          *** Selected 0 ***
+    // timeoutMs - Time to wait for the configuration to complete, and report if an error occurred.
     telescopingLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
     telescopingRightArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
     rotatingLeftArmWinch.configSelectedFeedbackSensor(TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative, 0, 250);
@@ -104,11 +92,10 @@ public class ClimbingSubsystem extends SubsystemBase {
     if (telescopingLeftArmWinchStallMonitor.isStalled() || telescopingRightArmWinchStallMonitor.isStalled()) {
       telescopingLeftArmWinch.set(ControlMode.PercentOutput, 0);
       telescopingRightArmWinch.set(ControlMode.PercentOutput, 0);
-      if (telescopingArmWinchState == WinchState.Unwinding) {
-        telescopingArmWinchState = WinchState.Unwound;
-      } else if (telescopingArmWinchState == WinchState.Winding) {
-        telescopingArmWinchState = WinchState.Wound;
-      }
+
+      // Assume if we're stalled then it's because we're all the way winched in, so reset the encoders.
+      telescopingLeftArmWinch.setSelectedSensorPosition(0);
+      telescopingRightArmWinch.setSelectedSensorPosition(0);
     }
 
     // Check if either telescoping motor has stalled. If it has, stop the motors and
@@ -119,11 +106,10 @@ public class ClimbingSubsystem extends SubsystemBase {
     if (rotatingLeftArmWinchStallMonitor.isStalled() || rotatingRightArmWinchStallMonitor.isStalled()) {
       rotatingLeftArmWinch.set(ControlMode.PercentOutput, 0);
       rotatingRightArmWinch.set(ControlMode.PercentOutput, 0);
-      if (rotatingArmWinchState == WinchState.Unwinding) {
-        rotatingArmWinchState = WinchState.Unwound;
-      } else if (rotatingArmWinchState == WinchState.Winding) {
-        rotatingArmWinchState = WinchState.Wound;
-      }
+      
+      // Assume if we're stalled then it's because we're all the way winched in, so reset the encoders.
+      rotatingLeftArmWinch.setSelectedSensorPosition(0);
+      rotatingRightArmWinch.setSelectedSensorPosition(0);
     }
   }
 
@@ -138,11 +124,6 @@ public class ClimbingSubsystem extends SubsystemBase {
    */
   public void rotatingArmPneumaticOut() {
     rotatingArmSolenoid.set(Value.kForward);
-
-    // TOOD: Let out rotating arm winch.
-    // 2 options:
-    // A) Switch to Coast mode
-    // B) Run motor at a speed that isn't faster than the cylinder can move the arm
   }
 
   public void rotatingArmPneumaticIn() {
@@ -153,67 +134,81 @@ public class ClimbingSubsystem extends SubsystemBase {
     rotatingArmSolenoid.set(Value.kOff);
   }
 
-  public WinchState getRotatingArmWinchState() {
-    if (rotatingArmWinchState == WinchState.Unwinding && rotatingLeftArmWinch.getMotorOutputVoltage() == 0
-        && rotatingRightArmWinch.getMotorOutputVoltage() == 0) {
-      rotatingArmWinchState = WinchState.Unwound;
-    } else if (rotatingArmWinchState == WinchState.Winding && rotatingLeftArmWinch.getMotorOutputVoltage() == 0
-        && rotatingRightArmWinch.getMotorOutputVoltage() == 0) {
-      rotatingArmWinchState = WinchState.Wound;
-    }
-    return rotatingArmWinchState;
+  /**
+   * Set the winch state. 0 brings the winch in all the way. 1 lets the winch out all the way.
+   * The winch automatically stops when it reaches the desired position.
+   * @param position 0 to 1, indicating how far out the winch is desired.
+   */
+  public void rotatingArmSetWinch(double position) {
+    double desiredPosition = Constants.ROTATING_ARM_WINCH_LENGTH_TICKS * position;
+    rotatingLeftArmWinch.set(TalonSRXControlMode.Position, desiredPosition);
+    rotatingRightArmWinch.set(TalonSRXControlMode.Position, desiredPosition);
   }
 
-  public void rotatingArmWinchIn() {
-    rotatingArmWinchState = WinchState.Winding;
-    rotatingLeftArmWinch.set(TalonSRXControlMode.Position, rotatingArmWinchInEncoderTicks);
-    rotatingRightArmWinch.set(TalonSRXControlMode.Position, rotatingArmWinchInEncoderTicks);
+  /**
+   * Get the position of the winch.
+   * @return 0 if all the way in, 1 if all the way out.
+   */
+  public double getRotatingArmWinchPosition() {
+    return rotatingLeftArmWinch.getSelectedSensorPosition() / Constants.ROTATING_ARM_WINCH_LENGTH_TICKS;
   }
 
-  public void rotatingArmWinchOut() {
-    rotatingArmWinchState = WinchState.Unwinding;
-    rotatingLeftArmWinch.set(TalonSRXControlMode.Position, -rotatingArmWinchInEncoderTicks);
-    rotatingRightArmWinch.set(TalonSRXControlMode.Position, -rotatingArmWinchInEncoderTicks);
+  /**
+   * Move the rotating arm winch in or out and reset the encoder to zero while doing so.
+   * @param speed
+   */
+  public void rotatingArmWinchMove(double speed) {
+    rotatingLeftArmWinch.set(ControlMode.PercentOutput, speed);
+    rotatingRightArmWinch.set(ControlMode.PercentOutput, speed);
   }
-
 
   // --------------------------------------------------------------------------
   //
   // Telescoping Arm
   //
 
-  public WinchState getTelescopingArmWinchState() {
 
-    // Check for stall!!! by monitoring the current draw
-    telescopingLeftArmWinch.getStatorCurrent();
-
-    if (telescopingArmWinchState == WinchState.Unwinding && telescopingLeftArmWinch.getMotorOutputVoltage() == 0
-        && telescopingRightArmWinch.getMotorOutputVoltage() == 0) {
-      telescopingArmWinchState = WinchState.Unwound;
-    } else if (telescopingArmWinchState == WinchState.Winding && telescopingLeftArmWinch.getMotorOutputVoltage() == 0
-        && telescopingRightArmWinch.getMotorOutputVoltage() == 0) {
-      telescopingArmWinchState = WinchState.Wound;
-    }
-    return telescopingArmWinchState;
-  }
-
-  public void telescopingArmWinchIn() {
-    telescopingArmWinchState = WinchState.Winding;
+  public void telescopingArmSetWinch(double position) {
     // Use the TalonSRX builtin Position control mode, which allows us to simply
     // tell
     // the motor controller, using the attached encoder, how many ticks to move the
     // motor
-    telescopingLeftArmWinch.set(TalonSRXControlMode.Position, telescopingArmWinchInEncoderTicks);
-    telescopingRightArmWinch.set(TalonSRXControlMode.Position, telescopingArmWinchInEncoderTicks);
+    double desiredPosition = Constants.TELESCOPING_ARM_WINCH_LENGTH_TICKS * position;
+
+    telescopingLeftArmWinch.set(TalonSRXControlMode.Position, desiredPosition);
+    telescopingRightArmWinch.set(TalonSRXControlMode.Position, desiredPosition);
   }
 
-  public void telescopingArmWinchOut() {
-    telescopingArmWinchState = WinchState.Unwinding;
-    telescopingLeftArmWinch.set(TalonSRXControlMode.Position, -telescopingArmWinchInEncoderTicks);
-    telescopingRightArmWinch.set(TalonSRXControlMode.Position, -telescopingArmWinchInEncoderTicks);
+  /**
+   * Get the position of the winch.
+   * @return 0 if all the way in, 1 if all the way out.
+   */
+  public double getTelescopingArmWinchPosition() {
+    return telescopingLeftArmWinch.getSelectedSensorPosition() / Constants.TELESCOPING_ARM_WINCH_LENGTH_TICKS;
   }
+
+  /**
+   * Move the rotating arm winch in or out and reset the encoder to zero while doing so.
+   * @param speed
+   */
+  public void telescopingArmWinchMove(double speed) {
+    telescopingLeftArmWinch.set(ControlMode.PercentOutput, speed);
+    telescopingRightArmWinch.set(ControlMode.PercentOutput, speed);
+  }
+
 
   // ------------------------------------------------------------------------------------
+
+  /**
+   * Reset the encoders for the winches to zero.
+   * @param speed
+   */
+  public void winchResetZero() {
+    rotatingLeftArmWinch.setSelectedSensorPosition(0);
+    rotatingRightArmWinch.setSelectedSensorPosition(0);
+    telescopingLeftArmWinch.setSelectedSensorPosition(0);
+    telescopingRightArmWinch.setSelectedSensorPosition(0);
+  }
 
 
   @Override
