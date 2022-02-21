@@ -27,12 +27,13 @@ public class Climb extends SequentialCommandGroup {
   public Climb(ClimbingSubsystem climbingSubsystem) {
 
     addCommands(
-        new TelescopingArmSet(climbingSubsystem, 1),
-        new WaitCommand(2),
         new RotatingArmLowerToPosition(climbingSubsystem, .9),
-        new WaitCommand(2),
+        new TelescopingArmSet(climbingSubsystem, 1),
         new RotatingArmLowerToPosition(climbingSubsystem, 0),
-        new RotatingArmLowerToPosition(climbingSubsystem, .5));
+        new TelescopingArmSet(climbingSubsystem, .95),
+        new RotatingArmLowerToPosition(climbingSubsystem, .5)
+
+    );
   }
 
 }
