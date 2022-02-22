@@ -46,7 +46,7 @@ public class BallAuto extends SequentialCommandGroup {
         // Deposit 2 balls in the hub
         new Outtake(cargoSubsystem).withTimeout(5),
 
-        // NATE: What were we doing here?
+        // here we turn and place ourselves adjacent to the hub so we are ready to just drive away and position ourselves in a good spot for when we enter teleop
         new DriveStraight(driveSubsystem, -50),
         new SpinRightAngle(driveSubsystem, 90),
         new DriveStraight(driveSubsystem, 50),
