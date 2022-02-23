@@ -27,21 +27,21 @@ public class BallAuto extends SequentialCommandGroup {
         //   2) 1 ball preloaded
 
         // Drive backward and turn towards the ball to our back right
-        new DriveStraight(driveSubsystem, -50),
-        new SpinRightAngle(driveSubsystem, 178),
+        new DriveStraight(driveSubsystem, -48),
+        new SpinRightAngle(driveSubsystem, 145),
 
         // Grab the ball
         new ParallelCommandGroup(
-            new LowerCargoWrist(cargoSubsystem),
-            new DriveStraight(driveSubsystem, 30)),
+            new LowerCargoWrist(cargoSubsystem).withTimeout(2),
+            new DriveStraight(driveSubsystem, 36)),
         new Intake(cargoSubsystem).withTimeout(5),
  
         // Return to the hub
-        new RaiseCargoWrist(cargoSubsystem),
-        new SpinRightAngle(driveSubsystem, -178),
-        new LowerCargoWrist(cargoSubsystem),
-        new RaiseCargoElbow(cargoSubsystem),
-        new DriveStraight(driveSubsystem, 70),
+        new RaiseCargoWrist(cargoSubsystem).withTimeout(2),
+        new DriveStraight(driveSubsystem, -36),
+        new SpinRightAngle(driveSubsystem, -145),
+        new LowerCargoWrist(cargoSubsystem).withTimeout(2),
+        new RaiseCargoElbow(cargoSubsystem).withTimeout(2),
 
         // Deposit 2 balls in the hub
         new Outtake(cargoSubsystem).withTimeout(5),

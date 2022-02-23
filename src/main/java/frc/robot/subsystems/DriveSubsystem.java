@@ -35,7 +35,8 @@ import frc.robot.Constants;
  */
 public class DriveSubsystem extends SubsystemBase {
 
-  private static final int TICKS_PER_REV = 360;
+  // The type of encoder indicates the resolution - such as the Grayhill 63R128
+  private static final int ENCODER_RESOLUTION = 128;
   private static final double WHEEL_DIAMETER_INCHES = 6.0; // inches
   private static final double WHEEL_CIRCUM_METERS = Units.inchesToMeters(WHEEL_DIAMETER_INCHES) * Math.PI;
   public static final double TRACK_WIDTH_METERS = 0.71;       // 28" Wheelbase in meters. Distance from center of left wheels to center of right wheels
@@ -107,7 +108,8 @@ public class DriveSubsystem extends SubsystemBase {
     rightMotors = new MotorControllerGroup(right1, right2, right3);
 
     // So positive values cause forward movement
-    rightMotors.setInverted(true);
+    leftMotors.setInverted(true);
+    rightMotors.setInverted(false);
 
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
@@ -116,8 +118,8 @@ public class DriveSubsystem extends SubsystemBase {
     // Right
     rightEncoder = new Encoder(Constants.RIGHT_DRIVE_ENCODER_1_DIO, Constants.RIGHT_DRIVE_ENCODER_2_DIO, false);
     
-    leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);
-    rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / TICKS_PER_REV);
+    leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+    rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
 
 
     if(RobotBase.isSimulation()) {

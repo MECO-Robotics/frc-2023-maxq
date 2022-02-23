@@ -5,6 +5,7 @@
       "/LiveWindow/BallCollectionSubsystem": "Subsystem",
       "/LiveWindow/BallCollectionSubsystem/Bottom limit": "Digital Input",
       "/LiveWindow/BallCollectionSubsystem/Upper limit": "Digital Input",
+      "/LiveWindow/CargoSubsystem": "Subsystem",
       "/LiveWindow/ClimbingSubsystem": "Subsystem",
       "/LiveWindow/ControllerSubsystem": "Subsystem",
       "/LiveWindow/DriveSubsystem": "Subsystem",
@@ -33,6 +34,11 @@
           "visible": true
         }
       },
+      "/LiveWindow/Ungrouped/Scheduler": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Autonomous Mode": {
         "window": {
           "visible": true
@@ -42,9 +48,9 @@
   },
   "NetworkTables": {
     "LiveWindow": {
-      "DriveSubsystem": {
-        "open": true
-      },
+      "open": true
+    },
+    "SmartDashboard": {
       "open": true
     }
   }
