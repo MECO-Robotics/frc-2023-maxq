@@ -15,14 +15,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.AutoShootCollectRightShoot;
 import frc.robot.commands.auto.BallAuto;
-import frc.robot.commands.cargo.AutoShootCollectRightShoot;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.Outtake;
 import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Shift;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.subsystems.CargoSubsystem;
+import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -35,8 +37,8 @@ import frc.robot.subsystems.DriveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  // private final CargoSubsystem ballCollectionSubsystem = new CargoSubsystem();
-  // private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
+  private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
+  private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
   
   private final Map<String, Command> autoCommands = new HashMap<>();
@@ -64,7 +66,7 @@ public class RobotContainer {
     // Create a mapping of name to command object for every autonomous command
     // By using the class name as the name, it will be easy to remember which goes with which.
     autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
-    autoCommands.put("BallAuto", new BallAuto(driveSubsystem, null));
+    autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
     autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
 
 
