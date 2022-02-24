@@ -23,7 +23,6 @@
     },
     "windows": {
       "/LiveWindow/DriveSubsystem/Field": {
-        "image": "/Users/paulfoster/Documents/meco/frc-2022-robot/2022-field.png",
         "window": {
           "visible": true
         }

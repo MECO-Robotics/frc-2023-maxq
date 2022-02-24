@@ -27,11 +27,11 @@ public class Climb extends SequentialCommandGroup {
   public Climb(ClimbingSubsystem climbingSubsystem) {
 
     addCommands(
-        new RotatingArmLowerToPosition(climbingSubsystem, .9),
-        new TelescopingArmSet(climbingSubsystem, 1),
-        new RotatingArmLowerToPosition(climbingSubsystem, 0),
-        new TelescopingArmSet(climbingSubsystem, .95),
-        new RotatingArmLowerToPosition(climbingSubsystem, .5)
+        new RotatingArmLowerToPosition(climbingSubsystem, .9),    //Grip the middle bar
+        new TelescopingArmSet(climbingSubsystem, 1),    //Lets the telescoping arm all the way
+        new RotatingArmLowerToPosition(climbingSubsystem, 0),   //Pulls the bot upwards
+        new TelescopingArmSet(climbingSubsystem, .95),    //Hooks onto the traversal bar
+        new RotatingArmLowerToPosition(climbingSubsystem, .5)   //Releases the grip on middle bar
 
     );
   }
