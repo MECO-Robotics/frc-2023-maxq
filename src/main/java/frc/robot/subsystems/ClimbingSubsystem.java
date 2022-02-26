@@ -9,6 +9,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -34,6 +36,8 @@ public class ClimbingSubsystem extends SubsystemBase {
       PneumaticsModuleType.CTREPCM,
       Constants.ROTATING_ARM_DOUBLE_SOLENOID_FWD_PCM,
       Constants.ROTATING_ARM_DOUBLE_SOLENOID_REV_PCM);
+  private final AnalogInput pressureSensor = new AnalogInput(Constants.PRESSURE_SENSOR_ANLG);
+
 
   private final TalonSRX telescopingLeftArmWinch = new TalonSRX(Constants.TELESCOPING_LEFT_WINCH_CAN);
   private final TalonSRX telescopingRightArmWinch = new TalonSRX(Constants.TELESCOPING_RIGHT_WINCH_CAN);
@@ -77,7 +81,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     telescopingRightArmWinch.setNeutralMode(NeutralMode.Brake);
     rotatingLeftArmWinch.setNeutralMode(NeutralMode.Brake);
     rotatingRightArmWinch.setNeutralMode(NeutralMode.Brake);
-
+    addChild("pressure", pressureSensor);
     addChild("rotating Arm Solenoid", rotatingArmSolenoid);
   }
 
