@@ -31,39 +31,20 @@ public class ThreeBallAuto extends SequentialCommandGroup {
         // 2) 1 ball preloaded
 
         // Drive backward and turn towards the ball to our back right
-        new DriveStraight(driveSubsystem, -50),
-        new ParallelCommandGroup(
-            new SpinRightAngle(driveSubsystem, 178),
-            new LowerCargoWrist(cargoSubsystem)
-
-        ),
-
-        // Grab the ball
-
-        new DriveStraight(driveSubsystem, 30).deadlineWith(new Intake(cargoSubsystem)),
-
-        // Return to the hub
-        new SpinRightAngle(driveSubsystem, -178),
-        new ParallelCommandGroup(
-          new RaiseCargoElbow(cargoSubsystem),
-          new DriveStraight(driveSubsystem, 70)),
-
-        // Deposit 2 balls in the hub
-        new Outtake(cargoSubsystem).withTimeout(1),
-
-        new DriveStraight(driveSubsystem, -50),
-        new SpinRightAngle(driveSubsystem, 175),
-        new LowerCargoElbow(cargoSubsystem),
-        new LowerCargoWrist(cargoSubsystem),
-        new DriveStraight(driveSubsystem, 30).deadlineWith(new Intake(cargoSubsystem)),
-        new DriveStraight(driveSubsystem, -30),
-        new SpinRightAngle(driveSubsystem, -170),
-         new RaiseCargoElbow(cargoSubsystem).deadlineWith(new RaiseCargoWrist(cargoSubsystem)),
-         new DriveStraight(driveSubsystem, 30).deadlineWith(new Intake(cargoSubsystem))
-        
-
-        
-
+      new Outtake(cargoSubsystem).withTimeout(2),
+      new DriveStraight(driveSubsystem, -30),
+      new SpinRightAngle(driveSubsystem, 170),
+      new ParallelCommandGroup(
+        new DriveStraight(driveSubsystem, 5),
+        new Intake(cargoSubsystem).withTimeout(5)
+      ),
+      new SpinRightAngle(driveSubsystem, 95),
+      new DriveStraight(driveSubsystem, 30),
+      new ParallelCommandGroup(
+        new DriveStraight(driveSubsystem, 5),
+        new Intake(cargoSubsystem).withTimeout(5)
+      )
+      
     );
   }
 }
