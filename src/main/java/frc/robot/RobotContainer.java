@@ -19,6 +19,8 @@ import frc.robot.commands.auto.AutoShootCollectRightShoot;
 import frc.robot.commands.auto.BallAuto;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.Outtake;
+import frc.robot.commands.climb.RotatingArmLowerFull;
+import frc.robot.commands.climb.RotatingArmRaiseFull;
 import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Shift;
 import frc.robot.commands.drive.Stop;
@@ -37,7 +39,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
+  //private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
   private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
   
@@ -66,7 +68,7 @@ public class RobotContainer {
     // Create a mapping of name to command object for every autonomous command
     // By using the class name as the name, it will be easy to remember which goes with which.
     autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
-    autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
+    //autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
     autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
 
 
@@ -85,12 +87,13 @@ public class RobotContainer {
     driveMode.addOption("Joystick", DriveMode.Joystick);
     SmartDashboard.putData("Drive mode", driveMode);
 
-    // SmartDashboard.putData("ARM UP", new RaiseCargoWrist(ballCollectionSubsystem));
-    // SmartDashboard.putData("ARM DOWN", new LowerCargoWrist(ballCollectionSubsystem));
+
     SmartDashboard.putData("SHIFT DOWN", new Shift(driveSubsystem, false));
     SmartDashboard.putData("SHIFT UP", new Shift(driveSubsystem, true));
-    // SmartDashboard.putData("INTAKE", new Intake(ballCollectionSubsystem));
-    // SmartDashboard.putData("OUTTAKE", new Outtake(ballCollectionSubsystem));
+
+    SmartDashboard.putData("R-ARM UP", new RotatingArmRaiseFull(climbingSubsystem));
+    SmartDashboard.putData("R-ARM DN", new RotatingArmLowerFull(climbingSubsystem));
+
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
   }

@@ -49,7 +49,7 @@ public class ClimbingSubsystem extends SubsystemBase {
   private MotorStallMonitor rotatingLeftArmWinchStallMonitor = new MotorStallMonitor(rotatingLeftArmWinch);
   private MotorStallMonitor rotatingRightArmWinchStallMonitor = new MotorStallMonitor(rotatingRightArmWinch);
 
-  // Positin of the winches in terms of relative distance: 0 - 1.
+  // Position of the winches in terms of relative distance: 0 - 1.
   private double rotatingArmWinchPosition = 0;
   private double telescopingArmWinchPosition = 0;
 
@@ -87,7 +87,7 @@ public class ClimbingSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+/*
     // Check if either telescoping motor has stalled. If it has, stop the motors and
     // set the winch state
     // accordingly.
@@ -115,6 +115,8 @@ public class ClimbingSubsystem extends SubsystemBase {
       rotatingLeftArmWinch.setSelectedSensorPosition(0);
       rotatingRightArmWinch.setSelectedSensorPosition(0);
     }
+
+    */
   }
 
   // --------------------------------------------------------------------------
