@@ -3,7 +3,6 @@ package frc.robot.commands.auto;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.LowerCargoElbow;
 import frc.robot.commands.cargo.LowerCargoWrist;
-import frc.robot.commands.cargo.LowerWristRaiseElbow;
 import frc.robot.commands.cargo.Outtake;
 import frc.robot.commands.cargo.RaiseCargoElbow;
 import frc.robot.commands.cargo.RaiseCargoWrist;
@@ -11,9 +10,6 @@ import frc.robot.commands.drive.DriveStraight;
 import frc.robot.commands.drive.SpinRightAngle;
 import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-
-import java.sql.DriverPropertyInfo;
-
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -29,6 +25,7 @@ public class BallAuto extends SequentialCommandGroup {
         // Starting conditions:
         // 1) Pointed toward the hub, bumper touching
         // 2) 1 ball preloaded
+        // 3) Elbow raised, Wrist lowered
 
         // Drive backward and turn towards the ball to our back right
         new DriveStraight(driveSubsystem, -50),
