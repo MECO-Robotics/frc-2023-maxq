@@ -32,7 +32,7 @@ public class Climb extends SequentialCommandGroup {
         T
               H
                     M >
-                       \   L
+                      ?\   L
                       | \
                    =0=0=0=
     */
