@@ -93,9 +93,6 @@ public class RobotContainer {
     SmartDashboard.putData("Drive mode", driveMode);
 
 
-    SmartDashboard.putData("SHIFT DOWN", new Shift(driveSubsystem, false));
-    SmartDashboard.putData("SHIFT UP", new Shift(driveSubsystem, true));
-
     SmartDashboard.putData("PNEUM IN", new TeleopRotatingArmPneumaticIn(climbingSubsystem));
     SmartDashboard.putData("PNEUM OUT", new TeleopRotatingArmPneumaticOut(climbingSubsystem));
     SmartDashboard.putData("PNEUM OFF", new TeleopRotatingArmPneumaticOff(climbingSubsystem));
@@ -126,6 +123,9 @@ public class RobotContainer {
    * Setup the buttons for controlling climbing during teleop
    */
   private void configureTeleopClimbButtonBindings() {
+    
+    // NATE: bind buttons for teleop climb
+
   }
 
   /**
