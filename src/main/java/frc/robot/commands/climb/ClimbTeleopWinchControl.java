@@ -5,21 +5,27 @@
 package frc.robot.commands.climb;
 
 import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.subsystems.ControllerSubsystem;
+
+import javax.sound.midi.ControllerEventListener;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** 
  * Fully lower the rotating arm for parking / end of match.
  */
-public class RotatingArmLowerFull extends CommandBase {
+public class ClimbTeleopWinchControl extends CommandBase {
 
   private final ClimbingSubsystem climb;
+  private final ControllerSubsystem controllers;
   
   /**
    *
    * @param ClimbingSubsystem The subsystem used by this command.
    */
-  public RotatingArmLowerFull(ClimbingSubsystem subsystem) {
+  public ClimbTeleopWinchControl(ClimbingSubsystem subsystem, ControllerSubsystem control) {
     climb = subsystem;
+    controllers = control;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climb);
@@ -28,20 +34,18 @@ public class RotatingArmLowerFull extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() { 
-    climb.rotatingArmSetWinch(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    climb.rotatingArmWinchMove(controllers.getCopilotController().getLeftY());
+    climb.telescopingArmWinchMove(controllers.getCopilotController().getRightY());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(!interrupted) {
-      climb.rotatingArmPneumaticOff();
-    }
   }
 
   /**
@@ -49,6 +53,6 @@ public class RotatingArmLowerFull extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return climb.getRotatingArmWinchPosition() < 0.05;
+    return false;
   }
 }

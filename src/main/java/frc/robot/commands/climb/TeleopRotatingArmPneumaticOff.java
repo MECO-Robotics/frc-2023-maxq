@@ -5,12 +5,16 @@
 package frc.robot.commands.climb;
 
 import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.subsystems.ControllerSubsystem;
+
+import javax.sound.midi.ControllerEventListener;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** 
- * Fully raise the rotating arm.
+ * Fully lower the rotating arm for parking / end of match.
  */
-public class RotatingArmRaiseFull extends CommandBase {
+public class TeleopRotatingArmPneumaticOff extends CommandBase {
 
   private final ClimbingSubsystem climb;
   
@@ -18,7 +22,7 @@ public class RotatingArmRaiseFull extends CommandBase {
    *
    * @param ClimbingSubsystem The subsystem used by this command.
    */
-  public RotatingArmRaiseFull(ClimbingSubsystem subsystem) {
+  public TeleopRotatingArmPneumaticOff(ClimbingSubsystem subsystem) {
     climb = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,13 +32,13 @@ public class RotatingArmRaiseFull extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() { 
-    climb.rotatingArmPneumaticOut();
-    climb.rotatingArmSetWinch(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() { }
+  public void execute() {
+    climb.rotatingArmPneumaticOff();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -46,6 +50,6 @@ public class RotatingArmRaiseFull extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return climb.getRotatingArmWinchPosition() > .95;
+    return true;
   }
 }

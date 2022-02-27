@@ -42,8 +42,8 @@ public final class Constants {
     //
 
     // Arm joint pneumatic cylinder - Pneumatic Control Module (PCM) CAN Values
-    public static final int ROTATING_ARM_DOUBLE_SOLENOID_FWD_PCM = 0;
-    public static final int ROTATING_ARM_DOUBLE_SOLENOID_REV_PCM = 1;
+    public static final int ROTATING_ARM_DOUBLE_SOLENOID_FWD_PCM = 1;
+    public static final int ROTATING_ARM_DOUBLE_SOLENOID_REV_PCM = 0;
     public static final int PRESSURE_SENSOR_ANLG = 3;
 
     // Winch motors - Talon SRX CAN Values

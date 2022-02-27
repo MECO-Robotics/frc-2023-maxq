@@ -8,9 +8,9 @@ import frc.robot.subsystems.ClimbingSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** 
- * Fully lower the rotating arm for parking / end of match.
+ * With the arm raised (1.0), grip the bar by pulling in the winch a little 
  */
-public class RotatingArmLowerFull extends CommandBase {
+public class RotatingArmRaisedGrip extends CommandBase {
 
   private final ClimbingSubsystem climb;
   
@@ -18,7 +18,7 @@ public class RotatingArmLowerFull extends CommandBase {
    *
    * @param ClimbingSubsystem The subsystem used by this command.
    */
-  public RotatingArmLowerFull(ClimbingSubsystem subsystem) {
+  public RotatingArmRaisedGrip(ClimbingSubsystem subsystem) {
     climb = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,27 +28,23 @@ public class RotatingArmLowerFull extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() { 
-    climb.rotatingArmSetWinch(0);
+    climb.rotatingArmSetWinch(.95);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() { }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(!interrupted) {
-      climb.rotatingArmPneumaticOff();
-    }
   }
 
   /**
-   * Returns true when the position is at least 95% there.
+   * Returns true when the position is close to the set position
    */
   @Override
   public boolean isFinished() {
-    return climb.getRotatingArmWinchPosition() < 0.05;
+    return climb.getRotatingArmWinchPosition() < .97;
   }
 }

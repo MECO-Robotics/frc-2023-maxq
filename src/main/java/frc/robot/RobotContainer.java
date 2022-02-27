@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,7 +21,11 @@ import frc.robot.commands.auto.BallAuto;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.Outtake;
 import frc.robot.commands.climb.RotatingArmLowerFull;
-import frc.robot.commands.climb.RotatingArmRaiseFull;
+import frc.robot.commands.climb.RotatingArmRaiseFullOpenGrip;
+import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
+import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
+import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
+import frc.robot.commands.climb.ClimbTeleopWinchControl;
 import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Shift;
 import frc.robot.commands.drive.Stop;
@@ -91,8 +96,9 @@ public class RobotContainer {
     SmartDashboard.putData("SHIFT DOWN", new Shift(driveSubsystem, false));
     SmartDashboard.putData("SHIFT UP", new Shift(driveSubsystem, true));
 
-    SmartDashboard.putData("R-ARM UP", new RotatingArmRaiseFull(climbingSubsystem));
-    SmartDashboard.putData("R-ARM DN", new RotatingArmLowerFull(climbingSubsystem));
+    SmartDashboard.putData("PNEUM IN", new TeleopRotatingArmPneumaticIn(climbingSubsystem));
+    SmartDashboard.putData("PNEUM OUT", new TeleopRotatingArmPneumaticOut(climbingSubsystem));
+    SmartDashboard.putData("PNEUM OFF", new TeleopRotatingArmPneumaticOff(climbingSubsystem));
 
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
@@ -171,7 +177,10 @@ public class RobotContainer {
   }
 
   public Command getTeleopDriveCommand() {
-    return new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected());
+    // return new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected());
+    return //new ParallelCommandGroup(
+      //new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
+      new ClimbTeleopWinchControl(climbingSubsystem, controllerSubsystem);
   }
 
   public DriveSubsystem getDriveSubsystem() {
