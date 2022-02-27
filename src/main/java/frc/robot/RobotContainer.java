@@ -25,6 +25,7 @@ import frc.robot.commands.climb.RotatingArmRaiseFullOpenGrip;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
+import frc.robot.commands.climb.TelescopingArmMove;
 import frc.robot.commands.climb.ClimbTeleopWinchControl;
 import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Shift;
@@ -125,9 +126,19 @@ public class RobotContainer {
   private void configureTeleopClimbButtonBindings() {
     
     // NATE: bind buttons for teleop climb
-
+    XboxController copilot = controllerSubsystem.getCopilotController();
+    JoystickButton leftBumper = new JoystickButton(copilot, XboxController.Button.kLeftBumper.value);
+    JoystickButton righBumper = new JoystickButton(copilot, XboxController.Button.kRightBumper.value);
+    JoystickButton xButton = new JoystickButton(copilot, XboxController.Button.kX.value);
+  
+    leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem));
+    righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem));
+    xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem));
+  
+  
+  
   }
-
+    
   /**
    * Setup the buttons for collecting and shooting cargo
    */
@@ -177,10 +188,10 @@ public class RobotContainer {
   }
 
   public Command getTeleopDriveCommand() {
-    // return new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected());
-    return //new ParallelCommandGroup(
-      //new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
-      new ClimbTeleopWinchControl(climbingSubsystem, controllerSubsystem);
+    
+    return new ParallelCommandGroup(
+      new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
+      new ClimbTeleopWinchControl(climbingSubsystem, controllerSubsystem));
   }
 
   public DriveSubsystem getDriveSubsystem() {
