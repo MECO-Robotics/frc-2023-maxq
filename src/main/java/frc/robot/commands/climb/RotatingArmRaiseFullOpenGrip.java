@@ -29,16 +29,18 @@ public class RotatingArmRaiseFullOpenGrip extends CommandBase {
   @Override
   public void initialize() { 
     climb.rotatingArmPneumaticOut();
-    climb.rotatingArmSetWinch(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() { }
+  public void execute() { 
+    climb.rotatingArmWinchMove(.5, .5);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    climb.rotatingArmWinchMove(0, 0);
   }
 
   /**
@@ -48,6 +50,6 @@ public class RotatingArmRaiseFullOpenGrip extends CommandBase {
   public boolean isFinished() {
     // Once the winch stops automatically at 1.0, it will release tension 
     // on the grip spring and allow it to open.
-    return climb.getRotatingArmWinchPosition() > .95;
+    return climb.getRotatingArmLeftWinchPosition() > .95 && climb.getRotatingArmRightWinchPosition() > .95;
   }
 }

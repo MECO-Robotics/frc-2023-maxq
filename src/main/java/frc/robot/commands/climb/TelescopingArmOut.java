@@ -10,10 +10,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** 
  *  The code will allow you to set the telescoping arm.
  */
-public class TelescopingArmSet extends CommandBase {
+public class TelescopingArmOut extends CommandBase {
 
   private final ClimbingSubsystem climb;
-  private final double length;
   
   /**
    * Creates a new ExampleCommand. Manual controls.
@@ -21,9 +20,8 @@ public class TelescopingArmSet extends CommandBase {
    * @param ClimbingSubsystem The subsystem used by this command.
    * @param length How far out to set it. 0= all the way in, 1=all the way out, .5=1/2 way out, etc...
    */
-  public TelescopingArmSet(ClimbingSubsystem subsystem, double length) {
+  public TelescopingArmOut(ClimbingSubsystem subsystem) {
     climb = subsystem;
-    this.length = length;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climb);
@@ -36,13 +34,13 @@ public class TelescopingArmSet extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climb.telescopingArmSetWinch(length);
+    climb.telescopingArmWinchMove(.5, .5);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climb.telescopingArmSetWinch(0);
+    climb.telescopingArmWinchMove(0, 0);
   }
 
   /**
@@ -51,6 +49,6 @@ public class TelescopingArmSet extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return Math.abs(length - climb.getTelescopingArmWinchPosition()) < 0.01;
+    return climb.getTelescopingArmLeftWinchPosition() > .95 && climb.getTelescopingArmRightWinchPosition() > .95;
   }
 }

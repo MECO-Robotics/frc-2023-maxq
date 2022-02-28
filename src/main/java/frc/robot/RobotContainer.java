@@ -25,7 +25,6 @@ import frc.robot.commands.climb.RotatingArmRaiseFullOpenGrip;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
-import frc.robot.commands.climb.TelescopingArmMove;
 import frc.robot.commands.climb.ClimbTeleopWinchControl;
 import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Shift;

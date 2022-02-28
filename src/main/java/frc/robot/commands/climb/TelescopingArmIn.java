@@ -10,20 +10,21 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** 
  *  The code will allow you to set the telescoping arm.
  */
-public class RotatingArmLowerToPosition extends CommandBase {
+public class TelescopingArmIn extends CommandBase {
 
   private final ClimbingSubsystem climb;
-  private final double position;
+  
   /**
+   * Creates a new ExampleCommand. Manual controls.
    *
    * @param ClimbingSubsystem The subsystem used by this command.
+   * @param length How far out to set it. 0= all the way in, 1=all the way out, .5=1/2 way out, etc...
    */
-  public RotatingArmLowerToPosition(ClimbingSubsystem subsystem, double position) {
+  public TelescopingArmIn(ClimbingSubsystem subsystem) {
     climb = subsystem;
-    this.position = position;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climb);
-    
   }
 
   // Called when the command is initially scheduled.
@@ -33,19 +34,21 @@ public class RotatingArmLowerToPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climb.rotatingArmSetWinch(position);
+    climb.telescopingArmWinchMove(-.5, -.5);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    climb.telescopingArmWinchMove(0, 0);
   }
 
   /**
-   * 
+   * Finished when the distance between the desired length and the actual length
+   * according to the subsystem is less than 1% difference.
    */
   @Override
   public boolean isFinished() {
-    return false;
+    return climb.getTelescopingArmLeftWinchPosition() < .05 && climb.getTelescopingArmRightWinchPosition() < .05;
   }
 }

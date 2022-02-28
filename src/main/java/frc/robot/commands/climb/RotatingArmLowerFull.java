@@ -49,6 +49,6 @@ public class RotatingArmLowerFull extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return climb.getRotatingArmWinchPosition() < 0.05;
+    return climb.getRotatingArmLeftWinchPosition() < 0.05;
   }
 }

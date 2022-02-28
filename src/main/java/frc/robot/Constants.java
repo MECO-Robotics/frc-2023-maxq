@@ -52,6 +52,12 @@ public final class Constants {
     public static final int ROTATING_LEFT_WINCH_CAN = 2;
     public static final int ROTATING_RIGHT_WINCH_CAN = 3;
 
+    // Sign change for commanding motor direction. 
+    // Needs to be a double so we can safely multiply 
+    // by other doubles and not loose precision
+    public static final double TELESCOPING_DIR = -1;
+    public static final double ROTATING_DIR = -1;
+
     public static final double HIGH_CURRENT_THRESHOLD = 20.0;
 
     // The number of ticks required to fully unwind or wind the telescoping arm winch

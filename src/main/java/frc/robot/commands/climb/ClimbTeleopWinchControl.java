@@ -39,8 +39,8 @@ public class ClimbTeleopWinchControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climb.rotatingArmWinchMove(controllers.getCopilotController().getLeftY());
-    climb.telescopingArmWinchMove(controllers.getCopilotController().getRightY());
+    climb.rotatingArmWinchMove(controllers.getCopilotController().getLeftY(), controllers.getCopilotController().getLeftY());
+    climb.telescopingArmWinchMove(controllers.getCopilotController().getRightY(), controllers.getCopilotController().getRightY());
   }
 
   // Called once the command ends or is interrupted.

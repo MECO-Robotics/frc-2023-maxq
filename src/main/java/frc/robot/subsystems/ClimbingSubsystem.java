@@ -152,20 +152,28 @@ public class ClimbingSubsystem extends SubsystemBase {
   }
 
   /**
-   * Get the position of the winch.
+   * Get the position of the left rotating winch.
    * @return 0 if all the way in, 1 if all the way out.
    */
-  public double getRotatingArmWinchPosition() {
+  public double getRotatingArmLeftWinchPosition() {
     return rotatingLeftArmWinch.getSelectedSensorPosition() / Constants.ROTATING_ARM_WINCH_LENGTH_TICKS;
+  }
+
+  /**
+   * Get the position of the left rotating winch.
+   * @return 0 if all the way in, 1 if all the way out.
+   */
+  public double getRotatingArmRightWinchPosition() {
+    return rotatingRightArmWinch.getSelectedSensorPosition() / Constants.ROTATING_ARM_WINCH_LENGTH_TICKS;
   }
 
   /**
    * Move the rotating arm winch in or out and reset the encoder to zero while doing so.
    * @param speed
    */
-  public void rotatingArmWinchMove(double speed) {
-    rotatingLeftArmWinch.set(ControlMode.PercentOutput, speed);
-    rotatingRightArmWinch.set(ControlMode.PercentOutput, speed);
+  public void rotatingArmWinchMove(double leftSpeed, double rightSpeed) {
+    rotatingLeftArmWinch.set(ControlMode.PercentOutput, Constants.ROTATING_DIR * leftSpeed);
+    rotatingRightArmWinch.set(ControlMode.PercentOutput, Constants.ROTATING_DIR * rightSpeed);
   }
 
   // --------------------------------------------------------------------------
@@ -186,20 +194,28 @@ public class ClimbingSubsystem extends SubsystemBase {
   }
 
   /**
-   * Get the position of the winch.
+   * Get the position of the left telescoping winch.
    * @return 0 if all the way in, 1 if all the way out.
    */
-  public double getTelescopingArmWinchPosition() {
+  public double getTelescopingArmLeftWinchPosition() {
     return telescopingLeftArmWinch.getSelectedSensorPosition() / Constants.TELESCOPING_ARM_WINCH_LENGTH_TICKS;
   }
 
   /**
-   * Move the rotating arm winch in or out and reset the encoder to zero while doing so.
-   * @param speed
+   * Get the position of the left telescoping winch.
+   * @return 0 if all the way in, 1 if all the way out.
    */
-  public void telescopingArmWinchMove(double speed) {
-    telescopingLeftArmWinch.set(ControlMode.PercentOutput, speed);
-    telescopingRightArmWinch.set(ControlMode.PercentOutput, speed);
+  public double getTelescopingArmRightWinchPosition() {
+    return telescopingRightArmWinch.getSelectedSensorPosition() / Constants.TELESCOPING_ARM_WINCH_LENGTH_TICKS;
+  }
+
+  /**
+   * Move the rotating arm winch in or out and reset the encoder to zero while doing so.
+   * @param leftSpeed
+   */
+  public void telescopingArmWinchMove(double leftSpeed, double rightSpeed) {
+    telescopingLeftArmWinch.set(ControlMode.PercentOutput, Constants.TELESCOPING_DIR * leftSpeed);
+    telescopingRightArmWinch.set(ControlMode.PercentOutput, Constants.TELESCOPING_DIR * rightSpeed);
   }
 
 

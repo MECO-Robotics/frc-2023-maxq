@@ -38,13 +38,13 @@ public class RotatingArmMove extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climb.rotatingArmWinchMove(speed);
+    climb.rotatingArmWinchMove(speed, speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climb.rotatingArmWinchMove(0);
+    climb.rotatingArmWinchMove(0, 0);
   }
 
   /**
