@@ -14,14 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoShootCollectRightShoot;
-import frc.robot.commands.auto.BallAuto;
-import frc.robot.commands.cargo.Intake;
-import frc.robot.commands.cargo.Outtake;
-import frc.robot.commands.climb.RotatingArmLowerFull;
-import frc.robot.commands.climb.RotatingArmRaiseFullOpenGrip;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
@@ -30,7 +23,6 @@ import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Shift;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
-import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -133,20 +125,17 @@ public class RobotContainer {
     leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem));
     righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem));
     xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem));
-  
-  
-  
   }
     
   /**
    * Setup the buttons for collecting and shooting cargo
    */
   private void configureTeleopCargoButtonBindings() {
-    XboxController copilot = controllerSubsystem.getCopilotController();
-    POVButton upPovButton = new POVButton(copilot, 0);
-    POVButton righttPovButton = new POVButton(copilot, 90);
-    POVButton downnPovButton = new POVButton(copilot, 180);
-    POVButton leftPovButton = new POVButton(copilot, 270);
+    // XboxController copilot = controllerSubsystem.getCopilotController();
+    // POVButton upPovButton = new POVButton(copilot, 0);
+    // POVButton righttPovButton = new POVButton(copilot, 90);
+    // POVButton downnPovButton = new POVButton(copilot, 180);
+    // POVButton leftPovButton = new POVButton(copilot, 270);
 
     // Uncomment when cargo subsystem is available
     //upPovButton.whenHeld(new Intake(cargoSubsystem));
@@ -157,17 +146,11 @@ public class RobotContainer {
    * Setup the buttons for teleop drive.
    */
   private void configureTeleopDriveButtonBindings() {
-
-    JoystickButton leftBumper = new JoystickButton(
-      controllerSubsystem.getPilotController(), 
-      XboxController.Button.kLeftBumper.value);
+    XboxController pilot = controllerSubsystem.getPilotController();
+    JoystickButton leftBumper = new JoystickButton(pilot, XboxController.Button.kLeftBumper.value);
+    JoystickButton rightBumper = new JoystickButton(pilot, XboxController.Button.kRightBumper.value);
 
     leftBumper.whenPressed(new Shift(driveSubsystem, false), false);
-
-    JoystickButton rightBumper = new JoystickButton(
-      controllerSubsystem.getPilotController(), 
-      XboxController.Button.kRightBumper.value);
-
     rightBumper.whenPressed(new Shift(driveSubsystem, true), false);
   }
 
