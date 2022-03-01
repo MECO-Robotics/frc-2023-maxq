@@ -7,10 +7,8 @@ package frc.robot.commands.climb;
 import frc.robot.subsystems.ClimbingSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** 
- * Fully lower the rotating arm for parking / end of match.
- */
-public class TeleopRotatingArmPneumaticIn extends CommandBase {
+/** With ALL the winches all the way in, set all encoders to zero. */
+public class ResetWinchEncoders extends CommandBase {
 
   private final ClimbingSubsystem climb;
   
@@ -18,7 +16,7 @@ public class TeleopRotatingArmPneumaticIn extends CommandBase {
    *
    * @param ClimbingSubsystem The subsystem used by this command.
    */
-  public TeleopRotatingArmPneumaticIn(ClimbingSubsystem subsystem) {
+  public ResetWinchEncoders(ClimbingSubsystem subsystem) {
     climb = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,17 +26,7 @@ public class TeleopRotatingArmPneumaticIn extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() { 
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    climb.rotatingArmPneumaticIn();
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
+    climb.winchResetZero();
   }
 
   /**

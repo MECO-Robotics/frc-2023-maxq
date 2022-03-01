@@ -18,7 +18,7 @@ import frc.robot.commands.auto.AutoShootCollectRightShoot;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
-import frc.robot.commands.climb.ClimbTeleopWinchControl;
+import frc.robot.commands.climb.TeleopClimbWinchControl;
 import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Shift;
 import frc.robot.commands.drive.Stop;
@@ -173,7 +173,7 @@ public class RobotContainer {
     
     return new ParallelCommandGroup(
       new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
-      new ClimbTeleopWinchControl(climbingSubsystem, controllerSubsystem));
+      new TeleopClimbWinchControl(climbingSubsystem, controllerSubsystem));
   }
 
   public DriveSubsystem getDriveSubsystem() {

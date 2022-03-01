@@ -5,10 +5,6 @@
 package frc.robot.commands.climb;
 
 import frc.robot.subsystems.ClimbingSubsystem;
-import frc.robot.subsystems.ControllerSubsystem;
-
-import javax.sound.midi.ControllerEventListener;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** 

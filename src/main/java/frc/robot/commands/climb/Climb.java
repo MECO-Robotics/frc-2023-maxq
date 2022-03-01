@@ -42,13 +42,13 @@ public class Climb extends SequentialCommandGroup {
     // 1) The robot is hanging only by the telescoping arm
 
     addCommands(
+        new ResetWinchEncoders(climbingSubsystem),
         new RotatingArmGrabBar(climbingSubsystem), // Grip the middle bar (pull the winch in a bit)
-        new TelescopingArmOut(climbingSubsystem), // will lock the rotating arm onto the bar
+        new TelescopingArmOut(climbingSubsystem), // 
         new RotatingArmLowerFull(climbingSubsystem), // bring rotating arm all the way down
-        new TelescopingArmIn(climbingSubsystem), // 5%Fully exends the telescpoing arm
-        new TelescopingArmIn(climbingSubsystem), // Hooks onto the traversal bar (drop the telescoping arm a little)
-        new RotatingArmRaiseFullOpenGrip(climbingSubsystem) // Releases the grip on middle bar (release tension on the
-                                                            // winch until it lets go)
+        new TelescopingArmGrabBar(climbingSubsystem), // grab the traversal bar by pulling the telescoping arm in a little
+        new TelescopingArmIn(climbingSubsystem),      // bring the telescoping bar in all the way
+        new RotatingArmRaiseFullOpenGrip(climbingSubsystem) // Releases the grip on middle bar (release tension on the winch until it lets go)
 
     );
 

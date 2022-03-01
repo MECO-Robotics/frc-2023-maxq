@@ -44,14 +44,10 @@ public class ClimbingSubsystem extends SubsystemBase {
   private final TalonSRX rotatingLeftArmWinch = new TalonSRX(Constants.ROTATING_LEFT_WINCH_CAN);
   private final TalonSRX rotatingRightArmWinch = new TalonSRX(Constants.ROTATING_RIGHT_WINCH_CAN);
 
-  private MotorStallMonitor telescopingRightArmWinchStallMonitor = new MotorStallMonitor(telescopingRightArmWinch);
-  private MotorStallMonitor telescopingLeftArmWinchStallMonitor = new MotorStallMonitor(telescopingLeftArmWinch);
-  private MotorStallMonitor rotatingLeftArmWinchStallMonitor = new MotorStallMonitor(rotatingLeftArmWinch);
-  private MotorStallMonitor rotatingRightArmWinchStallMonitor = new MotorStallMonitor(rotatingRightArmWinch);
-
-  // Position of the winches in terms of relative distance: 0 - 1.
-  private double rotatingArmWinchPosition = 0;
-  private double telescopingArmWinchPosition = 0;
+  // private MotorStallMonitor telescopingRightArmWinchStallMonitor = new MotorStallMonitor(telescopingRightArmWinch);
+  // private MotorStallMonitor telescopingLeftArmWinchStallMonitor = new MotorStallMonitor(telescopingLeftArmWinch);
+  // private MotorStallMonitor rotatingLeftArmWinchStallMonitor = new MotorStallMonitor(rotatingLeftArmWinch);
+  // private MotorStallMonitor rotatingRightArmWinchStallMonitor = new MotorStallMonitor(rotatingRightArmWinch);
 
   // Need to remove & test. Docs indicate this isn't needed
 
@@ -129,14 +125,17 @@ public class ClimbingSubsystem extends SubsystemBase {
    * rotating arm winch.
    */
   public void rotatingArmPneumaticOut() {
+    System.out.println("CLIMB: Rotating arm solenoid: FWD");
     rotatingArmSolenoid.set(Value.kForward);
   }
 
   public void rotatingArmPneumaticIn() {
+    System.out.println("CLIMB: Rotating arm solenoid: REV");
     rotatingArmSolenoid.set(Value.kReverse);
   }
 
   public void rotatingArmPneumaticOff() {
+    System.out.println("CLIMB: Rotating arm solenoid: OFF");
     rotatingArmSolenoid.set(Value.kOff);
   }
 
@@ -180,7 +179,6 @@ public class ClimbingSubsystem extends SubsystemBase {
   //
   // Telescoping Arm
   //
-
 
   public void telescopingArmSetWinch(double position) {
     // Use the TalonSRX builtin Position control mode, which allows us to simply

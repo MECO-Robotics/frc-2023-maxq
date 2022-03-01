@@ -8,17 +8,19 @@ import frc.robot.subsystems.ClimbingSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** 
- * Fully lower the rotating arm for parking / end of match.
+ *  Bring the telescoping arm in a little so it grabs onto the bar
  */
-public class TeleopRotatingArmPneumaticIn extends CommandBase {
+public class TelescopingArmGrabBar extends CommandBase {
 
   private final ClimbingSubsystem climb;
   
   /**
+   * Creates a new ExampleCommand. Manual controls.
    *
    * @param ClimbingSubsystem The subsystem used by this command.
+   * @param length How far out to set it. 0= all the way in, 1=all the way out, .5=1/2 way out, etc...
    */
-  public TeleopRotatingArmPneumaticIn(ClimbingSubsystem subsystem) {
+  public TelescopingArmGrabBar(ClimbingSubsystem subsystem) {
     climb = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -27,25 +29,26 @@ public class TeleopRotatingArmPneumaticIn extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() { 
-  }
+  public void initialize() { }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climb.rotatingArmPneumaticIn();
+    climb.telescopingArmWinchMove(-.2, -.2);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    climb.telescopingArmWinchMove(0, 0);
   }
 
   /**
-   * Returns true when the position is at least 95% there.
+   * Finished when the distance between the desired length and the actual length
+   * according to the subsystem is less than 1% difference.
    */
   @Override
   public boolean isFinished() {
-    return true;
+    return climb.getTelescopingArmLeftWinchPosition() < .9 && climb.getTelescopingArmRightWinchPosition() < .9;
   }
 }

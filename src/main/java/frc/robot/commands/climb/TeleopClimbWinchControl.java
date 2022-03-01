@@ -6,15 +6,12 @@ package frc.robot.commands.climb;
 
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
-
-import javax.sound.midi.ControllerEventListener;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** 
- * Fully lower the rotating arm for parking / end of match.
+ * Manual control of the climbing subsystem winch motors.
  */
-public class ClimbTeleopWinchControl extends CommandBase {
+public class TeleopClimbWinchControl extends CommandBase {
 
   private final ClimbingSubsystem climb;
   private final ControllerSubsystem controllers;
@@ -23,7 +20,7 @@ public class ClimbTeleopWinchControl extends CommandBase {
    *
    * @param ClimbingSubsystem The subsystem used by this command.
    */
-  public ClimbTeleopWinchControl(ClimbingSubsystem subsystem, ControllerSubsystem control) {
+  public TeleopClimbWinchControl(ClimbingSubsystem subsystem, ControllerSubsystem control) {
     climb = subsystem;
     controllers = control;
 
@@ -46,6 +43,8 @@ public class ClimbTeleopWinchControl extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    climb.rotatingArmWinchMove(0, 0);
+    climb.telescopingArmWinchMove(0, 0);
   }
 
   /**
