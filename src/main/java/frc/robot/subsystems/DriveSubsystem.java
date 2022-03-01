@@ -35,7 +35,7 @@ import frc.robot.Constants;
  */
 public class DriveSubsystem extends SubsystemBase {
 
-  // The type of encoder indicates the resolution - such as the Grayhill 63R128
+  // The type of encoder indicates the resolution - such as the Grayhill 63R128 
   private static final int ENCODER_RESOLUTION = 128;
   private static final double WHEEL_DIAMETER_INCHES = 6.0; // inches
   private static final double WHEEL_CIRCUM_METERS = Units.inchesToMeters(WHEEL_DIAMETER_INCHES) * Math.PI;
@@ -63,7 +63,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Keeps track of where we are on the field based on gyro and encoder inputs.
   private final DifferentialDriveOdometry odometry;
 
-  private double maxDemandChangePerSecond = 1.8F;
+  private double maxDemandChangePerSecond = Constants.DEFAULT_MAX_DEMAND_CHANGE;
 
   // This member will limit acceleration to reduce skid
   // Limit is units of max drive input change per second. Drive input is 0 to 1 for stop to full speed,

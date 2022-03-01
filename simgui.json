@@ -19,11 +19,15 @@
       "/SmartDashboard/Drive mode": "String Chooser",
       "/SmartDashboard/INTAKE": "Command",
       "/SmartDashboard/OUTTAKE": "Command",
+      "/SmartDashboard/PNEUM IN": "Command",
+      "/SmartDashboard/PNEUM OFF": "Command",
+      "/SmartDashboard/PNEUM OUT": "Command",
       "/SmartDashboard/SHIFT DOWN": "Command",
       "/SmartDashboard/SHIFT UP": "Command"
     },
     "windows": {
       "/LiveWindow/DriveSubsystem/Field": {
+        "image": "/Users/paulfoster/Documents/meco/frc-2022-robot/2022-field.png",
         "window": {
           "visible": true
         }
@@ -47,9 +51,9 @@
   },
   "NetworkTables": {
     "LiveWindow": {
-      "open": true
-    },
-    "SmartDashboard": {
+      "DriveSubsystem": {
+        "open": true
+      },
       "open": true
     }
   }
