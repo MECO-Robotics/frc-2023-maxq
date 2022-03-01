@@ -13,16 +13,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.AutoShootCollectRightShoot;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
+import frc.robot.commands.climb.Climb;
+import frc.robot.commands.climb.ResetWinchEncoders;
+import frc.robot.commands.climb.RotatingArmRaiseFullOpenGrip;
 import frc.robot.commands.climb.TeleopClimbWinchControl;
 import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Shift;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -121,10 +126,21 @@ public class RobotContainer {
     JoystickButton leftBumper = new JoystickButton(copilot, XboxController.Button.kLeftBumper.value);
     JoystickButton righBumper = new JoystickButton(copilot, XboxController.Button.kRightBumper.value);
     JoystickButton xButton = new JoystickButton(copilot, XboxController.Button.kX.value);
-  
+    JoystickButton yButton =  new JoystickButton(copilot, XboxController.Button.kY.value);
+    JoystickButton bButton = new JoystickButton(copilot, XboxController.Button.kB.value);
+
+
+
     leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem));
     righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem));
     xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem));
+    bButton.whenPressed(new Climb(climbingSubsystem));
+    yButton.whenPressed(new SequentialCommandGroup(
+      new ResetWinchEncoders(climbingSubsystem),
+      new TeleopRotatingArmPneumaticOut(climbingSubsystem),
+      new RotatingArmRaiseFullOpenGrip(climbingSubsystem)       
+
+    ));
   }
     
   /**
