@@ -20,9 +20,6 @@ public class RotatingArmGrabBar extends CommandBase {
    */
   public RotatingArmGrabBar(ClimbingSubsystem subsystem) {
     climb = subsystem;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climb);
   }
 
   // Called when the command is initially scheduled.

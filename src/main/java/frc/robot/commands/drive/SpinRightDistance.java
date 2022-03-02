@@ -28,7 +28,8 @@ public class SpinRightDistance extends CommandBase {
     driveTrain = driveSubsystem;
     distanceDesired = Units.inchesToMeters(leftWheelDistanceInches);
 
-    // Use addRequirements() here to declare subsystem dependencies.
+    // If this command is called, we want to interupt any other commands running
+    // on the driving subystem
     addRequirements(driveSubsystem);
   }
 

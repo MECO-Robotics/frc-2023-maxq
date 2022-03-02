@@ -19,7 +19,8 @@ public class Stop extends CommandBase {
    */
   public Stop(DriveSubsystem driveSubsystem) {
     driveTrain = driveSubsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+
+    // Since this is used as a default command, it must specify a required subsystem
     addRequirements(driveSubsystem);
   }
 

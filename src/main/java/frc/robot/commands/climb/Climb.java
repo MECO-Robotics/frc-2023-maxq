@@ -22,6 +22,14 @@ public class Climb extends SequentialCommandGroup {
    */
   public Climb(ClimbingSubsystem climbingSubsystem) {
 
+    // We don't want to call addRequirements. If we did, we're saying this is a
+    // command that causes other commands currently running on the 
+    // ClimbingSubystem to be inerrupted. 
+    // Since this command is invoked by the copilot, we want him to still
+    // be able to manually control
+
+
+
     // Initial conditions:
     // 1) The rotating arm is fully raised (1.0 position)
     // 2) The telescoping arm is fully contracted (0.0 position)

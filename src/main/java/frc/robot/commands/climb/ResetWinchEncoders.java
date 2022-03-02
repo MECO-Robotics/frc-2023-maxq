@@ -18,9 +18,6 @@ public class ResetWinchEncoders extends CommandBase {
    */
   public ResetWinchEncoders(ClimbingSubsystem subsystem) {
     climb = subsystem;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climb);
   }
 
   // Called when the command is initially scheduled.

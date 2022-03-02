@@ -28,7 +28,8 @@ public class TeleopDrive extends CommandBase {
     driveTrain = driveSubsystem;
     controllers = controllerSubsystem;
     this.driveMode = driveMode;
-    // Use addRequirements() here to declare subsystem dependencies.
+    
+    // Cancel any other currently running drive subsystem commands before we run.
     addRequirements(driveSubsystem);
   }
 

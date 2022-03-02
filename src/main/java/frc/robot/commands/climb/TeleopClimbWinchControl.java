@@ -23,9 +23,6 @@ public class TeleopClimbWinchControl extends CommandBase {
   public TeleopClimbWinchControl(ClimbingSubsystem subsystem, ControllerSubsystem control) {
     climb = subsystem;
     controllers = control;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climb);
   }
 
   // Called when the command is initially scheduled.

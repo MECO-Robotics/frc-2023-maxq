@@ -22,9 +22,6 @@ public class TelescopingArmGrabBar extends CommandBase {
    */
   public TelescopingArmGrabBar(ClimbingSubsystem subsystem) {
     climb = subsystem;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climb);
   }
 
   // Called when the command is initially scheduled.

@@ -21,8 +21,9 @@ public class TeleopRotatingArmPneumaticOff extends CommandBase {
   public TeleopRotatingArmPneumaticOff(ClimbingSubsystem subsystem) {
     climb = subsystem;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climb);
+    // We don't want to call addRequirements. If we did, we're saying this is a
+    // command that causes other commands currently running on the 
+    // ClimbingSubystem to be inerrupted.
   }
 
   // Called when the command is initially scheduled.

@@ -28,7 +28,8 @@ public class DriveStraight extends CommandBase {
     distanceDesired = Units.inchesToMeters(distanceInches);
     forward = distanceDesired > 0;
 
-    // Use addRequirements() here to declare subsystem dependencies.
+    // If this command is called, we want to interupt any other commands running
+    // on the driving subystem
     addRequirements(driveSubsystem);
   }
 

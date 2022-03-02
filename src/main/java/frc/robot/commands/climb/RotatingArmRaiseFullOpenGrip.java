@@ -20,9 +20,6 @@ public class RotatingArmRaiseFullOpenGrip extends CommandBase {
    */
   public RotatingArmRaiseFullOpenGrip(ClimbingSubsystem subsystem) {
     climb = subsystem;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climb);
   }
 
   // Called when the command is initially scheduled.
