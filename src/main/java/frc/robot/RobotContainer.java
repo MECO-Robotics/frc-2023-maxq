@@ -129,18 +129,15 @@ public class RobotContainer {
     JoystickButton yButton =  new JoystickButton(copilot, XboxController.Button.kY.value);
     JoystickButton bButton = new JoystickButton(copilot, XboxController.Button.kB.value);
 
-
-
-    leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem));
-    righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem));
-    xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem));
-    bButton.whenPressed(new Climb(climbingSubsystem));
+    leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem), false);
+    righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), false);
+    xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem), false);
+    bButton.whenPressed(new Climb(climbingSubsystem), false);
     yButton.whenPressed(new SequentialCommandGroup(
       new ResetWinchEncoders(climbingSubsystem),
       new TeleopRotatingArmPneumaticOut(climbingSubsystem),
-      new RotatingArmRaiseFullOpenGrip(climbingSubsystem)       
-
-    ));
+      new RotatingArmRaiseFullOpenGrip(climbingSubsystem)
+    ), false);
   }
     
   /**

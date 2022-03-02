@@ -97,26 +97,26 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
 
     // Create the WPI_VictorSPX individually and call configOpenLoopRamp on it.
-    WPI_VictorSPX left1 = new WPI_VictorSPX(Constants.LEFT_DRIVE_1_CAN);
-    WPI_VictorSPX left2 = new WPI_VictorSPX(Constants.LEFT_DRIVE_2_CAN);
-    WPI_VictorSPX left3 = new WPI_VictorSPX(Constants.LEFT_DRIVE_3_CAN);
-    WPI_VictorSPX right1 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1_CAN);
-    WPI_VictorSPX right2 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2_CAN);
-    WPI_VictorSPX right3 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3_CAN);
+    WPI_VictorSPX left1 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1_CAN);
+    WPI_VictorSPX left2 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2_CAN);
+    WPI_VictorSPX left3 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3_CAN);
+    WPI_VictorSPX right1 = new WPI_VictorSPX(Constants.LEFT_DRIVE_1_CAN);
+    WPI_VictorSPX right2 = new WPI_VictorSPX(Constants.LEFT_DRIVE_2_CAN);
+    WPI_VictorSPX right3 = new WPI_VictorSPX(Constants.LEFT_DRIVE_3_CAN);
 
     leftMotors = new MotorControllerGroup(left1, left2, left3);
     rightMotors = new MotorControllerGroup(right1, right2, right3);
 
     // So positive values cause forward movement
-    leftMotors.setInverted(true);
-    rightMotors.setInverted(false);
+    leftMotors.setInverted(false);
+    rightMotors.setInverted(true);
 
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
     // Left: reverse direction (decreasing values go forward)
-    leftEncoder = new Encoder(Constants.LEFT_DRIVE_ENCODER_1_DIO, Constants.LEFT_DRIVE_ENCODER_2_DIO, true);
+    leftEncoder = new Encoder(Constants.LEFT_DRIVE_ENCODER_1_DIO, Constants.LEFT_DRIVE_ENCODER_2_DIO, false);
     // Right
-    rightEncoder = new Encoder(Constants.RIGHT_DRIVE_ENCODER_1_DIO, Constants.RIGHT_DRIVE_ENCODER_2_DIO, false);
+    rightEncoder = new Encoder(Constants.RIGHT_DRIVE_ENCODER_1_DIO, Constants.RIGHT_DRIVE_ENCODER_2_DIO, true);
     
     leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
     rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
