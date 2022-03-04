@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -103,6 +104,13 @@ public class DriveSubsystem extends SubsystemBase {
     WPI_VictorSPX right1 = new WPI_VictorSPX(Constants.LEFT_DRIVE_1_CAN);
     WPI_VictorSPX right2 = new WPI_VictorSPX(Constants.LEFT_DRIVE_2_CAN);
     WPI_VictorSPX right3 = new WPI_VictorSPX(Constants.LEFT_DRIVE_3_CAN);
+
+    left1.setNeutralMode(NeutralMode.Brake);
+    left2.setNeutralMode(NeutralMode.Brake);
+    left3.setNeutralMode(NeutralMode.Brake);
+    right1.setNeutralMode(NeutralMode.Brake);
+    right2.setNeutralMode(NeutralMode.Brake);
+    right3.setNeutralMode(NeutralMode.Brake);
 
     leftMotors = new MotorControllerGroup(left1, left2, left3);
     rightMotors = new MotorControllerGroup(right1, right2, right3);
