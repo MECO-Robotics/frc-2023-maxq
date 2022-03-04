@@ -164,8 +164,8 @@ public class RobotContainer {
     JoystickButton pilotLeftBumper = new JoystickButton(pilot, XboxController.Button.kLeftBumper.value);
     JoystickButton pilotRightBumper = new JoystickButton(pilot, XboxController.Button.kRightBumper.value);
     
-    pilotLeftBumper.whenHeld(new Intake(cargoSubsystem), true);
-    pilotRightBumper.whenHeld(new Outtake(cargoSubsystem), true);
+    pilotRightBumper.whenHeld(new Intake(cargoSubsystem), true);
+    pilotLeftBumper.whenHeld(new Outtake(cargoSubsystem), true);
 
     // WRIST Up/Down = Up/Down
     POVButton copilotDpadUp = new POVButton(copilot, 0);

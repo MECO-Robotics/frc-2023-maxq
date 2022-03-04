@@ -94,5 +94,5 @@ public final class Constants {
     /**
      * How fast we should travel for autonomous commands.
      */
-    public static final double AUTO_SPEED = .75;
+    public static final double AUTO_SPEED = .5;
 }
