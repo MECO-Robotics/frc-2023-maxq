@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.AutoShootCollectRightShoot;
+import frc.robot.commands.auto.DriveBackwardsAuto;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
@@ -72,7 +73,7 @@ public class RobotContainer {
     autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
     //autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
     autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
-
+    autoCommands.put("DriveBack", new DriveBackwardsAuto(driveSubsystem));
 
     // 
     //
@@ -81,7 +82,7 @@ public class RobotContainer {
     for(String choiceName : autoCommands.keySet()) {
       autoCommandChoice.addOption(choiceName, choiceName);
     }
-    autoCommandChoice.setDefaultOption("AutoShootCollectRightShoot", "AutoShootCollectRightShoot");
+    autoCommandChoice.setDefaultOption("DriveBack", "DriveBack");
     SmartDashboard.putData("Autonomous Mode", autoCommandChoice);
     
     driveMode.setDefaultOption("Split Arcade", DriveMode.SplitArcade);
