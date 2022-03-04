@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.AutoShootCollectRightShoot;
 import frc.robot.commands.auto.DriveBackwardsAuto;
+import frc.robot.commands.auto.RamShoot;
+import frc.robot.commands.auto.SpinShoot;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.LowerCargoElbow;
 import frc.robot.commands.cargo.Outtake;
@@ -79,6 +81,10 @@ public class RobotContainer {
     //autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
     autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
     autoCommands.put("DriveBack", new DriveBackwardsAuto(driveSubsystem));
+    autoCommands.put("Ram Shot", new RamShoot(driveSubsystem, cargoSubsystem));
+    autoCommands.put("Spin Shot", new SpinShoot(driveSubsystem, cargoSubsystem));
+
+
 
     // 
     //
