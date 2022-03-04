@@ -122,9 +122,9 @@ public class DriveSubsystem extends SubsystemBase {
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
     // Left: reverse direction (decreasing values go forward)
-    leftEncoder = new Encoder(Constants.LEFT_DRIVE_ENCODER_1_DIO, Constants.LEFT_DRIVE_ENCODER_2_DIO, false);
+    leftEncoder = new Encoder(Constants.LEFT_DRIVE_ENCODER_1_DIO, Constants.LEFT_DRIVE_ENCODER_2_DIO, true);
     // Right
-    rightEncoder = new Encoder(Constants.RIGHT_DRIVE_ENCODER_1_DIO, Constants.RIGHT_DRIVE_ENCODER_2_DIO, true);
+    rightEncoder = new Encoder(Constants.RIGHT_DRIVE_ENCODER_1_DIO, Constants.RIGHT_DRIVE_ENCODER_2_DIO, false);
     
     leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
     rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
