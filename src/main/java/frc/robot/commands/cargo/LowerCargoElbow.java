@@ -19,9 +19,6 @@ public class LowerCargoElbow extends CommandBase {
    */
   public LowerCargoElbow(CargoSubsystem cargoSubsystem) {
     cargo = cargoSubsystem;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(cargoSubsystem);
   }
 
   // Called when the command is initially scheduled.
