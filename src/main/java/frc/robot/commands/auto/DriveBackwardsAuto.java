@@ -29,7 +29,7 @@ public class DriveBackwardsAuto extends SequentialCommandGroup {
     
     addCommands(
      
-    new DriveStraight(driveSubsystem,-2*12 ).withTimeout(4)
+    new DriveStraight(driveSubsystem,-4*12 ).withTimeout(10)
 
     );
   }
