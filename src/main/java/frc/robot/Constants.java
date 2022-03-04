@@ -78,7 +78,7 @@ public final class Constants {
     //
 
     // PWM Values
-    public static final int INTAKE_ROLLER_PWM = 1;
+    public static final int INTAKE_ROLLER_CAN = 21;
 
 
     //pnuematics

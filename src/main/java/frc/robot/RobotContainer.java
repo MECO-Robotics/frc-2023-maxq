@@ -94,6 +94,8 @@ public class RobotContainer {
     SmartDashboard.putData("PNEUM OUT", new TeleopRotatingArmPneumaticOut(climbingSubsystem));
     SmartDashboard.putData("PNEUM OFF", new TeleopRotatingArmPneumaticOff(climbingSubsystem));
 
+    SmartDashboard.putData("RESET CLIMB ENC", new ResetWinchEncoders(climbingSubsystem));
+                                                              
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
   }
