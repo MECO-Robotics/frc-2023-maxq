@@ -9,6 +9,7 @@ import frc.robot.Constants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -22,7 +23,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
  *   1 motor for ball injest
  */
 public class CargoSubsystem extends SubsystemBase {
-private final CANSparkMax intakeRoller = new CANSparkMax(Constants.INTAKE_ROLLER_CAN, MotorType.kBrushed);
+  private final CANSparkMax intakeRoller = new CANSparkMax(Constants.INTAKE_ROLLER_CAN, MotorType.kBrushed);
   private final DoubleSolenoid wrist = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_WRIST_PCM, Constants.BACKWARD_CHANNEL_WRIST_PCM);
   private final DoubleSolenoid elbow = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.FORWARD_CHANNEL_ELBOW_PCM, Constants.BACKWARD_CHANNEL_ELBOW_PCM);
 
@@ -41,11 +42,21 @@ private final CANSparkMax intakeRoller = new CANSparkMax(Constants.INTAKE_ROLLER
     addChild("Elbow", elbow);
   }
 
+  int errorMessageReporting = 0;
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     elbowActuationTickCounter--;
     wristActuationTickCounter--;
+
+    errorMessageReporting++;
+    if(errorMessageReporting % 50 == 0) {
+      REVLibError error = intakeRoller.getLastError();
+      System.out.println("INTAKE ROLLER Last error: " + error.name());
+      short stickyFaults = intakeRoller.getStickyFaults();
+      System.out.println("INTAKE ROLLER Sticky faults: " + stickyFaults);
+    }
   }
 
   @Override

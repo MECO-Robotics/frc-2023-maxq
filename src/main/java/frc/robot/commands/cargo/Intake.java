@@ -19,9 +19,6 @@ public class Intake extends CommandBase {
    */
   public Intake(CargoSubsystem cargoSubsystem) {
     cargo = cargoSubsystem;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(cargoSubsystem);
   }
 
   // Called when the command is initially scheduled.
