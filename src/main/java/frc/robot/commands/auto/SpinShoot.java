@@ -5,7 +5,9 @@
 package frc.robot.commands.auto;
 
 import frc.robot.commands.cargo.LowerCargoElbow;
+import frc.robot.commands.cargo.LowerCargoWrist;
 import frc.robot.commands.cargo.Outtake;
+import frc.robot.commands.cargo.RaiseCargoElbow;
 import frc.robot.commands.cargo.RaiseCargoWrist;
 import frc.robot.commands.drive.DriveStraight;
 import frc.robot.commands.drive.SpinRightAngle;
@@ -34,8 +36,12 @@ public class SpinShoot extends SequentialCommandGroup {
     addCommands(
       
     //face the hub
+    new DriveStraight(driveSubsystem, -2*12),
+    new LowerCargoWrist(cargoSubsystem),
+    new RaiseCargoElbow(cargoSubsystem),
+    new DriveStraight(driveSubsystem, 2*12),
     new Outtake(cargoSubsystem).withTimeout(5),
-    new DriveStraight(driveSubsystem, -9*12),
+    new DriveStraight(driveSubsystem, -7*12),
     new LowerCargoElbow(cargoSubsystem),
     new RaiseCargoWrist(cargoSubsystem)
 
