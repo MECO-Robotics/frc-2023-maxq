@@ -36,6 +36,7 @@ import frc.robot.commands.climb.CopilotJoysticksControlWinches;
 import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.commands.drive.ToggleDirection;
 import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
@@ -109,7 +110,7 @@ public class RobotContainer {
     SmartDashboard.putData("PNEUM OUT", new TeleopRotatingArmPneumaticOut(climbingSubsystem));
     SmartDashboard.putData("PNEUM OFF", new TeleopRotatingArmPneumaticOff(climbingSubsystem));
     SmartDashboard.putData("ElbowDown", new LowerCargoElbow(cargoSubsystem));
-    SmartDashboard.putData("ElbowUp", new RaiseCargoWrist(cargoSubsystem));
+    SmartDashboard.putData("ElbowUp", new RaiseCargoElbow(cargoSubsystem));
     SmartDashboard.putData("WristDown", new LowerCargoWrist(cargoSubsystem));
     SmartDashboard.putData("WristUp", new RaiseCargoWrist(cargoSubsystem));
     SmartDashboard.putData("RESET CLIMB ENC", new ResetWinchEncoders(climbingSubsystem));
@@ -191,6 +192,8 @@ public class RobotContainer {
    * Setup the buttons for teleop drive.
    */
   private void configureTeleopDriveButtonBindings() {
+    JoystickButton modeButton = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kStart.value);
+    modeButton.whenPressed(new ToggleDirection(controllerSubsystem), false);
   }
 
   /**

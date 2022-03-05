@@ -94,13 +94,8 @@ public class CargoSubsystem extends SubsystemBase {
     if(isElbowUp()){
       return;
     }
-    // make sure that the wrist is down before raising the elbow
-    if (isWristDown()) {
-      elbow.set(Value.kReverse);
-      elbowActuationTickCounter = ACTUATION_TICKS;
-    } else {
-      System.out.println("ERROR: INVALID REQUEST to raise the elbow, but the wrist is up");
-    }
+    elbow.set(Value.kReverse);
+    elbowActuationTickCounter = ACTUATION_TICKS;
   }
 
   public void lowerElbow() {

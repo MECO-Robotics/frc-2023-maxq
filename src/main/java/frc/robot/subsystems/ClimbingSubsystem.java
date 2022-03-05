@@ -79,6 +79,9 @@ public class ClimbingSubsystem extends SubsystemBase {
     telescopingRightArmWinch.setNeutralMode(NeutralMode.Brake);
     rotatingLeftArmWinch.setNeutralMode(NeutralMode.Brake);
     rotatingRightArmWinch.setNeutralMode(NeutralMode.Brake);
+
+    rotatingRightArmWinch.setInverted(true);
+    
     addChild("pressure", pressureSensor);
     addChild("rotating Arm Solenoid", rotatingArmSolenoid);
   }
