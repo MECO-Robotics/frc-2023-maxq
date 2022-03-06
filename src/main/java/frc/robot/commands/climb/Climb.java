@@ -60,6 +60,10 @@ public class Climb extends SequentialCommandGroup {
 
     );
 
+    // We want to be able to interrupt this routine and take over using manual controls,
+    // by adding in the requirements, and then using the "Cancel Climb" command, that command
+    // will also interrupt this routine and reschedule teleop.
+    addRequirements(climbingSubsystem);
   }
 
 }
