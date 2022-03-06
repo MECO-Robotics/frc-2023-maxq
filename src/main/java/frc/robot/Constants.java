@@ -41,7 +41,7 @@ public final class Constants {
     // For example, 1.0 means you can go from 0 to 1.0 no faster than 1 second
     // 2.0 means you can go from 0 to 1.0 no faster than 1/2 second
     // 4.0 means you can go from 0 to 1.0 no faster than 1/4 second
-    public static final double DEFAULT_MAX_DEMAND_CHANGE = 3.0F;
+    public static final double DEFAULT_MAX_DEMAND_CHANGE = 2.7F;
 
     //
     //          CLIMBING SUBSYSTEM
@@ -78,7 +78,7 @@ public final class Constants {
     //
 
     // PWM Values
-    public static final int INTAKE_ROLLER_PWM = 1;
+    public static final int INTAKE_ROLLER_CAN = 21;
 
 
     //pnuematics
@@ -94,5 +94,5 @@ public final class Constants {
     /**
      * How fast we should travel for autonomous commands.
      */
-    public static final double AUTO_SPEED = 0.5;
+    public static final double AUTO_SPEED = .5;
 }

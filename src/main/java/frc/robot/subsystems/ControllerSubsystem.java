@@ -22,6 +22,7 @@ public class ControllerSubsystem extends SubsystemBase {
   double outtakeThrottle;
   boolean armUpButton, armDownButton;
   double manualArm, manualIntake;
+  double direction = 1;
 
   /** Creates a new ExampleSubsystem. */
   public ControllerSubsystem() {
@@ -37,11 +38,15 @@ public class ControllerSubsystem extends SubsystemBase {
   }
 
   public double getThrottle() {
-    return throttle;
+    return throttle * direction;
   }
 
   public double getTurn() {
-    return turn;
+    return turn * direction;
+  }
+
+  public void toggleDirection() {
+    direction = -direction;
   }
 
   public double getTankLeft() {

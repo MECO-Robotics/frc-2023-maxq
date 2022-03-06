@@ -15,36 +15,49 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.AutoShootCollectRightShoot;
+import frc.robot.commands.auto.DriveBackwardsAuto;
+import frc.robot.commands.auto.RamShoot;
+import frc.robot.commands.auto.SpinShoot;
+import frc.robot.commands.cargo.Intake;
+import frc.robot.commands.cargo.LowerCargoElbow;
+import frc.robot.commands.cargo.LowerCargoWrist;
+import frc.robot.commands.cargo.Outtake;
+import frc.robot.commands.cargo.RaiseCargoElbow;
+import frc.robot.commands.cargo.RaiseCargoWrist;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
 import frc.robot.commands.climb.Climb;
 import frc.robot.commands.climb.ResetWinchEncoders;
 import frc.robot.commands.climb.RotatingArmRaiseFullOpenGrip;
-import frc.robot.commands.climb.TeleopClimbWinchControl;
+import frc.robot.commands.climb.CopilotJoysticksControlWinches;
 import frc.robot.commands.demo.MoveOctagon;
-import frc.robot.commands.drive.Shift;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.commands.drive.ToggleDirection;
 import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  //private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
+  private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
   private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
-  
+
   private final Map<String, Command> autoCommands = new HashMap<>();
   private final SendableChooser<String> autoCommandChoice = new SendableChooser<String>();
 
@@ -56,52 +69,62 @@ public class RobotContainer {
     Joystick
   }
 
-  /** The container for the robot. Contains subsystems, I/O devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, I/O devices, and commands.
+   */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    
 
     // ------------------------------------------------------------------------
     //
-    //                 PLACE ALL AUTONOMOUS COMMANDS HERE
+    // PLACE ALL AUTONOMOUS COMMANDS HERE
     //
 
     // Create a mapping of name to command object for every autonomous command
-    // By using the class name as the name, it will be easy to remember which goes with which.
+    // By using the class name as the name, it will be easy to remember which goes
+    // with which.
     autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
-    //autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
+    // autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
     autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
+    autoCommands.put("DriveBack", new DriveBackwardsAuto(driveSubsystem));
+    autoCommands.put("Ram Shot", new RamShoot(driveSubsystem, cargoSubsystem));
+    autoCommands.put("Spin Shot", new SpinShoot(driveSubsystem, cargoSubsystem));
 
-
-    // 
+    //
     //
     // ------------------------------------------------------------------------
 
-    for(String choiceName : autoCommands.keySet()) {
+    for (String choiceName : autoCommands.keySet()) {
       autoCommandChoice.addOption(choiceName, choiceName);
     }
-    autoCommandChoice.setDefaultOption("AutoShootCollectRightShoot", "AutoShootCollectRightShoot");
+    autoCommandChoice.setDefaultOption("DriveBack", "DriveBack");
     SmartDashboard.putData("Autonomous Mode", autoCommandChoice);
-    
+
     driveMode.setDefaultOption("Split Arcade", DriveMode.SplitArcade);
     driveMode.addOption("Tank", DriveMode.Tank);
     driveMode.addOption("Joystick", DriveMode.Joystick);
     SmartDashboard.putData("Drive mode", driveMode);
 
-
     SmartDashboard.putData("PNEUM IN", new TeleopRotatingArmPneumaticIn(climbingSubsystem));
     SmartDashboard.putData("PNEUM OUT", new TeleopRotatingArmPneumaticOut(climbingSubsystem));
     SmartDashboard.putData("PNEUM OFF", new TeleopRotatingArmPneumaticOff(climbingSubsystem));
+    SmartDashboard.putData("ElbowDown", new LowerCargoElbow(cargoSubsystem));
+    SmartDashboard.putData("ElbowUp", new RaiseCargoElbow(cargoSubsystem));
+    SmartDashboard.putData("WristDown", new LowerCargoWrist(cargoSubsystem));
+    SmartDashboard.putData("WristUp", new RaiseCargoWrist(cargoSubsystem));
+    SmartDashboard.putData("RESET CLIMB ENC", new ResetWinchEncoders(climbingSubsystem));
 
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -110,7 +133,7 @@ public class RobotContainer {
     // of the button bindings are actually done in the ControllerSubsystem class.
 
     configureTeleopDriveButtonBindings();
-    
+
     configureTeleopCargoButtonBindings();
 
     configureTeleopClimbButtonBindings();
@@ -120,13 +143,13 @@ public class RobotContainer {
    * Setup the buttons for controlling climbing during teleop
    */
   private void configureTeleopClimbButtonBindings() {
-    
+
     // NATE: bind buttons for teleop climb
     XboxController copilot = controllerSubsystem.getCopilotController();
     JoystickButton leftBumper = new JoystickButton(copilot, XboxController.Button.kLeftBumper.value);
     JoystickButton righBumper = new JoystickButton(copilot, XboxController.Button.kRightBumper.value);
     JoystickButton xButton = new JoystickButton(copilot, XboxController.Button.kX.value);
-    JoystickButton yButton =  new JoystickButton(copilot, XboxController.Button.kY.value);
+    JoystickButton yButton = new JoystickButton(copilot, XboxController.Button.kY.value);
     JoystickButton bButton = new JoystickButton(copilot, XboxController.Button.kB.value);
 
     leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem), false);
@@ -134,37 +157,43 @@ public class RobotContainer {
     xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem), false);
     bButton.whenPressed(new Climb(climbingSubsystem), false);
     yButton.whenPressed(new SequentialCommandGroup(
-      new ResetWinchEncoders(climbingSubsystem),
-      new TeleopRotatingArmPneumaticOut(climbingSubsystem),
-      new RotatingArmRaiseFullOpenGrip(climbingSubsystem)
-    ), false);
+        new ResetWinchEncoders(climbingSubsystem),
+        new TeleopRotatingArmPneumaticOut(climbingSubsystem),
+        new RotatingArmRaiseFullOpenGrip(climbingSubsystem)), false);
   }
-    
+
   /**
    * Setup the buttons for collecting and shooting cargo
    */
   private void configureTeleopCargoButtonBindings() {
-    // XboxController copilot = controllerSubsystem.getCopilotController();
-    // POVButton upPovButton = new POVButton(copilot, 0);
-    // POVButton righttPovButton = new POVButton(copilot, 90);
-    // POVButton downnPovButton = new POVButton(copilot, 180);
-    // POVButton leftPovButton = new POVButton(copilot, 270);
+    XboxController copilot = controllerSubsystem.getCopilotController();
+    XboxController pilot = controllerSubsystem.getPilotController();
 
-    // Uncomment when cargo subsystem is available
-    //upPovButton.whenHeld(new Intake(cargoSubsystem));
-    // downnPovButton.whenHeld(new Outtake(cargoSubsystem));
+    JoystickButton pilotLeftBumper = new JoystickButton(pilot, XboxController.Button.kLeftBumper.value);
+    JoystickButton pilotRightBumper = new JoystickButton(pilot, XboxController.Button.kRightBumper.value);
+
+    pilotLeftBumper.whenHeld(new Intake(cargoSubsystem), true);
+    pilotRightBumper.whenHeld(new Outtake(cargoSubsystem), true);
+
+    // WRIST Up/Down = Up/Down
+    POVButton copilotDpadUp = new POVButton(copilot, 0);
+    POVButton copilotDpadDown = new POVButton(copilot, 180);
+    copilotDpadUp.whenPressed(new RaiseCargoWrist(cargoSubsystem));
+    copilotDpadDown.whenPressed(new LowerCargoElbow(cargoSubsystem));
+
+    // ELBOW Left/Right = Up/Down
+    POVButton copilotDpadRight = new POVButton(copilot, 90);
+    POVButton copilotDpadLeft = new POVButton(copilot, 270);
+    copilotDpadLeft.whenPressed(new RaiseCargoElbow(cargoSubsystem));
+    copilotDpadRight.whenPressed(new LowerCargoElbow(cargoSubsystem));
   }
 
   /**
    * Setup the buttons for teleop drive.
    */
   private void configureTeleopDriveButtonBindings() {
-    XboxController pilot = controllerSubsystem.getPilotController();
-    JoystickButton leftBumper = new JoystickButton(pilot, XboxController.Button.kLeftBumper.value);
-    JoystickButton rightBumper = new JoystickButton(pilot, XboxController.Button.kRightBumper.value);
-
-    leftBumper.whenPressed(new Shift(driveSubsystem, false), false);
-    rightBumper.whenPressed(new Shift(driveSubsystem, true), false);
+    JoystickButton modeButton = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kStart.value);
+    modeButton.whenPressed(new ToggleDirection(controllerSubsystem), false);
   }
 
   /**
@@ -175,7 +204,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     Command command = null;
 
-    if(autoCommandChoice != null && autoCommandChoice.getSelected() != null) {
+    if (autoCommandChoice != null && autoCommandChoice.getSelected() != null) {
       command = autoCommands.get(autoCommandChoice.getSelected());
     }
 
@@ -183,10 +212,10 @@ public class RobotContainer {
   }
 
   public Command getTeleopDriveCommand() {
-    
+
     return new ParallelCommandGroup(
-      new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
-      new TeleopClimbWinchControl(climbingSubsystem, controllerSubsystem));
+        new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
+        new CopilotJoysticksControlWinches(climbingSubsystem, controllerSubsystem));
   }
 
   public DriveSubsystem getDriveSubsystem() {

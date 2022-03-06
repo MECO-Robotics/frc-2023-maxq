@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** 
  * Manual control of the climbing subsystem winch motors.
  */
-public class TeleopClimbWinchControl extends CommandBase {
+public class CopilotJoysticksControlWinches extends CommandBase {
 
   private final ClimbingSubsystem climb;
   private final ControllerSubsystem controllers;
@@ -20,7 +20,7 @@ public class TeleopClimbWinchControl extends CommandBase {
    *
    * @param ClimbingSubsystem The subsystem used by this command.
    */
-  public TeleopClimbWinchControl(ClimbingSubsystem subsystem, ControllerSubsystem control) {
+  public CopilotJoysticksControlWinches(ClimbingSubsystem subsystem, ControllerSubsystem control) {
     climb = subsystem;
     controllers = control;
   }
