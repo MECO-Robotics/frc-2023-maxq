@@ -77,8 +77,8 @@ public class DriveSubsystem extends SubsystemBase {
   // Limit is units of max drive input change per second. Drive input is 0 to 1 for stop to full speed,
   // so a value of 1 would say it would take one second to from stop to full speed.
   // A value of 5 would say it takes 200ms to reach full speed.
-  SlewRateLimiter arcadeThrottleRamp = new SlewRateLimiter(Constants.DEFAULT_MAX_DEMAND_CHANGE);
-  SlewRateLimiter arcadeTurnRamp = new SlewRateLimiter(Constants.DEFAULT_MAX_DEMAND_CHANGE);
+  SlewRateLimiter arcadeThrottleRamp = new SlewRateLimiter(1f / Constants.DEFAULT_MAX_DEMAND_CHANGE);
+  SlewRateLimiter arcadeTurnRamp = new SlewRateLimiter(1f / Constants.DEFAULT_MAX_DEMAND_CHANGE);
   
 
   // Sensor simulations
@@ -178,19 +178,19 @@ public class DriveSubsystem extends SubsystemBase {
       }, 
       EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-      turnRamp = Shuffleboard.getTab("Drive")
-        .add("Turn Ramp", 1)
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 0.010, "max", 2.000))
-        .getEntry();
-  
-      turnRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
-      turnRamp.addListener(
-        (entryNotification) -> {
-          System.out.println("Turn Ramp changed value: " + entryNotification.value.getValue());
-          arcadeTurnRamp = new SlewRateLimiter(1f / entryNotification.value.getDouble());
-        }, 
-        EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+    turnRamp = Shuffleboard.getTab("Drive")
+      .add("Turn Ramp", 1)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withProperties(Map.of("min", 0.010, "max", 2.000))
+      .getEntry();
+
+    turnRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
+    turnRamp.addListener(
+      (entryNotification) -> {
+        System.out.println("Turn Ramp changed value: " + entryNotification.value.getValue());
+        arcadeTurnRamp = new SlewRateLimiter(1f / entryNotification.value.getDouble());
+      }, 
+      EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
   }
 
   @Override
