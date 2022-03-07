@@ -165,30 +165,30 @@ public class DriveSubsystem extends SubsystemBase {
 
 
     speedRamp = Shuffleboard.getTab("Drive")
-      .add("Speed Ramp", 1)
+      .add("Speed Ramp (time to go 0-Full)", 1)
       .withWidget(BuiltInWidgets.kNumberSlider)
-      .withProperties(Map.of("min", 1, "max", 4))
+      .withProperties(Map.of("min", 0.010, "max", 2.000))   // Can't allow zero or it will crash
       .getEntry();
 
     speedRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
     speedRamp.addListener(
       (entryNotification) -> {
         System.out.println("Speed Ramp changed value: " + entryNotification.value.getValue());
-        arcadeThrottleRamp = new SlewRateLimiter(entryNotification.value.getDouble());
+        arcadeThrottleRamp = new SlewRateLimiter(1f / entryNotification.value.getDouble());
       }, 
       EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
       turnRamp = Shuffleboard.getTab("Drive")
         .add("Turn Ramp", 1)
         .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 1, "max", 4))
+        .withProperties(Map.of("min", 0.010, "max", 2.000))
         .getEntry();
   
       turnRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
       turnRamp.addListener(
         (entryNotification) -> {
           System.out.println("Turn Ramp changed value: " + entryNotification.value.getValue());
-          arcadeTurnRamp = new SlewRateLimiter(entryNotification.value.getDouble());
+          arcadeTurnRamp = new SlewRateLimiter(1f / entryNotification.value.getDouble());
         }, 
         EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
   }
