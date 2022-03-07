@@ -71,7 +71,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDriveOdometry odometry;
 
   // Allows changing the the max demand change from the default defined in Constants
-  private final NetworkTableEntry speedRamp;
+  private final NetworkTableEntry speedRamp, turnRamp;
 
   // This member will limit acceleration to reduce skid
   // Limit is units of max drive input change per second. Drive input is 0 to 1 for stop to full speed,
@@ -175,9 +175,22 @@ public class DriveSubsystem extends SubsystemBase {
       (entryNotification) -> {
         System.out.println("Speed Ramp changed value: " + entryNotification.value.getValue());
         arcadeThrottleRamp = new SlewRateLimiter(entryNotification.value.getDouble());
-        arcadeTurnRamp = new SlewRateLimiter(entryNotification.value.getDouble());
       }, 
       EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
+      turnRamp = Shuffleboard.getTab("Drive")
+        .add("Turn Ramp", 1)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 1, "max", 4))
+        .getEntry();
+  
+      turnRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
+      turnRamp.addListener(
+        (entryNotification) -> {
+          System.out.println("Turn Ramp changed value: " + entryNotification.value.getValue());
+          arcadeTurnRamp = new SlewRateLimiter(entryNotification.value.getDouble());
+        }, 
+        EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
   }
 
   @Override
