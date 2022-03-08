@@ -44,6 +44,7 @@ import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PowerHub;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -60,6 +61,7 @@ public class RobotContainer {
   private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
   private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
+  private final PowerHub powerHub = new PowerHub();
 
   private final Map<String, Command> autoCommands = new HashMap<>();
   private final SendableChooser<String> autoCommandChoice = new SendableChooser<String>();
