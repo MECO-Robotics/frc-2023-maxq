@@ -91,18 +91,12 @@ public class CargoSubsystem extends SubsystemBase {
   }
 
   public void raiseElbow() {
-    if(isElbowUp()){
-      return;
-    }
-    elbow.set(Value.kReverse);
+    elbow.set(Value.kForward);
     elbowActuationTickCounter = ACTUATION_TICKS;
   }
 
   public void lowerElbow() {
-    if(isElbowDown()){
-      return;
-    }
-    elbow.set(Value.kForward);
+    elbow.set(Value.kReverse);
     elbowActuationTickCounter = ACTUATION_TICKS;
   }
 
@@ -122,22 +116,11 @@ public class CargoSubsystem extends SubsystemBase {
   }
 
   public void raiseWrist() {
-    if(isWristUp()){
-      return;
-    }
-    // make sure to only raise the wrist when elbow is down
-    if(isElbowDown()) {
-      wrist.set(Value.kReverse);
-      wristActuationTickCounter = ACTUATION_TICKS;
-    } else {
-      System.out.println("ERROR: INVALID REQUEST to raise cargo wrist, but the elbow is up");
-    }
+    wrist.set(Value.kReverse);
+    wristActuationTickCounter = ACTUATION_TICKS;
   }
 
   public void lowerWrist() {
-    if(isWristDown()){
-      return;
-    }
     wrist.set(Value.kForward);
     wristActuationTickCounter = ACTUATION_TICKS;
   }

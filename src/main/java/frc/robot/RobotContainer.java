@@ -179,7 +179,7 @@ public class RobotContainer {
     POVButton copilotDpadUp = new POVButton(copilot, 0);
     POVButton copilotDpadDown = new POVButton(copilot, 180);
     copilotDpadUp.whenPressed(new RaiseCargoWrist(cargoSubsystem));
-    copilotDpadDown.whenPressed(new LowerCargoElbow(cargoSubsystem));
+    copilotDpadDown.whenPressed(new LowerCargoWrist(cargoSubsystem));
 
     // ELBOW Left/Right = Up/Down
     POVButton copilotDpadRight = new POVButton(copilot, 90);
