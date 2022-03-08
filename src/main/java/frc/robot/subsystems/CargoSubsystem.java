@@ -52,10 +52,10 @@ public class CargoSubsystem extends SubsystemBase {
 
     errorMessageReporting++;
     if(errorMessageReporting % 50 == 0) {
-      REVLibError error = intakeRoller.getLastError();
-      System.out.println("INTAKE ROLLER Last error: " + error.name());
-      short stickyFaults = intakeRoller.getStickyFaults();
-      System.out.println("INTAKE ROLLER Sticky faults: " + stickyFaults);
+      // REVLibError error = intakeRoller.getLastError();
+      // System.out.println("INTAKE ROLLER Last error: " + error.name());
+      // short stickyFaults = intakeRoller.getStickyFaults();
+      // System.out.println("INTAKE ROLLER Sticky faults: " + stickyFaults);
     }
   }
 

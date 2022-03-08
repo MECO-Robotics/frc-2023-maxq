@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
@@ -24,6 +26,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTableEntry;
+
+import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -64,16 +70,15 @@ public class DriveSubsystem extends SubsystemBase {
   // Keeps track of where we are on the field based on gyro and encoder inputs.
   private final DifferentialDriveOdometry odometry;
 
-  private double maxDemandChangePerSecond = Constants.DEFAULT_MAX_DEMAND_CHANGE;
+  // Allows changing the the max demand change from the default defined in Constants
+  private final NetworkTableEntry speedRamp, turnRamp;
 
   // This member will limit acceleration to reduce skid
   // Limit is units of max drive input change per second. Drive input is 0 to 1 for stop to full speed,
   // so a value of 1 would say it would take one second to from stop to full speed.
   // A value of 5 would say it takes 200ms to reach full speed.
-  SlewRateLimiter arcadeThrottleRamp = new SlewRateLimiter(maxDemandChangePerSecond);
-  SlewRateLimiter arcadeTurnRamp = new SlewRateLimiter(maxDemandChangePerSecond);
-  SlewRateLimiter tankRightRamp = new SlewRateLimiter(maxDemandChangePerSecond);
-  SlewRateLimiter tankLeftRamp = new SlewRateLimiter(maxDemandChangePerSecond);
+  SlewRateLimiter arcadeThrottleRamp = new SlewRateLimiter(1f / Constants.DEFAULT_MAX_DEMAND_CHANGE);
+  SlewRateLimiter arcadeTurnRamp = new SlewRateLimiter(1f / Constants.DEFAULT_MAX_DEMAND_CHANGE);
   
 
   // Sensor simulations
@@ -157,6 +162,35 @@ public class DriveSubsystem extends SubsystemBase {
     addChild("Left Range", rangeLeft);
     addChild("Middle Range", rangeMiddle);
     addChild("Right Range", rangeRight);
+
+
+    speedRamp = Shuffleboard.getTab("Drive")
+      .add("Speed Ramp (time to go 0-Full)", 1)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withProperties(Map.of("min", 0.010, "max", 2.000))   // Can't allow zero or it will crash
+      .getEntry();
+
+    speedRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
+    speedRamp.addListener(
+      (entryNotification) -> {
+        System.out.println("Speed Ramp changed value: " + entryNotification.value.getValue());
+        arcadeThrottleRamp = new SlewRateLimiter(1f / entryNotification.value.getDouble());
+      }, 
+      EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
+    turnRamp = Shuffleboard.getTab("Drive")
+      .add("Turn Ramp", 1)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withProperties(Map.of("min", 0.010, "max", 2.000))
+      .getEntry();
+
+    turnRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
+    turnRamp.addListener(
+      (entryNotification) -> {
+        System.out.println("Turn Ramp changed value: " + entryNotification.value.getValue());
+        arcadeTurnRamp = new SlewRateLimiter(1f / entryNotification.value.getDouble());
+      }, 
+      EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
   }
 
   @Override
@@ -169,6 +203,7 @@ public class DriveSubsystem extends SubsystemBase {
     // If the code crashes, or somehow gets stuck in a loop, and this method isn't called then
     // the motors will automaitcally stop.
     drive.feed();
+
   }
 
   /**
@@ -210,8 +245,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void tankDrive(double left, double right) {
     drive.tankDrive(
-      tankLeftRamp.calculate(left * reduction), 
-      tankRightRamp.calculate(right * reduction));
+      left * reduction, 
+      right * reduction);
   }
 
   public void arcadeDrive(double throttle, double turn) {
@@ -259,19 +294,10 @@ public class DriveSubsystem extends SubsystemBase {
     return imu.getAngle();
   }
 
-  public double getMaxDemandChangePerSecond() {
-    return maxDemandChangePerSecond;
-  }
-
-  public void setMaxDemandChangePerSecond(double change) {
-    maxDemandChangePerSecond = change;
-  }
-
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     builder.addDoubleProperty("Gear", this::getGear, this::setGear);
-    builder.addDoubleProperty("Max Accel", this::getMaxDemandChangePerSecond, this::setMaxDemandChangePerSecond);
   }
 
   public double getGear() {
