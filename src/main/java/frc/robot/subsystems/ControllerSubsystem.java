@@ -42,7 +42,7 @@ public class ControllerSubsystem extends SubsystemBase {
   }
 
   public double getTurn() {
-    return turn * direction;
+    return turn;
   }
 
   public void toggleDirection() {
