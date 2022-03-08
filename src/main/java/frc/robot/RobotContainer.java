@@ -20,12 +20,15 @@ import frc.robot.commands.auto.AutoShootCollectRightShoot;
 import frc.robot.commands.auto.DriveBackwardsAuto;
 import frc.robot.commands.auto.RamShoot;
 import frc.robot.commands.auto.SpinShoot;
+import frc.robot.commands.cargo.Collect;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.LowerCargoElbow;
 import frc.robot.commands.cargo.LowerCargoWrist;
 import frc.robot.commands.cargo.Outtake;
 import frc.robot.commands.cargo.RaiseCargoElbow;
 import frc.robot.commands.cargo.RaiseCargoWrist;
+import frc.robot.commands.cargo.Shoot;
+import frc.robot.commands.cargo.Stow;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
 import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
@@ -175,17 +178,14 @@ public class RobotContainer {
     pilotLeftBumper.whenHeld(new Intake(cargoSubsystem), true);
     pilotRightBumper.whenHeld(new Outtake(cargoSubsystem), true);
 
-    // WRIST Up/Down = Up/Down
     POVButton copilotDpadUp = new POVButton(copilot, 0);
     POVButton copilotDpadDown = new POVButton(copilot, 180);
-    copilotDpadUp.whenPressed(new RaiseCargoWrist(cargoSubsystem));
-    copilotDpadDown.whenPressed(new LowerCargoWrist(cargoSubsystem));
-
-    // ELBOW Left/Right = Up/Down
     POVButton copilotDpadRight = new POVButton(copilot, 90);
-    POVButton copilotDpadLeft = new POVButton(copilot, 270);
-    copilotDpadLeft.whenPressed(new RaiseCargoElbow(cargoSubsystem));
-    copilotDpadRight.whenPressed(new LowerCargoElbow(cargoSubsystem));
+    // POVButton copilotDpadLeft = new POVButton(copilot, 270);
+
+    copilotDpadUp.whenPressed(new Shoot(cargoSubsystem));
+    copilotDpadDown.whenPressed(new Collect(cargoSubsystem));
+    copilotDpadRight.whenPressed(new Stow(cargoSubsystem));
   }
 
   /**
