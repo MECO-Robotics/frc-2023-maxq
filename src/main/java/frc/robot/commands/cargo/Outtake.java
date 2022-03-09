@@ -30,7 +30,7 @@ public class Outtake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    cargo.setIntakeRoller(-1);
+    cargo.setIntakeRoller(1);
   }
 
   // Called once the command ends or is interrupted.
