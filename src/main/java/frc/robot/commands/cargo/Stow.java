@@ -9,7 +9,6 @@ public class Stow extends SequentialCommandGroup {
         addCommands(
                 new RaiseCargoWrist(cargoSubsystem),
                 new LowerCargoElbow(cargoSubsystem)
-
         );
     }
 }

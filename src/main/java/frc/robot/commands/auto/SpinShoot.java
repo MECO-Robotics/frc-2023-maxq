@@ -41,9 +41,9 @@ public class SpinShoot extends SequentialCommandGroup {
     new RaiseCargoElbow(cargoSubsystem),
     new DriveStraight(driveSubsystem, 2*12),
     new Outtake(cargoSubsystem).withTimeout(5),
-    new DriveStraight(driveSubsystem, -7*12),
+   new DriveStraight(driveSubsystem, -7*12),
     new LowerCargoElbow(cargoSubsystem),
-    new RaiseCargoWrist(cargoSubsystem)
+   new RaiseCargoWrist(cargoSubsystem)
 
 
     

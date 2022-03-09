@@ -249,12 +249,18 @@ public class DriveSubsystem extends SubsystemBase {
       right * reduction);
   }
 
+  /**
+   * Drive using arcade controls with speed ramping. Do not use for autonomous routines
+   * unless speed ramping is desired.
+   */
   public void arcadeDrive(double throttle, double turn) {
+    double adjustedThrottle = arcadeThrottleRamp.calculate(throttle * reduction);
+    double adjustedTurn = arcadeTurnRamp.calculate(turn * reduction);
+
+    // System.out.println("Drive: arcadeDrive: ramped throttle: " + adjustedThrottle + ", ramped turn: " + adjustedTurn);
     // Currently, applying factor to both throttle and turn, but we may want to consider
     // only applying to throttle.
-    drive.arcadeDrive(
-      arcadeThrottleRamp.calculate(throttle * reduction),
-      arcadeTurnRamp.calculate(turn * reduction));
+    drive.arcadeDrive(adjustedThrottle, adjustedTurn);
   }
 
   /**

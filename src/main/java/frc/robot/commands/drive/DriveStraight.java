@@ -62,12 +62,17 @@ public class DriveStraight extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.arcadeDrive(0, 0);
+    System.out.println("CMD: DriveStraight: end");
+
+    // Use tank drive, which doesn't have speed ramping because we need the motors to
+    // stop immediately.
+    driveTrain.tankDrive(0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // System.out.println("CMD: DriveStraight: isFinished - distance=" + driveTrain.getLeftDistance());
     if(forward) {
       return driveTrain.getLeftDistance() >= distanceDesired;
     } else {
