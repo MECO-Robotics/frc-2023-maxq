@@ -18,8 +18,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.AutoShootCollectRightShoot;
 import frc.robot.commands.auto.DriveBackwardsAuto;
+import frc.robot.commands.auto.HalfBall;
 import frc.robot.commands.auto.RamShoot;
 import frc.robot.commands.auto.SpinShoot;
+import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.cargo.Collect;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.LowerCargoElbow;
@@ -95,6 +97,9 @@ public class RobotContainer {
     autoCommands.put("DriveBack", new DriveBackwardsAuto(driveSubsystem));
     autoCommands.put("Ram Shot", new RamShoot(driveSubsystem, cargoSubsystem));
     autoCommands.put("Spin Shot", new SpinShoot(driveSubsystem, cargoSubsystem));
+    autoCommands.put("HalfBall", new HalfBall(driveSubsystem, cargoSubsystem));
+    autoCommands.put("TwoBallAuto", new TwoBallAuto(driveSubsystem, cargoSubsystem));
+
 
     //
     //
@@ -119,6 +124,7 @@ public class RobotContainer {
     SmartDashboard.putData("WristDown", new LowerCargoWrist(cargoSubsystem));
     SmartDashboard.putData("WristUp", new RaiseCargoWrist(cargoSubsystem));
     SmartDashboard.putData("RESET CLIMB ENC", new ResetWinchEncoders(climbingSubsystem));
+
 
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));

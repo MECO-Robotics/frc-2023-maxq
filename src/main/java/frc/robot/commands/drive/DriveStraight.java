@@ -16,7 +16,7 @@ public class DriveStraight extends CommandBase {
   private double distanceDesired;
   private final boolean forward;
   private double initialHeading;
-
+  private double speed;
   /**
    * Creates a new DriveStraight command.
    *
@@ -27,7 +27,17 @@ public class DriveStraight extends CommandBase {
     driveTrain = driveSubsystem;
     distanceDesired = Units.inchesToMeters(distanceInches);
     forward = distanceDesired > 0;
+    speed =  Constants.AUTO_SPEED;
+    // If this command is called, we want to interupt any other commands running
+    // on the driving subystem
+    addRequirements(driveSubsystem);
+  }
 
+  public DriveStraight(DriveSubsystem driveSubsystem, double distanceInches, double desiredSpeed) {
+    driveTrain = driveSubsystem;
+    distanceDesired = Units.inchesToMeters(distanceInches);
+    forward = distanceDesired > 0;
+    speed = desiredSpeed;
     // If this command is called, we want to interupt any other commands running
     // on the driving subystem
     addRequirements(driveSubsystem);
@@ -45,9 +55,9 @@ public class DriveStraight extends CommandBase {
   public void execute() {
     double throttle;
     if(forward) {
-      throttle = Constants.AUTO_SPEED;
+      throttle = speed;
     } else {
-      throttle = -Constants.AUTO_SPEED;
+      throttle = -speed;
     }
 
     // To make sure we're continuing to drive straight, make slight adjustments to the
