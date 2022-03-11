@@ -35,11 +35,31 @@ public class SpinShoot extends SequentialCommandGroup {
     // commands scheduled will do that.
 
     addCommands(
+<<<<<<< HEAD
 
         // face the hub
         new RaiseCargoElbow(cargoSubsystem),
         new WaitCommand(3),
         new Outtake(cargoSubsystem).withTimeout(3),
+=======
+<<<<<<< HEAD
+=======
+      
+    //face the hub
+    new DriveStraight(driveSubsystem, -2*12),
+    new LowerCargoWrist(cargoSubsystem),
+    new RaiseCargoElbow(cargoSubsystem),
+    new DriveStraight(driveSubsystem, 2*12),
+    new Outtake(cargoSubsystem).withTimeout(5),
+   new DriveStraight(driveSubsystem, -7*12),
+    new LowerCargoElbow(cargoSubsystem),
+   new RaiseCargoWrist(cargoSubsystem)
+>>>>>>> 33dc2369ddd537d8ab553d30cd76ba0f20399cd7
+
+        // face the hub
+        new RaiseCargoElbow(cargoSubsystem).withTimeout(3),
+        new Outtake(cargoSubsystem), withTimeout(2),
+>>>>>>> b0cef000adad9b60c61c94a132f7f1c57a1d2bd5
         new DriveStraight(driveSubsystem, -7 * 12),
         new LowerCargoElbow(cargoSubsystem),
         new RaiseCargoWrist(cargoSubsystem)
