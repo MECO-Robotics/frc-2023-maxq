@@ -18,12 +18,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /** Autonomously collect one ball and score 2 balls in the lower hub. */
-public class TwoBallAuto extends SequentialCommandGroup {
+public class HalfBall extends SequentialCommandGroup {
 
   /**
    * Create a new command.
    */
-  public TwoBallAuto(DriveSubsystem driveSubsystem, CargoSubsystem cargoSubsystem) {
+  public HalfBall(DriveSubsystem driveSubsystem, CargoSubsystem cargoSubsystem) {
 
     addCommands(
        // score preloaded ball
@@ -37,14 +37,9 @@ public class TwoBallAuto extends SequentialCommandGroup {
     new SpinRightAngle(driveSubsystem, 145), 
     
     new LowerCargoElbow(cargoSubsystem),
-    new DriveStraight(driveSubsystem, 3.0*12).deadlineWith(new Intake(cargoSubsystem)),
+    new DriveStraight(driveSubsystem, 3.0*12).deadlineWith(new Intake(cargoSubsystem))
     
-     new RaiseCargoElbow(cargoSubsystem),
     
-    new DriveStraight(driveSubsystem, -3.0*12),
-    new SpinRightAngle(driveSubsystem, -145), 
-    new DriveStraight(driveSubsystem, 4*12), 
-    new Outtake(cargoSubsystem).withTimeout(2)
         
 
     );

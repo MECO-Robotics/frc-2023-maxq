@@ -15,11 +15,11 @@ import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.CargoSubsystem;
 
-/** 
- * Drives the robot autonomously in a prescribed pattern. 
+/**
+ * Drives the robot autonomously in a prescribed pattern.
  *
  * Refer to this diagram for the routine:
- * https://docs.google.com/drawings/d/1GxrTwsLhETpqVrT3ycNIkLCBsJlLdFQTz0Ca2pnxkw0/edit 
+ * https://docs.google.com/drawings/d/1GxrTwsLhETpqVrT3ycNIkLCBsJlLdFQTz0Ca2pnxkw0/edit
  */
 public class SpinShoot extends SequentialCommandGroup {
 
@@ -32,21 +32,16 @@ public class SpinShoot extends SequentialCommandGroup {
 
     // Don't need to add the DriveSubsystem as a required subsystem because the
     // commands scheduled will do that.
-    
+
     addCommands(
-      
-    //face the hub
-    new DriveStraight(driveSubsystem, -2*12),
-    new LowerCargoWrist(cargoSubsystem),
-    new RaiseCargoElbow(cargoSubsystem),
-    new DriveStraight(driveSubsystem, 2*12),
-    new Outtake(cargoSubsystem).withTimeout(5),
-    new DriveStraight(driveSubsystem, -7*12),
-    new LowerCargoElbow(cargoSubsystem),
-    new RaiseCargoWrist(cargoSubsystem)
 
+        // face the hub
+        new RaiseCargoElbow(cargoSubsystem).withTimeout(3),
+        new Outtake(cargoSubsystem), withTimeout(2),
+        new DriveStraight(driveSubsystem, -7 * 12),
+        new LowerCargoElbow(cargoSubsystem),
+        new RaiseCargoWrist(cargoSubsystem)
 
-    
     );
   }
 }
