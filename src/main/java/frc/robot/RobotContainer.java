@@ -100,7 +100,6 @@ public class RobotContainer {
     autoCommands.put("HalfBall", new HalfBall(driveSubsystem, cargoSubsystem));
     autoCommands.put("TwoBallAuto", new TwoBallAuto(driveSubsystem, cargoSubsystem));
 
-
     //
     //
     // ------------------------------------------------------------------------
@@ -124,7 +123,6 @@ public class RobotContainer {
     SmartDashboard.putData("WristDown", new LowerCargoWrist(cargoSubsystem));
     SmartDashboard.putData("WristUp", new RaiseCargoWrist(cargoSubsystem));
     SmartDashboard.putData("RESET CLIMB ENC", new ResetWinchEncoders(climbingSubsystem));
-
 
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
@@ -162,15 +160,19 @@ public class RobotContainer {
     JoystickButton xButton = new JoystickButton(copilot, XboxController.Button.kX.value);
     JoystickButton yButton = new JoystickButton(copilot, XboxController.Button.kY.value);
     JoystickButton bButton = new JoystickButton(copilot, XboxController.Button.kB.value);
+    
+
+    XboxController pilot = controllerSubsystem.getPilotController();
+    JoystickButton xButtonpilot = new JoystickButton(pilot, XboxController.Button.kX.value);
+    JoystickButton yButtonpilot = new JoystickButton(pilot, XboxController.Button.kY.value);
+    xButtonpilot.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem));
+    yButtonpilot.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem));
 
     leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem), false);
     righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), false);
     xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem), false);
     bButton.whenPressed(new Climb(climbingSubsystem), false);
-    yButton.whenPressed(new SequentialCommandGroup(
-        new ResetWinchEncoders(climbingSubsystem),
-        new TeleopRotatingArmPneumaticOut(climbingSubsystem),
-        new RotatingArmRaiseFullOpenGrip(climbingSubsystem)), false);
+    yButton.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), false);
   }
 
   /**
@@ -190,18 +192,15 @@ public class RobotContainer {
     POVButton copilotDpadDown = new POVButton(copilot, 180);
     POVButton copilotDpadRight = new POVButton(copilot, 90);
 
-    
+    POVButton pilotDpadUp = new POVButton(pilot, 0);
+    POVButton pilotDpadDown = new POVButton(pilot, 180);
+    POVButton pilotDpadRight = new POVButton(pilot, 90);
 
     // POVButton copilotDpadLeft = new POVButton(copilot, 270);
 
-
-   
-  
-  PilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
-  PilotDpadDown.whenPressed(new Stow(cargoSubsystem), true);
-  PilotDpadRight.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), true);
-  PilotDpadLeft.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem), true);
-
+    pilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
+    pilotDpadDown.whenPressed(new Collect(cargoSubsystem), true);
+    pilotDpadRight.whenPressed(new Stow(cargoSubsystem), true);
 
     copilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
     copilotDpadDown.whenPressed(new Collect(cargoSubsystem), true);
@@ -212,7 +211,8 @@ public class RobotContainer {
    * Setup the buttons for teleop drive.
    */
   private void configureTeleopDriveButtonBindings() {
-    JoystickButton modeButton = new JoystickButton(controllerSubsystem.getPilotController(), XboxController.Button.kStart.value);
+    JoystickButton modeButton = new JoystickButton(controllerSubsystem.getPilotController(),
+        XboxController.Button.kStart.value);
     modeButton.whenPressed(new ToggleDirection(controllerSubsystem), false);
   }
 
