@@ -42,10 +42,20 @@ import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.drive.ToggleDirection;
+import frc.robot.commands.lights.TurnBlueBothOn;
+import frc.robot.commands.lights.TurnBlueLeftOnly;
+import frc.robot.commands.lights.TurnBlueOffBoth;
+import frc.robot.commands.lights.TurnGreenBothOff;
+import frc.robot.commands.lights.TurnGreenBothOn;
+import frc.robot.commands.lights.TurnPurpleRightOff;
+import frc.robot.commands.lights.TurnPurpleRightOn;
+import frc.robot.commands.lights.TurnRedBothOn;
+import frc.robot.commands.lights.TurnRedOffBoth;
 import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LightSubsystem;
 import frc.robot.subsystems.PowerHub;
 
 /**
@@ -63,6 +73,7 @@ public class RobotContainer {
   private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
   private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
+  private final LightSubsystem lightSubsystem = new LightSubsystem();
   private final PowerHub powerHub = new PowerHub();
 
   private final Map<String, Command> autoCommands = new HashMap<>();
@@ -123,6 +134,15 @@ public class RobotContainer {
     SmartDashboard.putData("WristDown", new LowerCargoWrist(cargoSubsystem));
     SmartDashboard.putData("WristUp", new RaiseCargoWrist(cargoSubsystem));
     SmartDashboard.putData("RESET CLIMB ENC", new ResetWinchEncoders(climbingSubsystem));
+    SmartDashboard.putData("Red Lights On", new TurnRedBothOn(lightSubsystem));
+    SmartDashboard.putData("Red Lights Off", new TurnRedOffBoth(lightSubsystem));
+    SmartDashboard.putData("Blue Lights On", new TurnBlueBothOn(lightSubsystem));
+    SmartDashboard.putData("Blue Lights Off", new TurnBlueOffBoth(lightSubsystem));
+    SmartDashboard.putData("Green Lights On", new TurnGreenBothOn(lightSubsystem));
+    SmartDashboard.putData("Green Ligths Off", new TurnGreenBothOff(lightSubsystem));
+    SmartDashboard.putData("Purple Lights On", new TurnPurpleRightOn(lightSubsystem));
+    SmartDashboard.putData("Purple Lights Off", new TurnPurpleRightOff(lightSubsystem));
+    SmartDashboard.putData("Blue Lights Left On", new TurnBlueLeftOnly(lightSubsystem));
 
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));

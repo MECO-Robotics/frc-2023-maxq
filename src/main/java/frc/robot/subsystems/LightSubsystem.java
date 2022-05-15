@@ -8,31 +8,50 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.CANifier.PWMChannel;
 
 import edu.wpi.first.hal.PWMJNI;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-
+import frc.robot.commands.lights.TurnRedOffBoth;
+import pabeles.concurrency.ConcurrencyOps.Reset;
 
 public class LightSubsystem extends SubsystemBase {
 
-    private PWM channelRedLeft = new PWM(0);
-    private PWM channelGreenLeft = new PWM(1);
-    private PWM channelBlueLeft = new PWM(2);
-    private PWM channelRedRight = new PWM(3);
-    private PWM channelGreenRight = new PWM(4);
-    private PWM channelBlueRight = new PWM(5);
-
-
-
-
-
-
-
-    public LightSubsystem() {
+    
+    
+    
+    
+   
+    private int flashCount = 0;
+    private DigitalOutput redLeft = new DigitalOutput(0);
+    private DigitalOutput greenLeft = new DigitalOutput(1);
+    private DigitalOutput blueLeft = new DigitalOutput(2);
+    private DigitalOutput redRight = new DigitalOutput(3);
+    private DigitalOutput greenRight = new DigitalOutput(4);
+    private DigitalOutput blueRight = new DigitalOutput(5);
+    public void turBothOnRedFull() {
+        redLeft.set(false);
+        redRight.set(false);
 
     }
 
+
     
+    public void turnBothOffRedFull() {
+        redLeft.set(true);
+        redRight.set(true);
+
+    }
+
+    public void turnBothOnRed(int brightness) {
+        redLeft.set(false);
+        redRight.set(false);
+    }
+
+    public void tunrBothOnBlue(int brightness) {
+        blueLeft.set(false);
+        blueRight.set(false);
+    }
 
     /**
      * turn off all color and turn on red only on left side
@@ -40,7 +59,8 @@ public class LightSubsystem extends SubsystemBase {
      * @param brightness 0-100
      */
     public void turnRedLeftOn(int brightness) {
-        channelRedLeft.setRaw(brightness);
+        redLeft.set(false);
+
     }
 
     /**
@@ -49,7 +69,7 @@ public class LightSubsystem extends SubsystemBase {
      * @param brightness 0-100
      */
     public void turnRedRightOn(int brightness) {
-        channelRedRight.setRaw(brightness);
+        redRight.set(false);
     }
 
     /**
@@ -58,7 +78,7 @@ public class LightSubsystem extends SubsystemBase {
      * @param brightness 0-100
      */
     public void turnBlueLeftOn(int brightness) {
-        channelBlueLeft.setRaw(brightness);
+        blueLeft.set(false);
     }
 
     /**
@@ -67,33 +87,81 @@ public class LightSubsystem extends SubsystemBase {
      * @param brightness 0-100
      */
     public void turnBlueRightOn(int brightness) {
-        channelBlueRight.setRaw(brightness);
+        blueRight.set(false);
     }
 
     public void turnLeftOff() {
-        channelRedLeft.setRaw(0);
-        channelBlueLeft.setRaw(0);
-        channelGreenLeft.setRaw(0);
+        redLeft.set(true);
+        blueLeft.set(true);
+        greenLeft.set(true);
+
     }
 
     public void turnRightOff() {
-        channelRedRight.setRaw(0);
-        channelBlueRight.setRaw(0);
-        channelGreenRight.setRaw(0);
+        redRight.set(true);
+        blueRight.set(true);
+        greenRight.set(true);
+    }
+
+    public void TurBlueBothOn() {
+        blueRight.set(false);
+        blueLeft.set(false);
+    }
+
+    public void turnBlueOffBoth() {
+        blueRight.set(true);
+        blueLeft.set(true);
+    }
+
+    public void turnGreenBothOn() {
+    greenLeft.set(false);
+    greenRight.set(false);
+    }
+
+    public void turnGreenBothOff() {
+    greenLeft.set(true);
+    greenRight.set(true);
+    }
+
+
+    public void turnPurpleRightOn() {
+        redRight.set(false);
+        blueRight.set(false);  
+    }
+
+
+    public void turnPurpleRightOff() {
+        redRight.set(true);
+        blueRight.set(true);
     }
 
 
 
+    public void turnBlueLeftOn() {
+    blueLeft.set(false);
+    }
 
 
-
-
-
-
-
-
-
-
+    
+     public void strobe(){
+        flashCount = flashCount + 1;
+        if(flashCount == 50){
+             flashCount = 0;
+        } else{
+            if(flashCount <25){
+                //turn red
+                turnBlueOffBoth();
+                turnBothOnRed(255);
+            }else{
+                //between 25 and 50 turn blue
+                turnBothOffRedFull();
+                tunrBothOnBlue(255);
+            }
+        }
+        
+    
+    
+    }
 
 
 }
