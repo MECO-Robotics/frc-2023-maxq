@@ -35,7 +35,10 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new LowerCargoElbow(cargoSubsystem),
         // drive to get new ball
         new SpinRightAngle(driveSubsystem, 145),
-        new DriveStraight(driveSubsystem, 3.0 * 12).deadlineWith(new Intake(cargoSubsystem)),
+        new ParallelCommandGroup(
+          new DriveStraight(driveSubsystem, 3*12),
+          new Intake(cargoSubsystem).withTimeout(3)
+        ),
         new DriveStraight(driveSubsystem, -3),
         new SpinRightAngle(driveSubsystem, -145),
         new RaiseCargoElbow(cargoSubsystem),
