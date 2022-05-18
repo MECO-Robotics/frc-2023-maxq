@@ -3,14 +3,14 @@ package frc.robot.commands.lights;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LightSubsystem;
 
-public class TurnPurpleRightOff extends CommandBase {
+public class TurnBlueLeftOff extends CommandBase {
     
-    private final TurnBlueLeftOff lights;
+    private final LightSubsystem lights;
 
 
 
 
-    public TurnBlueOff(LightSubsystem lightSubsystem) {
+    public TurnBlueLeftOff(LightSubsystem lightSubsystem) {
         lights = lightSubsystem;
     }
 
@@ -19,7 +19,7 @@ public class TurnPurpleRightOff extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() { 
-    lights.TurnPurpleRightOff();
+    lights.turnLeftOff();
   }
 
   

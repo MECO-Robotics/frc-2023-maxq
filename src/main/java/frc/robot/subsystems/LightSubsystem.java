@@ -17,18 +17,15 @@ import pabeles.concurrency.ConcurrencyOps.Reset;
 
 public class LightSubsystem extends SubsystemBase {
 
-    
-    
-    
-    
-   
     private int flashCount = 0;
-    private DigitalOutput redLeft = new DigitalOutput(0);
-    private DigitalOutput greenLeft = new DigitalOutput(1);
-    private DigitalOutput blueLeft = new DigitalOutput(2);
-    private DigitalOutput redRight = new DigitalOutput(3);
-    private DigitalOutput greenRight = new DigitalOutput(4);
-    private DigitalOutput blueRight = new DigitalOutput(5);
+
+    private final static int DIO_OFFSET = 4;
+    private DigitalOutput redLeft = new DigitalOutput(0 + DIO_OFFSET);
+    private DigitalOutput greenLeft = new DigitalOutput(1 + DIO_OFFSET);
+    private DigitalOutput blueLeft = new DigitalOutput(2 + DIO_OFFSET);
+    private DigitalOutput redRight = new DigitalOutput(3 + DIO_OFFSET);
+    private DigitalOutput greenRight = new DigitalOutput(4 + DIO_OFFSET);
+    private DigitalOutput blueRight = new DigitalOutput(5 + DIO_OFFSET);
     public void turBothOnRedFull() {
         redLeft.set(false);
         redRight.set(false);
