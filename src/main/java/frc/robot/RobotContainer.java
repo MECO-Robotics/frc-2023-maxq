@@ -23,6 +23,8 @@ import frc.robot.commands.auto.RamShoot;
 import frc.robot.commands.auto.SpinShoot;
 import frc.robot.commands.auto.SpinShootBombSquad;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.auto.TwoBallAuto_OneAtATime;
+import frc.robot.commands.auto.TwoBallAuto_TwiceSameTime;
 import frc.robot.commands.cargo.Collect;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.LowerCargoElbow;
@@ -94,13 +96,14 @@ public class RobotContainer {
     // with which.
     autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
     // autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
-    autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
+    //autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
     autoCommands.put("DriveBack", new DriveBackwardsAuto(driveSubsystem));
-    autoCommands.put("Ram Shot", new RamShoot(driveSubsystem, cargoSubsystem));
-    autoCommands.put("Spin Shot", new SpinShoot(driveSubsystem, cargoSubsystem));
+    //autoCommands.put("Ram Shot", new RamShoot(driveSubsystem, cargoSubsystem));
+    autoCommands.put("1 Ball ", new SpinShoot(driveSubsystem, cargoSubsystem));
     autoCommands.put("HalfBall", new HalfBall(driveSubsystem, cargoSubsystem));
-    autoCommands.put("TwoBallAuto", new TwoBallAuto(driveSubsystem, cargoSubsystem));
-    autoCommands.put("BombSquad", new SpinShootBombSquad(driveSubsystem, cargoSubsystem));
+    //autoCommands.put("BombSquad", new SpinShootBombSquad(driveSubsystem, cargoSubsystem));
+    autoCommands.put("2 Ball v1", new TwoBallAuto_OneAtATime(driveSubsystem, cargoSubsystem));
+    autoCommands.put("2 Ball v2", new TwoBallAuto_TwiceSameTime(driveSubsystem, cargoSubsystem));
 
     //
     //
