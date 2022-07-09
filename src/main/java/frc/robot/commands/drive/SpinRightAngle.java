@@ -49,7 +49,7 @@ public class SpinRightAngle extends CommandBase {
   @Override
   public void execute() {
 
-    double s = 0.45f;
+    double s = 0.5f;
     double a = 0f;
 
     if(cw) {
@@ -58,11 +58,11 @@ public class SpinRightAngle extends CommandBase {
       a = driveTrain.getHeadingDegrees() - angleDesired;
     }
 
-    if (a < 25) {
-      s = 0.2;
-    } else if (a < 35) {
-      s = 0.4;
-    }
+    // if (a < 25) {
+    //   s = 0.5;
+    // } else if (a < 35) {
+    //   s = 0.5;
+    // }
     
     // If we're CCW, flip the motor direction
     if(!cw) {

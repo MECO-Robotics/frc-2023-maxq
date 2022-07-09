@@ -15,6 +15,9 @@ import frc.robot.commands.cargo.Stow;
 import frc.robot.commands.drive.DriveStraight;
 import frc.robot.commands.drive.SpinRightAngle;
 import frc.robot.subsystems.DriveSubsystem;
+
+import java.util.Timer;
+
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -41,17 +44,18 @@ public class TwoBallAuto_TwiceSameTime extends SequentialCommandGroup {
     addCommands(
 
        //make sure that the robot is facing away from the hub
-       new DriveStraight(driveSubsystem, 4*12),
+       new DriveStraight(driveSubsystem, 2*12),
        new LowerCargoWrist(cargoSubsystem),
+       new WaitCommand(1.5),
        new ParallelCommandGroup(
-         new Intake(cargoSubsystem),
-         new DriveStraight(driveSubsystem, 6)
+         new Intake(cargoSubsystem).withTimeout(1.5),
+         new DriveStraight(driveSubsystem, 24)
        ),
        new Shoot(cargoSubsystem),
-       new SpinRightAngle(driveSubsystem, 180),
-       new DriveStraight(driveSubsystem, 54),
-       new Outtake(cargoSubsystem),
-       new DriveStraight(driveSubsystem, -12),
+       new SpinRightAngle(driveSubsystem, 195),
+       new DriveStraight(driveSubsystem, 78),
+       new Outtake(cargoSubsystem).withTimeout(1.5),
+       new DriveStraight(driveSubsystem, -24),
       new Stow(cargoSubsystem)
       //orientates the robot for teleop 
       
