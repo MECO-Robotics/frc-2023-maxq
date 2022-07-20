@@ -238,9 +238,10 @@ public class DriveSubsystem extends SubsystemBase {
    * Normally, this should not be called, except form the setPose() method.
    * Using setPose() instead also updates the drive train, odometry, and drive sim.bb
    */
-  public void resetEncoders() {
+  public void resetSensors() {
     leftEncoder.reset();
     rightEncoder.reset();
+    imu.reset();
   }
 
   public void tankDrive(double left, double right) {
@@ -286,7 +287,7 @@ public class DriveSubsystem extends SubsystemBase {
     field2d.setRobotPose(pose);
     imu.reset();
     odometry.resetPosition(pose, imu.getRotation2d());
-    resetEncoders();
+    resetSensors();
     if(RobotBase.isSimulation()) {
       driveSim.setPose(pose);
     }

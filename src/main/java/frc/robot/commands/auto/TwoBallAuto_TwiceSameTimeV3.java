@@ -13,6 +13,7 @@ import frc.robot.commands.cargo.RaiseCargoWrist;
 import frc.robot.commands.cargo.Shoot;
 import frc.robot.commands.cargo.Stow;
 import frc.robot.commands.drive.DriveStraight;
+import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.SpinRightAngle;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -44,7 +45,7 @@ public class TwoBallAuto_TwiceSameTimeV3 extends SequentialCommandGroup {
     addCommands(
 
        //make sure that the robot is facing away from the hub
-       
+       new ResetSensors(driveSubsystem),
        new LowerCargoWrist(cargoSubsystem),
        new WaitCommand(1.5),
        new DriveStraight(driveSubsystem, 12),
