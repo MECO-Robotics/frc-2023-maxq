@@ -57,8 +57,9 @@ public class SpinRightAngle extends CommandBase {
     } else {
       a = driveTrain.getHeadingDegrees() - angleDesired;
     }
-
-    // if (a < 25) {
+    
+    
+        // if (a < 25) {
     //   s = 0.5;
     // } else if (a < 35) {
     //   s = 0.5;
@@ -69,6 +70,8 @@ public class SpinRightAngle extends CommandBase {
       s = -s;
     }
 
+    System.out.println("angle:" + a + " speed:" + s);
+    
     driveTrain.tankDrive(s, -s);
   }
 
