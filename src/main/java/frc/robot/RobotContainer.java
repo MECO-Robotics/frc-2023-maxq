@@ -25,6 +25,7 @@ import frc.robot.commands.auto.SpinShootBombSquad;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAuto_OneAtATime;
 import frc.robot.commands.auto.TwoBallAuto_TwiceSameTime;
+import frc.robot.commands.auto.TwoBallAuto_TwiceSameTimeV3;
 import frc.robot.commands.cargo.Collect;
 import frc.robot.commands.cargo.Intake;
 import frc.robot.commands.cargo.LowerCargoElbow;
@@ -104,11 +105,11 @@ public class RobotContainer {
     //autoCommands.put("BombSquad", new SpinShootBombSquad(driveSubsystem, cargoSubsystem));
     autoCommands.put("2 Ball v1", new TwoBallAuto_OneAtATime(driveSubsystem, cargoSubsystem));
     autoCommands.put("2 Ball v2", new TwoBallAuto_TwiceSameTime(driveSubsystem, cargoSubsystem));
-
+    autoCommands.put("2 ball v3", new TwoBallAuto_TwiceSameTimeV3(driveSubsystem, cargoSubsystem));
     //
     //
     // ------------------------------------------------------------------------
-
+    
     for (String choiceName : autoCommands.keySet()) {
       autoCommandChoice.addOption(choiceName, choiceName);
     }
