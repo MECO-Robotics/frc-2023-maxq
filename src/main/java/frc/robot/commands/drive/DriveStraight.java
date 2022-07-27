@@ -64,9 +64,9 @@ public class DriveStraight extends CommandBase {
     // turn based on Yaw error (Propotional only control). This adjustment basically says
     // for every 1 degree of error, adjust the turn value by 0.1 input in the opposite direction
     // If our current heading matches the initial heading, then the turn comes out to zero.
-    double turn = -(driveTrain.getHeadingDegrees() - initialHeading)/10f;
+    //double turn = -(driveTrain.getHeadingDegrees() - initialHeading)/10f;
 
-    driveTrain.arcadeDrive(throttle, turn);
+    driveTrain.arcadeDrive(throttle, 0);
   }
 
   // Called once the command ends or is interrupted.

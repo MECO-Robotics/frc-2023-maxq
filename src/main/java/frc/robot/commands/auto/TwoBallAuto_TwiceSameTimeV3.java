@@ -54,7 +54,7 @@ public class TwoBallAuto_TwiceSameTimeV3 extends SequentialCommandGroup {
          new DriveStraight(driveSubsystem, 24)
        ),
        new Shoot(cargoSubsystem),
-       new SpinRightAngle(driveSubsystem, 195),
+       new SpinRightAngle(driveSubsystem, 180),
        new DriveStraight(driveSubsystem, 78),
        new Outtake(cargoSubsystem).withTimeout(1.5),
        new DriveStraight(driveSubsystem, -24),

@@ -245,6 +245,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void tankDrive(double left, double right) {
+    System.out.println("Tank:left:" + left + " right:" + right);
     drive.tankDrive(
       left * reduction, 
       right * reduction);
@@ -254,7 +255,8 @@ public class DriveSubsystem extends SubsystemBase {
    * Drive using arcade controls with speed ramping. Do not use for autonomous routines
    * unless speed ramping is desired.
    */
-  public void arcadeDrive(double throttle, double turn) {
+  public void arcadeDrive(double throttle, double turn) { 
+    System.out.println("throttle:" + throttle + " turn:" + turn);
     double adjustedThrottle = arcadeThrottleRamp.calculate(throttle * reduction);
     double adjustedTurn = arcadeTurnRamp.calculate(turn * reduction);
 
