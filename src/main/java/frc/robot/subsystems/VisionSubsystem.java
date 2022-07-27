@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
@@ -14,6 +13,8 @@ public class VisionSubsystem extends SubsystemBase {
     PhotonCamera camera = new PhotonCamera("photonvision");
     final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
     final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+    double pitch = 0;
+    double yaw = 0;
 
     public VisionSubsystem() {
         // Set driver mode to on.
@@ -38,16 +39,23 @@ public class VisionSubsystem extends SubsystemBase {
             PhotonTrackedTarget target = result.getBestTarget();
 
             // Get information from target.
-            double yaw = target.getYaw();
-            double pitch = target.getPitch();
+            yaw = target.getYaw();
+            pitch = target.getPitch();
             double area = target.getArea();
             double skew = target.getSkew();
 
             System.out.println(
-                    "yaw    " + "pitch    " + "area    " + "skew   " + yaw + "  " + pitch + "  " + area + "  " + skew);
+                    "yaw: " + yaw + "  pitch: " + pitch + "  area: " + area + "  skew: " + skew);
 
         }
 
     }
 
+    double getYaw() {
+        return yaw;
+    }
+
+    double getPitch() {
+        return pitch;
+    }
 }
