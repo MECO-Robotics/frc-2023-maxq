@@ -21,6 +21,7 @@ import frc.robot.commands.auto.DriveBackwardsAuto;
 import frc.robot.commands.auto.HalfBall;
 import frc.robot.commands.auto.RamShoot;
 import frc.robot.commands.auto.SpinShoot;
+import frc.robot.commands.auto.SpinShootBombSquad;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.cargo.Collect;
 import frc.robot.commands.cargo.Intake;
@@ -110,6 +111,7 @@ public class RobotContainer {
     autoCommands.put("Spin Shot", new SpinShoot(driveSubsystem, cargoSubsystem));
     autoCommands.put("HalfBall", new HalfBall(driveSubsystem, cargoSubsystem));
     autoCommands.put("TwoBallAuto", new TwoBallAuto(driveSubsystem, cargoSubsystem));
+    autoCommands.put("BombSquad", new SpinShootBombSquad(driveSubsystem, cargoSubsystem));
 
     //
     //

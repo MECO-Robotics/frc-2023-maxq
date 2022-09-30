@@ -29,13 +29,13 @@ public class HalfBall extends SequentialCommandGroup {
         // score preloaded ball
         // face the hub
         new RaiseCargoElbow(cargoSubsystem),
-        new WaitCommand(1.5),
+        new WaitCommand(6),
         new Outtake(cargoSubsystem).withTimeout(.5),
         new DriveStraight(driveSubsystem, -4 * 12),
         new LowerCargoElbow(cargoSubsystem),
         // drive to get new ball
         new SpinRightAngle(driveSubsystem, 145),
-        new DriveStraight(driveSubsystem, 3.0 * 12).deadlineWith(new Intake(cargoSubsystem))
+        new DriveStraight(driveSubsystem, 3.0 * 12,1).deadlineWith(new Intake(cargoSubsystem))
       
 
 
