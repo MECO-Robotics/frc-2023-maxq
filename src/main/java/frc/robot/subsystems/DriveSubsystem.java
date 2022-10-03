@@ -238,12 +238,14 @@ public class DriveSubsystem extends SubsystemBase {
    * Normally, this should not be called, except form the setPose() method.
    * Using setPose() instead also updates the drive train, odometry, and drive sim.bb
    */
-  public void resetEncoders() {
+  public void resetSensors() {
     leftEncoder.reset();
     rightEncoder.reset();
+    imu.reset();
   }
 
   public void tankDrive(double left, double right) {
+    System.out.println("Tank:left:" + left + " right:" + right);
     drive.tankDrive(
       left * reduction, 
       right * reduction);
@@ -253,7 +255,8 @@ public class DriveSubsystem extends SubsystemBase {
    * Drive using arcade controls with speed ramping. Do not use for autonomous routines
    * unless speed ramping is desired.
    */
-  public void arcadeDrive(double throttle, double turn) {
+  public void arcadeDrive(double throttle, double turn) { 
+    System.out.println("throttle:" + throttle + " turn:" + turn);
     double adjustedThrottle = arcadeThrottleRamp.calculate(throttle * reduction);
     double adjustedTurn = arcadeTurnRamp.calculate(turn * reduction);
 
@@ -286,7 +289,7 @@ public class DriveSubsystem extends SubsystemBase {
     field2d.setRobotPose(pose);
     imu.reset();
     odometry.resetPosition(pose, imu.getRotation2d());
-    resetEncoders();
+    resetSensors();
     if(RobotBase.isSimulation()) {
       driveSim.setPose(pose);
     }
