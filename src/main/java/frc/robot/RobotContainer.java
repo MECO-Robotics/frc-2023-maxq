@@ -16,33 +16,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.auto.AutoShootCollectRightShoot;
-import frc.robot.commands.auto.DriveBackwardsAuto;
-import frc.robot.commands.auto.HalfBall;
-import frc.robot.commands.auto.RamShoot;
-import frc.robot.commands.auto.SpinShoot;
-import frc.robot.commands.auto.SpinShootBombSquad;
-import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.auto.TwoBallAuto_OneAtATime;
-import frc.robot.commands.auto.TwoBallAuto_TwiceSameTime;
-import frc.robot.commands.auto.TwoBallAuto_TwiceSameTimeV3;
-import frc.robot.commands.cargo.Collect;
-import frc.robot.commands.cargo.Intake;
-import frc.robot.commands.cargo.LowerCargoElbow;
-import frc.robot.commands.cargo.LowerCargoWrist;
-import frc.robot.commands.cargo.Outtake;
-import frc.robot.commands.cargo.RaiseCargoElbow;
-import frc.robot.commands.cargo.RaiseCargoWrist;
-import frc.robot.commands.cargo.Shoot;
-import frc.robot.commands.cargo.Stow;
-import frc.robot.commands.climb.TeleopRotatingArmPneumaticIn;
-import frc.robot.commands.climb.TeleopRotatingArmPneumaticOff;
-import frc.robot.commands.climb.TeleopRotatingArmPneumaticOut;
-import frc.robot.commands.climb.Climb;
-import frc.robot.commands.climb.ResetWinchEncoders;
-import frc.robot.commands.climb.RotatingArmRaiseFullOpenGrip;
-import frc.robot.commands.climb.CopilotJoysticksControlWinches;
-import frc.robot.commands.demo.MoveOctagon;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.drive.ToggleDirection;
@@ -106,17 +79,7 @@ public class RobotContainer {
     // Create a mapping of name to command object for every autonomous command
     // By using the class name as the name, it will be easy to remember which goes
     // with which.
-    autoCommands.put("MoveOctagon", new MoveOctagon(driveSubsystem));
-    // autoCommands.put("BallAuto", new BallAuto(driveSubsystem, cargoSubsystem));
-    //autoCommands.put("AutoShootCollectRightShoot", new AutoShootCollectRightShoot(driveSubsystem));
-    autoCommands.put("DriveBack", new DriveBackwardsAuto(driveSubsystem));
-    //autoCommands.put("Ram Shot", new RamShoot(driveSubsystem, cargoSubsystem));
-    autoCommands.put("1 Ball ", new SpinShoot(driveSubsystem, cargoSubsystem));
-    autoCommands.put("HalfBall", new HalfBall(driveSubsystem, cargoSubsystem));
-    //autoCommands.put("BombSquad", new SpinShootBombSquad(driveSubsystem, cargoSubsystem));
-    autoCommands.put("2 Ball v1", new TwoBallAuto_OneAtATime(driveSubsystem, cargoSubsystem));
-    autoCommands.put("2 Ball v2", new TwoBallAuto_TwiceSameTime(driveSubsystem, cargoSubsystem));
-    autoCommands.put("2 ball v3", new TwoBallAuto_TwiceSameTimeV3(driveSubsystem, cargoSubsystem));
+    
     //
     //
     // ------------------------------------------------------------------------
@@ -132,14 +95,7 @@ public class RobotContainer {
     driveMode.addOption("Joystick", DriveMode.Joystick);
     SmartDashboard.putData("Drive mode", driveMode);
 
-    SmartDashboard.putData("PNEUM IN", new TeleopRotatingArmPneumaticIn(climbingSubsystem));
-    SmartDashboard.putData("PNEUM OUT", new TeleopRotatingArmPneumaticOut(climbingSubsystem));
-    SmartDashboard.putData("PNEUM OFF", new TeleopRotatingArmPneumaticOff(climbingSubsystem));
-    SmartDashboard.putData("ElbowDown", new LowerCargoElbow(cargoSubsystem));
-    SmartDashboard.putData("ElbowUp", new RaiseCargoElbow(cargoSubsystem));
-    SmartDashboard.putData("WristDown", new LowerCargoWrist(cargoSubsystem));
-    SmartDashboard.putData("WristUp", new RaiseCargoWrist(cargoSubsystem));
-    SmartDashboard.putData("RESET CLIMB ENC", new ResetWinchEncoders(climbingSubsystem));
+   
     SmartDashboard.putData("Red Lights On", new TurnRedBothOn(lightSubsystem));
     SmartDashboard.putData("Red Lights Off", new TurnRedOffBoth(lightSubsystem));
     SmartDashboard.putData("Blue Lights On", new TurnBlueBothOn(lightSubsystem));
@@ -191,14 +147,13 @@ public class RobotContainer {
     XboxController pilot = controllerSubsystem.getPilotController();
     JoystickButton xButtonpilot = new JoystickButton(pilot, XboxController.Button.kX.value);
     JoystickButton yButtonpilot = new JoystickButton(pilot, XboxController.Button.kY.value);
-    xButtonpilot.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem));
-    yButtonpilot.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem));
+    
 
-    leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem), false);
-    righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), false);
-    xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem), false);
-    bButton.whenPressed(new Climb(climbingSubsystem), false);
-    yButton.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), false);
+    // leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem), false);
+    // righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), false);
+    // xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem), false);
+    // bButton.whenPressed(new Climb(climbingSubsystem), false);
+    // yButton.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), false);
   }
 
   /**
@@ -211,8 +166,8 @@ public class RobotContainer {
     JoystickButton pilotLeftBumper = new JoystickButton(pilot, XboxController.Button.kLeftBumper.value);
     JoystickButton pilotRightBumper = new JoystickButton(pilot, XboxController.Button.kRightBumper.value);
 
-    pilotRightBumper.whenHeld(new Intake(cargoSubsystem), true);
-    pilotLeftBumper.whenHeld(new Outtake(cargoSubsystem), true);
+    // pilotRightBumper.whenHeld(new Intake(cargoSubsystem), true);
+    // pilotLeftBumper.whenHeld(new Outtake(cargoSubsystem), true);
 
     POVButton copilotDpadUp = new POVButton(copilot, 0);
     POVButton copilotDpadDown = new POVButton(copilot, 180);
@@ -224,13 +179,13 @@ public class RobotContainer {
 
     // POVButton copilotDpadLeft = new POVButton(copilot, 270);
 
-    pilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
-    pilotDpadDown.whenPressed(new Collect(cargoSubsystem), true);
-    pilotDpadRight.whenPressed(new Stow(cargoSubsystem), true);
+    // pilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
+    // pilotDpadDown.whenPressed(new Collect(cargoSubsystem), true);
+    // pilotDpadRight.whenPressed(new Stow(cargoSubsystem), true);
 
-    copilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
-    copilotDpadDown.whenPressed(new Collect(cargoSubsystem), true);
-    copilotDpadRight.whenPressed(new Stow(cargoSubsystem), true);
+    // copilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
+    // copilotDpadDown.whenPressed(new Collect(cargoSubsystem), true);
+    // copilotDpadRight.whenPressed(new Stow(cargoSubsystem), true);
   }
 
   /**
@@ -239,7 +194,7 @@ public class RobotContainer {
   private void configureTeleopDriveButtonBindings() {
     JoystickButton modeButton = new JoystickButton(controllerSubsystem.getPilotController(),
         XboxController.Button.kStart.value);
-    modeButton.whenPressed(new ToggleDirection(controllerSubsystem), false);
+    // modeButton.whenPressed(new ToggleDirection(controllerSubsystem), false);
   }
 
   /**
@@ -257,12 +212,7 @@ public class RobotContainer {
     return command;
   }
 
-  public Command getTeleopDriveCommand() {
-
-    return new ParallelCommandGroup(
-        new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
-        new CopilotJoysticksControlWinches(climbingSubsystem, controllerSubsystem));
-  }
+ 
 
   public DriveSubsystem getDriveSubsystem() {
     return driveSubsystem;

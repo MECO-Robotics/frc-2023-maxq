@@ -43,13 +43,13 @@ public class SpinRightDistance extends CommandBase {
   @Override
   public void execute() {
     // Turn at half the auto speed so that ramp and inertia has less of an effect
-    driveTrain.arcadeDrive(0, Constants.AUTO_SPEED);
+  //  driveTrain.arcadeDrive(0, Constants.AUTO_SPEED);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.arcadeDrive(0, 0);
+   // driveTrain.arcadeDrive(0, 0);
   }
 
   // Returns true when the command should end.

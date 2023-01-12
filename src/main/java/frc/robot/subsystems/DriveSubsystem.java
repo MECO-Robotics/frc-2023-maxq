@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -26,7 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
 import java.util.Map;
@@ -42,15 +43,16 @@ import frc.robot.Constants;
  */
 public class DriveSubsystem extends SubsystemBase {
 
-  // The type of encoder indicates the resolution - such as the Grayhill 63R128 
+  // The type of encoder indicates the resolution - such as the Grayhill 63R128
   private static final int ENCODER_RESOLUTION = 128;
   private static final double WHEEL_DIAMETER_INCHES = 6.0; // inches
   private static final double WHEEL_CIRCUM_METERS = Units.inchesToMeters(WHEEL_DIAMETER_INCHES) * Math.PI;
-  public static final double TRACK_WIDTH_METERS = 0.71;       // 28" Wheelbase in meters. Distance from center of left wheels to center of right wheels
+  public static final double TRACK_WIDTH_METERS = 0.71; // 28" Wheelbase in meters. Distance from center of left wheels
+                                                        // to center of right wheels
 
   // This object defines the properties of how the robot turns
-  public static final DifferentialDriveKinematics DRIVE_KINEMATICS =
-      new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
+  public static final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(
+      TRACK_WIDTH_METERS);
 
   // Real sensors & actuators
   private MotorControllerGroup leftMotors, rightMotors;
@@ -58,43 +60,49 @@ public class DriveSubsystem extends SubsystemBase {
   private RangeSensor rangeLeft = new RangeSensor(Constants.LEFT_ULTRASONIC_ANLG);
   private RangeSensor rangeMiddle = new RangeSensor(Constants.MID_ULTRASONIC_ANLG);
   private RangeSensor rangeRight = new RangeSensor(Constants.RIGHT_ULTRASONIC_ANLG);
-  
-  // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP port,
-  // which is the wide female pin header in the middle of the Rio. Through the MXP, 
+
+  // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP
+  // port,
+  // which is the wide female pin header in the middle of the Rio. Through the
+  // MXP,
   // the Serial Port Interface (SPI) is used.
   private final AHRS imu = new AHRS(SPI.Port.kMXP);
 
-  // Converts tank or arcade drive speed requests to voltage requests to the motor controllers
-  private final DifferentialDrive drive;
+  // Converts tank or arcade drive speed requests to voltage requests to the motor
+  // controllers
+  private final MecanumDrive drive;
 
   // Keeps track of where we are on the field based on gyro and encoder inputs.
   private final DifferentialDriveOdometry odometry;
 
-  // Allows changing the the max demand change from the default defined in Constants
-  private final NetworkTableEntry speedRamp, turnRamp;
+  // Allows changing the the max demand change from the default defined in
+  // Constants
+  // private final GenericEntry speedRamp, turnRamp;
 
   // This member will limit acceleration to reduce skid
-  // Limit is units of max drive input change per second. Drive input is 0 to 1 for stop to full speed,
-  // so a value of 1 would say it would take one second to from stop to full speed.
+  // Limit is units of max drive input change per second. Drive input is 0 to 1
+  // for stop to full speed,
+  // so a value of 1 would say it would take one second to from stop to full
+  // speed.
   // A value of 5 would say it takes 200ms to reach full speed.
   SlewRateLimiter arcadeThrottleRamp = new SlewRateLimiter(1f / Constants.DEFAULT_MAX_DEMAND_CHANGE);
   SlewRateLimiter arcadeTurnRamp = new SlewRateLimiter(1f / Constants.DEFAULT_MAX_DEMAND_CHANGE);
-  
 
   // Sensor simulations
   private final Field2d field2d = new Field2d();
   private final EncoderSim leftEncoderSim;
   private final EncoderSim rightEncoderSim;
   private final SimDeviceSim imuSim;
-  
+
   // Drivetrain sim using standard kit of parts
   private final DifferentialDrivetrainSim driveSim = DifferentialDrivetrainSim.createKitbotSim(
-    KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
-    KitbotGearing.k10p71,        // 10.71:1
-    KitbotWheelSize.kSixInch,     // 6" diameter wheels.
-    null);                       // No measurement noise.
+      KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
+      KitbotGearing.k10p71, // 10.71:1
+      KitbotWheelSize.kSixInch, // 6" diameter wheels.
+      null); // No measurement noise.
 
-  // Simple "fake" 2 gear system. For this drive train, it just changes the speed range.
+  // Simple "fake" 2 gear system. For this drive train, it just changes the speed
+  // range.
   private int gear = 2;
   private double GEAR_REDUCTION[] = new double[] { 0.66, 1.0 };
   private double reduction = 1F;
@@ -103,41 +111,37 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
 
     // Create the WPI_VictorSPX individually and call configOpenLoopRamp on it.
-    WPI_VictorSPX left1 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1_CAN);
-    WPI_VictorSPX left2 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2_CAN);
-    WPI_VictorSPX left3 = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3_CAN);
-    WPI_VictorSPX right1 = new WPI_VictorSPX(Constants.LEFT_DRIVE_1_CAN);
-    WPI_VictorSPX right2 = new WPI_VictorSPX(Constants.LEFT_DRIVE_2_CAN);
-    WPI_VictorSPX right3 = new WPI_VictorSPX(Constants.LEFT_DRIVE_3_CAN);
+    WPI_VictorSPX leftf = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1_CAN);
+    WPI_VictorSPX leftb = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2_CAN);
+    WPI_VictorSPX rightf = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3_CAN);
+    WPI_VictorSPX rightb = new WPI_VictorSPX(Constants.LEFT_DRIVE_1_CAN);
 
-    left1.setNeutralMode(NeutralMode.Brake);
-    left2.setNeutralMode(NeutralMode.Brake);
-    left3.setNeutralMode(NeutralMode.Brake);
-    right1.setNeutralMode(NeutralMode.Brake);
-    right2.setNeutralMode(NeutralMode.Brake);
-    right3.setNeutralMode(NeutralMode.Brake);
-
-    leftMotors = new MotorControllerGroup(left1, left2, left3);
-    rightMotors = new MotorControllerGroup(right1, right2, right3);
+    leftf.setNeutralMode(NeutralMode.Brake);
+    leftb.setNeutralMode(NeutralMode.Brake);
+    rightf.setNeutralMode(NeutralMode.Brake);
+    rightb.setNeutralMode(NeutralMode.Brake);
+    
 
     // So positive values cause forward movement
     leftMotors.setInverted(false);
     rightMotors.setInverted(true);
 
-    drive = new DifferentialDrive(leftMotors, rightMotors);
+    drive = new MecanumDrive(leftb, leftf, rightb, rightf);
 
     // Left: reverse direction (decreasing values go forward)
     leftEncoder = new Encoder(Constants.LEFT_DRIVE_ENCODER_1_DIO, Constants.LEFT_DRIVE_ENCODER_2_DIO, true);
     // Right
     rightEncoder = new Encoder(Constants.RIGHT_DRIVE_ENCODER_1_DIO, Constants.RIGHT_DRIVE_ENCODER_2_DIO, false);
-    
+
     leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
     rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
 
-
-    if(RobotBase.isSimulation()) {
-      // At some point, we'll need to reconfigure the drive sim from the defaults since we're using a custom drive train
-      // driveSim = new DifferentialDrivetrainSim(DCMotor.getCIM(3), 10f, jKgMetersSquared, massKg, wheelRadiusMeters, trackWidthMeters, measurementStdDevs)
+    if (RobotBase.isSimulation()) {
+      // At some point, we'll need to reconfigure the drive sim from the defaults
+      // since we're using a custom drive train
+      // driveSim = new DifferentialDrivetrainSim(DCMotor.getCIM(3), 10f,
+      // jKgMetersSquared, massKg, wheelRadiusMeters, trackWidthMeters,
+      // measurementStdDevs)
 
       leftEncoderSim = new EncoderSim(leftEncoder);
       rightEncoderSim = new EncoderSim(rightEncoder);
@@ -149,8 +153,10 @@ public class DriveSubsystem extends SubsystemBase {
       imuSim = null;
     }
 
-    // Set the initial position (0,0) and heading (whatever it is) of the robot on the field
-    odometry = new DifferentialDriveOdometry(imu.getRotation2d());
+    // Set the initial position (0,0) and heading (whatever it is) of the robot on
+    // the field
+    odometry = new DifferentialDriveOdometry(imu.getRotation2d(), leftEncoder.getDistance(),
+        rightEncoder.getDistance());
 
     addChild("Left Motors", leftMotors);
     addChild("Left Encoder", leftEncoder);
@@ -163,34 +169,37 @@ public class DriveSubsystem extends SubsystemBase {
     addChild("Middle Range", rangeMiddle);
     addChild("Right Range", rangeRight);
 
+    // speedRamp = Shuffleboard.getTab("Drive")
+    // .add("Speed Ramp (time to go 0-Full)", 1)
+    // .withWidget(BuiltInWidgets.kNumberSlider)
+    // .withProperties(Map.of("min", 0.010, "max", 2.000)) // Can't allow zero or it
+    // will crash
+    // .getEntry();
 
-    speedRamp = Shuffleboard.getTab("Drive")
-      .add("Speed Ramp (time to go 0-Full)", 1)
-      .withWidget(BuiltInWidgets.kNumberSlider)
-      .withProperties(Map.of("min", 0.010, "max", 2.000))   // Can't allow zero or it will crash
-      .getEntry();
+    // speedRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
+    // speedRamp.addListener(
+    // (entryNotification) -> {
+    // System.out.println("Speed Ramp changed value: " +
+    // entryNotification.value.getValue());
+    // arcadeThrottleRamp = new SlewRateLimiter(1f /
+    // entryNotification.value.getDouble());
+    // });
 
-    speedRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
-    speedRamp.addListener(
-      (entryNotification) -> {
-        System.out.println("Speed Ramp changed value: " + entryNotification.value.getValue());
-        arcadeThrottleRamp = new SlewRateLimiter(1f / entryNotification.value.getDouble());
-      }, 
-      EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+    // turnRamp = Shuffleboard.getTab("Drive")
+    // .add("Turn Ramp", 1)
+    // .withWidget(BuiltInWidgets.kNumberSlider)
+    // .withProperties(Map.of("min", 0.010, "max", 2.000))
+    // .getEntry();
 
-    turnRamp = Shuffleboard.getTab("Drive")
-      .add("Turn Ramp", 1)
-      .withWidget(BuiltInWidgets.kNumberSlider)
-      .withProperties(Map.of("min", 0.010, "max", 2.000))
-      .getEntry();
-
-    turnRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
-    turnRamp.addListener(
-      (entryNotification) -> {
-        System.out.println("Turn Ramp changed value: " + entryNotification.value.getValue());
-        arcadeTurnRamp = new SlewRateLimiter(1f / entryNotification.value.getDouble());
-      }, 
-      EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+    // turnRamp.setDouble(Constants.DEFAULT_MAX_DEMAND_CHANGE);
+    // turnRamp.addListener(
+    // (entryNotification) -> {
+    // System.out.println("Turn Ramp changed value: " +
+    // entryNotification.value.getValue());
+    // arcadeTurnRamp = new SlewRateLimiter(1f /
+    // entryNotification.value.getDouble());
+    // },
+    // EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
   }
 
   @Override
@@ -198,9 +207,11 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     odometry.update(imu.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
     field2d.setRobotPose(odometry.getPoseMeters());
-    
-    // Update the motor safety. This makes sure the system knows we're in control of the motors.
-    // If the code crashes, or somehow gets stuck in a loop, and this method isn't called then
+
+    // Update the motor safety. This makes sure the system knows we're in control of
+    // the motors.
+    // If the code crashes, or somehow gets stuck in a loop, and this method isn't
+    // called then
     // the motors will automaitcally stop.
     drive.feed();
 
@@ -218,8 +229,8 @@ public class DriveSubsystem extends SubsystemBase {
     // the [-1, 1] PWM signal to voltage by multiplying it by the
     // robot controller voltage.
     driveSim.setInputs(
-      leftMotors.get() * RobotController.getInputVoltage(),
-      rightMotors.get() * RobotController.getInputVoltage());
+        leftMotors.get() * RobotController.getInputVoltage(),
+        rightMotors.get() * RobotController.getInputVoltage());
 
     // Advance the model by 20 ms. Note that if you are running this
     // subsystem in a separate thread or have changed the nominal timestep
@@ -236,7 +247,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Normally, this should not be called, except form the setPose() method.
-   * Using setPose() instead also updates the drive train, odometry, and drive sim.bb
+   * Using setPose() instead also updates the drive train, odometry, and drive
+   * sim.bb
    */
   public void resetSensors() {
     leftEncoder.reset();
@@ -244,27 +256,14 @@ public class DriveSubsystem extends SubsystemBase {
     imu.reset();
   }
 
-  public void tankDrive(double left, double right) {
-    System.out.println("Tank:left:" + left + " right:" + right);
-    drive.tankDrive(
-      left * reduction, 
-      right * reduction);
-  }
+  
 
   /**
-   * Drive using arcade controls with speed ramping. Do not use for autonomous routines
+   * Drive using arcade controls with speed ramping. Do not use for autonomous
+   * routines
    * unless speed ramping is desired.
    */
-  public void arcadeDrive(double throttle, double turn) { 
-    System.out.println("throttle:" + throttle + " turn:" + turn);
-    double adjustedThrottle = arcadeThrottleRamp.calculate(throttle * reduction);
-    double adjustedTurn = arcadeTurnRamp.calculate(turn * reduction);
-
-    // System.out.println("Drive: arcadeDrive: ramped throttle: " + adjustedThrottle + ", ramped turn: " + adjustedTurn);
-    // Currently, applying factor to both throttle and turn, but we may want to consider
-    // only applying to throttle.
-    drive.arcadeDrive(adjustedThrottle, adjustedTurn);
-  }
+  
 
   /**
    * Get the distance, in meters the left side has traveled since the last reset.
@@ -275,22 +274,23 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Get the distance, in meters the right side has traveled since the last reset.
+   * 
    * @return
    */
   public double getRightDistance() {
     return rightEncoder.getDistance();
   }
 
-  public Field2d getField2d(){
+  public Field2d getField2d() {
     return field2d;
   }
 
   public void setPoseMeters(Pose2d pose) {
     field2d.setRobotPose(pose);
     imu.reset();
-    odometry.resetPosition(pose, imu.getRotation2d());
+    // odometry.resetPosition(pose, imu.getRotation2d());
     resetSensors();
-    if(RobotBase.isSimulation()) {
+    if (RobotBase.isSimulation()) {
       driveSim.setPose(pose);
     }
   }
@@ -314,14 +314,15 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void setGear(double g) {
-    gear = (int)g;
-        
+    gear = (int) g;
+
     // Prevent the gear from going out of range
-    // must be between 1 and the max gear, which is the number of items in the GEAR_REDUCTION array
+    // must be between 1 and the max gear, which is the number of items in the
+    // GEAR_REDUCTION array
     int maxGear = GEAR_REDUCTION.length;
-    if(gear > maxGear) {
+    if (gear > maxGear) {
       gear = maxGear;
-    } else if(gear < 1) {
+    } else if (gear < 1) {
       gear = 1;
     }
 
@@ -329,18 +330,19 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void shift(boolean up) {
-    if(up) {
+    if (up) {
       gear++;
     } else {
       gear--;
     }
 
     // Prevent the gear from going out of range
-    // must be between 1 and the max gear, which is the number of items in the GEAR_REDUCTION array
+    // must be between 1 and the max gear, which is the number of items in the
+    // GEAR_REDUCTION array
     int maxGear = GEAR_REDUCTION.length;
-    if(gear > maxGear) {
+    if (gear > maxGear) {
       gear = maxGear;
-    } else if(gear < 1) {
+    } else if (gear < 1) {
       gear = 1;
     }
 
@@ -349,6 +351,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Get the range to the closest object from the left sensor.
+   * 
    * @return The range, in millimeters
    */
   public double getLeftSensorRange() {
@@ -357,6 +360,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Get the range to the closest object from the right sensor.
+   * 
    * @return The range, in millimeters
    */
   public double getRightSensorRange() {
@@ -365,10 +369,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Get the range to the closest object from the middle sensor.
+   * 
    * @return The range, in millimeters
    */
   public double getMiddleSensorRange() {
     return rangeMiddle.getRange();
   }
 }
-

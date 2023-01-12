@@ -135,9 +135,5 @@ public class CargoSubsystem extends SubsystemBase {
    * Use 1 for intake, -1 for eject, 0 to stop motor
    * @param speed
    */
-  public void setIntakeRoller(double speed) {
-    // once you let go of the button it turns off
-    intakeRoller.set(speed);
-  }
-
+ 
 }

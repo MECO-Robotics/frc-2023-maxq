@@ -117,7 +117,7 @@ public class Robot extends TimedRobot {
     robotContainer.getDriveSubsystem().setPoseMeters(new Pose2d(7.532176, 2.963651, Rotation2d.fromDegrees(-69.349228)));
     
     // Start up the teleop commands
-    robotContainer.getTeleopDriveCommand().schedule();
+   
     // robotContainer.getTeleopBallCollection().schedule();
   }
 

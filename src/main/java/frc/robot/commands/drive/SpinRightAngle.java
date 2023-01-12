@@ -72,13 +72,13 @@ public class SpinRightAngle extends CommandBase {
 
     System.out.println("angle:" + a + " speed:" + s);
     
-    driveTrain.tankDrive(s, -s);
+   // driveTrain.tankDrive(s, -s);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.tankDrive(0, 0);
+   // driveTrain.tankDrive(0, 0);
   }
 
   // Returns true when the command should end.

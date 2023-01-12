@@ -66,7 +66,7 @@ public class DriveStraight extends CommandBase {
     // If our current heading matches the initial heading, then the turn comes out to zero.
     //double turn = -(driveTrain.getHeadingDegrees() - initialHeading)/10f;
 
-    driveTrain.arcadeDrive(throttle, 0);
+   // driveTrain.arcadeDrive(throttle, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -76,7 +76,7 @@ public class DriveStraight extends CommandBase {
 
     // Use tank drive, which doesn't have speed ramping because we need the motors to
     // stop immediately.
-    driveTrain.tankDrive(0, 0);
+   // driveTrain.tankDrive(0, 0);
   }
 
   // Returns true when the command should end.

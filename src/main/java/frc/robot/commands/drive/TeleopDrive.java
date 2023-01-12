@@ -42,15 +42,15 @@ public class TeleopDrive extends CommandBase {
   public void execute() {
     switch(driveMode) {
       case SplitArcade:
-        driveTrain.arcadeDrive(controllers.getThrottle(), controllers.getTurn());
+       // driveTrain.arcadeDrive(controllers.getThrottle(), controllers.getTurn());
         break;
       
       case Tank: 
-        driveTrain.tankDrive(controllers.getTankLeft(), controllers.getTankRight());
+       // driveTrain.tankDrive(controllers.getTankLeft(), controllers.getTankRight());
         break;
       
       case Joystick:
-        driveTrain.arcadeDrive(controllers.getJoystickY(), controllers.getJoystickX());
+       // driveTrain.arcadeDrive(controllers.getJoystickY(), controllers.getJoystickX());
         break;
     }
     
