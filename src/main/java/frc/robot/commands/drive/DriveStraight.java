@@ -46,7 +46,8 @@ public class DriveStraight extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
+    // TODO: Setup distance (or use path planning)
+    // distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
     initialHeading = driveTrain.getHeadingDegrees();
   }
 
@@ -82,11 +83,12 @@ public class DriveStraight extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // System.out.println("CMD: DriveStraight: isFinished - distance=" + driveTrain.getLeftDistance());
-    if(forward) {
-      return driveTrain.getLeftDistance() >= distanceDesired;
-    } else {
-      return driveTrain.getLeftDistance() <= distanceDesired;
-    }
+    return true;
+    //TODO
+    // if(forward) {
+    //   return driveTrain.getLeftDistance() >= distanceDesired;
+    // } else {
+    //   return driveTrain.getLeftDistance() <= distanceDesired;
+    // }
   }
 }

@@ -26,7 +26,7 @@ public class Shift extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveTrain.shift(shiftUp);
+    //driveTrain.shift(shiftUp);
   }
 
   // Returns true when the command should end. (this command never finishes)

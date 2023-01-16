@@ -36,7 +36,7 @@ public class SpinRightDistance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
+    //distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,7 +55,7 @@ public class SpinRightDistance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.printf("SpinRightDistance: ENCODER: %f  DESIRED: %f\n", driveTrain.getLeftDistance(), distanceDesired);
-    return driveTrain.getLeftDistance() >= distanceDesired;
+    return false;
+    //return driveTrain.getLeftDistance() >= distanceDesired;
   }
 }
