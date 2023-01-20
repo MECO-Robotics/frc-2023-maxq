@@ -29,7 +29,6 @@ import frc.robot.commands.lights.TurnPurpleRightOn;
 import frc.robot.commands.lights.TurnRedBothOn;
 import frc.robot.commands.lights.TurnRedOffBoth;
 import frc.robot.subsystems.CargoSubsystem;
-import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
@@ -48,7 +47,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
-  private final ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
   private final LightSubsystem lightSubsystem = new LightSubsystem();
   private final PowerHub powerHub = new PowerHub();
@@ -59,9 +57,10 @@ public class RobotContainer {
   private final SendableChooser<DriveMode> driveMode = new SendableChooser<DriveMode>();
 
   public enum DriveMode {
+    RobotOrientedHolonomic,
+    FieldOrientedHolonomic,
     SplitArcade,
-    Tank,
-    Joystick
+    Tank
   }
 
   /**
@@ -90,22 +89,19 @@ public class RobotContainer {
     autoCommandChoice.setDefaultOption("DriveBack", "DriveBack");
     SmartDashboard.putData("Autonomous Mode", autoCommandChoice);
 
-    driveMode.setDefaultOption("Split Arcade", DriveMode.SplitArcade);
+    driveMode.setDefaultOption("Robot Oriented", DriveMode.RobotOrientedHolonomic);
+    driveMode.addOption("Field Oriented", DriveMode.FieldOrientedHolonomic);
+    driveMode.addOption("Split Arcade", DriveMode.SplitArcade);
     driveMode.addOption("Tank", DriveMode.Tank);
-    driveMode.addOption("Joystick", DriveMode.Joystick);
     SmartDashboard.putData("Drive mode", driveMode);
 
    
-    SmartDashboard.putData("Red Lights On", new TurnRedBothOn(lightSubsystem));
-    SmartDashboard.putData("Red Lights Off", new TurnRedOffBoth(lightSubsystem));
-    SmartDashboard.putData("Blue Lights On", new TurnBlueBothOn(lightSubsystem));
-    SmartDashboard.putData("Blue Lights Off", new TurnBlueOffBoth(lightSubsystem));
-    SmartDashboard.putData("Green Lights On", new TurnGreenBothOn(lightSubsystem));
-    SmartDashboard.putData("Green Ligths Off", new TurnGreenBothOff(lightSubsystem));
-    SmartDashboard.putData("Purple Lights On", new TurnPurpleRightOn(lightSubsystem));
-    SmartDashboard.putData("Purple Lights Off", new TurnPurpleRightOff(lightSubsystem));
-    SmartDashboard.putData("Blue Lights Left On", new TurnBlueLeftOnly(lightSubsystem));
-
+    SmartDashboard.putData("Red", new TurnRedBothOn(lightSubsystem));
+    SmartDashboard.putData("Blue", new TurnBlueBothOn(lightSubsystem));
+    SmartDashboard.putData("Off", new TurnBlueOffBoth(lightSubsystem));
+    SmartDashboard.putData("Green", new TurnGreenBothOn(lightSubsystem));
+    SmartDashboard.putData("Purple", new TurnPurpleRightOn(lightSubsystem));
+    
     // Set default commands
     driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
   }
@@ -125,7 +121,7 @@ public class RobotContainer {
 
     configureTeleopDriveButtonBindings();
 
-    configureTeleopCargoButtonBindings();
+    //configureTeleopCargoButtonBindings();
 
     configureTeleopClimbButtonBindings();
   }
@@ -154,38 +150,6 @@ public class RobotContainer {
     // xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem), false);
     // bButton.whenPressed(new Climb(climbingSubsystem), false);
     // yButton.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem), false);
-  }
-
-  /**
-   * Setup the buttons for collecting and shooting cargo
-   */
-  private void configureTeleopCargoButtonBindings() {
-    XboxController copilot = controllerSubsystem.getCopilotController();
-    XboxController pilot = controllerSubsystem.getPilotController();
-
-    JoystickButton pilotLeftBumper = new JoystickButton(pilot, XboxController.Button.kLeftBumper.value);
-    JoystickButton pilotRightBumper = new JoystickButton(pilot, XboxController.Button.kRightBumper.value);
-
-    // pilotRightBumper.whenHeld(new Intake(cargoSubsystem), true);
-    // pilotLeftBumper.whenHeld(new Outtake(cargoSubsystem), true);
-
-    POVButton copilotDpadUp = new POVButton(copilot, 0);
-    POVButton copilotDpadDown = new POVButton(copilot, 180);
-    POVButton copilotDpadRight = new POVButton(copilot, 90);
-
-    POVButton pilotDpadUp = new POVButton(pilot, 0);
-    POVButton pilotDpadDown = new POVButton(pilot, 180);
-    POVButton pilotDpadRight = new POVButton(pilot, 90);
-
-    // POVButton copilotDpadLeft = new POVButton(copilot, 270);
-
-    // pilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
-    // pilotDpadDown.whenPressed(new Collect(cargoSubsystem), true);
-    // pilotDpadRight.whenPressed(new Stow(cargoSubsystem), true);
-
-    // copilotDpadUp.whenPressed(new Shoot(cargoSubsystem), true);
-    // copilotDpadDown.whenPressed(new Collect(cargoSubsystem), true);
-    // copilotDpadRight.whenPressed(new Stow(cargoSubsystem), true);
   }
 
   /**

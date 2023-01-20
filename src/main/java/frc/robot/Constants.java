@@ -26,11 +26,11 @@ public final class Constants {
     public static final int RIGHT_DRIVE_2_CAN = 4;
     public static final int RIGHT_DRIVE_3_CAN = 5;
 
-    // DIO Values
-    public static final int RIGHT_DRIVE_ENCODER_1_DIO = 0;
-    public static final int RIGHT_DRIVE_ENCODER_2_DIO = 1;
-    public static final int LEFT_DRIVE_ENCODER_1_DIO = 2;
-    public static final int LEFT_DRIVE_ENCODER_2_DIO = 3;
+    // DIO Values for encoders - just indicate A channel. Assume B channel will be the next port
+    public static final int FRONT_LEFT_ENCODER_A_DIO = 0;
+    public static final int FRONT_RIGHT_ENCODER_A_DIO = 2;
+    public static final int BACK_LEFT_ENCODER_A_DIO = 4;
+    public static final int BACK_RIGH_ENCODER_A_DIO = 6;
 
     // Analog Inputs
     public static final int LEFT_ULTRASONIC_ANLG = 0;

@@ -13,56 +13,65 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class TeleopDrive extends CommandBase {
 
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 
-  private final DriveSubsystem driveTrain;
-  private final ControllerSubsystem controllers;
-  private final DriveMode driveMode;
+    private final DriveSubsystem driveTrain;
+    private final ControllerSubsystem controllers;
+    private final DriveMode driveMode;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param driveSubsystem The subsystem used by this command.
-   */
-  public TeleopDrive(DriveSubsystem driveSubsystem, ControllerSubsystem controllerSubsystem, RobotContainer.DriveMode driveMode) {
-    driveTrain = driveSubsystem;
-    controllers = controllerSubsystem;
-    this.driveMode = driveMode;
-    
-    // Cancel any other currently running drive subsystem commands before we run.
-    addRequirements(driveSubsystem);
-  }
+    /**
+     * Creates a new ExampleCommand.
+     *
+     * @param driveSubsystem The subsystem used by this command.
+     */
+    public TeleopDrive(DriveSubsystem driveSubsystem, ControllerSubsystem controllerSubsystem,
+            RobotContainer.DriveMode driveMode) {
+        driveTrain = driveSubsystem;
+        controllers = controllerSubsystem;
+        this.driveMode = driveMode;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    switch(driveMode) {
-      case SplitArcade:
-       // driveTrain.arcadeDrive(controllers.getThrottle(), controllers.getTurn());
-        break;
-      
-      case Tank: 
-       // driveTrain.tankDrive(controllers.getTankLeft(), controllers.getTankRight());
-        break;
-      
-      case Joystick:
-       // driveTrain.arcadeDrive(controllers.getJoystickY(), controllers.getJoystickX());
-        break;
+        // Cancel any other currently running drive subsystem commands before we run.
+        addRequirements(driveSubsystem);
     }
-    
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+    }
 
-  // Returns true when the command should end. (this command never finishes)
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        switch (driveMode) {
+            case SplitArcade:
+                // driveTrain.arcadeDrive(controllers.getThrottle(), controllers.getTurn());
+                break;
+
+            case Tank:
+                // driveTrain.tankDrive(controllers.getTankLeft(), controllers.getTankRight());
+                break;
+
+            case RobotOrientedHolonomic:
+                driveTrain.robotDrive(controllers.getJoystickX(), controllers.getJoystickY(),
+                        controllers.getJoystickZ());
+                break;
+
+            case FieldOrientedHolonomic:
+                driveTrain.fieldDrive(controllers.getJoystickX(), controllers.getJoystickY(),
+                        controllers.getJoystickZ());
+                break;
+        }
+
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+    }
+
+    // Returns true when the command should end. (this command never finishes)
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

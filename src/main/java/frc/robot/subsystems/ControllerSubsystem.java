@@ -65,6 +65,14 @@ public class ControllerSubsystem extends SubsystemBase {
     return joystick.getX();
   }
 
+  /**
+   * Get the twist of the joystick
+   * @return
+   */
+  public double getJoystickZ() {
+    return joystick.getZ();
+  }
+
   public boolean getArmUpButton() {
     return armUpButton;
   }
