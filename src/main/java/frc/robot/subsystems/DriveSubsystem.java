@@ -9,13 +9,10 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
-import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -24,7 +21,6 @@ import edu.wpi.first.math.util.Units;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-import com.ctre.phoenix.motorcontrol.IMotorController;
 
 import frc.robot.Constants;
 
@@ -41,6 +37,9 @@ public class DriveSubsystem extends SubsystemBase {
     // TODO: Define Wheel positions. Repeat the following for each wheel x andd y
     // are in meters
     private static final Translation2d FRONT_LEFT_POS = new Translation2d(0.0, 0.0);
+    private static final Translation2d FRONT_RIGHT_POS = new Translation2d(0.0, 0.0);
+    private static final Translation2d BACK_LEFT_POS = new Translation2d(0.0, 0.0);
+    private static final Translation2d BACK_RIGHT_POS = new Translation2d(0.0, 0.0);
 
     // This object defines the properties of how the robot turns
     private static final MecanumDriveKinematics DRIVE_KINEMATICS = new MecanumDriveKinematics(null, null, null, null);
@@ -85,23 +84,22 @@ public class DriveSubsystem extends SubsystemBase {
 
         // TODO: Setup encoders
         // Left: reverse direction (decreasing values go forward)
-        frontLeftEncoder = new Encoder(Constants.FRONT_LEFT_ENCODER_A_DIO, Constants.FRONT_LEFT_ENCODER_A_DIO + 1,
+        frontLeftEncoder = new Encoder(
+                Constants.FRONT_LEFT_ENCODER_A_DIO,
+                Constants.FRONT_LEFT_ENCODER_A_DIO + 1,     // Assuming B channel is the next DIO port
                 true);
 
-        // leftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        // rightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-
-        // TODO: Create the following object using the distances from each of the
-        // encoders
-        // MecanumDriveWheelPositions wheelPositions = new MecanumDriveWheelPositions(
-        // frontLeftEncoder.getDistance(),
-        // ...
-        // )
+        frontLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        frontRightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        backLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        backRightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        // TODO: Repeat for other encoders
 
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
         // the field
         // TODO - initialize the odometry with initial states
-        odometry = new MecanumDrivePoseEstimator(DRIVE_KINEMATICS, imu.getRotation2d(), getWheelPositions(), getPoseMeters(), null, null );
+        odometry = new MecanumDrivePoseEstimator(DRIVE_KINEMATICS, imu.getRotation2d(), getWheelPositions(),
+                getPoseMeters(), null, null);
 
         addChild("Drive", drive);
         addChild("IMU", imu);
@@ -109,6 +107,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
+    /**
+     * Get the wheel positions
+     * @return
+     */
     private MecanumDriveWheelPositions getWheelPositions() {
         return new MecanumDriveWheelPositions(
                 frontLeftEncoder.getDistance(),
@@ -116,6 +118,7 @@ public class DriveSubsystem extends SubsystemBase {
                 backLeftEncoder.getDistance(),
                 backRightEncoder.getDistance());
     }
+
 
     /**
      * This method will be called once per scheduler run
@@ -172,6 +175,15 @@ public class DriveSubsystem extends SubsystemBase {
         imu.reset();
         odometry.resetPosition(imu.getRotation2d(), getWheelPositions(), getPoseMeters());
         resetSensors();
+    }
+
+    /**
+     * Add a vision sample to adjust robot pose
+     * @param visionRobotPoseMeters
+     * @param timeStamp
+     */
+    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timeStamp) {
+        odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
     }
 
     public Pose2d getPoseMeters() {
