@@ -14,6 +14,12 @@ package frc.robot;
  */
 public final class Constants {
 
+    public enum GamePiece {
+        Unknown,
+        Cone,
+        Cube
+    };
+
     //
     //          DRIVE SUBSYSTEM
     //

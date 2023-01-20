@@ -28,7 +28,6 @@ import frc.robot.commands.lights.TurnPurpleRightOff;
 import frc.robot.commands.lights.TurnPurpleRightOn;
 import frc.robot.commands.lights.TurnRedBothOn;
 import frc.robot.commands.lights.TurnRedOffBoth;
-import frc.robot.subsystems.CargoSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
@@ -46,7 +45,6 @@ import frc.robot.subsystems.PowerHub;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final CargoSubsystem cargoSubsystem = new CargoSubsystem();
   private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
   private final LightSubsystem lightSubsystem = new LightSubsystem();
   private final PowerHub powerHub = new PowerHub();
