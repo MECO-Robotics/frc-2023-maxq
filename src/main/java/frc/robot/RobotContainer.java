@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.drive.AutoLevelOnChargeStation;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.drive.ToggleDirection;
@@ -118,10 +120,6 @@ public class RobotContainer {
     // of the button bindings are actually done in the ControllerSubsystem class.
 
     configureTeleopDriveButtonBindings();
-
-    //configureTeleopCargoButtonBindings();
-
-    configureTeleopClimbButtonBindings();
   }
 
   /**
@@ -154,9 +152,11 @@ public class RobotContainer {
    * Setup the buttons for teleop drive.
    */
   private void configureTeleopDriveButtonBindings() {
-    JoystickButton modeButton = new JoystickButton(controllerSubsystem.getPilotController(),
-        XboxController.Button.kStart.value);
-    // modeButton.whenPressed(new ToggleDirection(controllerSubsystem), false);
+    XboxController pilot = controllerSubsystem.getPilotController();
+    JoystickButton aButton = new JoystickButton(pilot, XboxController.Button.kA.value);
+
+    // Whenever holding A - run the auto level routine. When not holding, do normal driving
+    aButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem)).whileFalse(new TeleopDrive(driveSubsystem, controllerSubsystem, DriveMode.RobotOrientedHolonomic));
   }
 
   /**
