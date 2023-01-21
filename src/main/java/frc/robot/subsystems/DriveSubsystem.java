@@ -89,7 +89,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Left: reverse direction (decreasing values go forward)
         frontLeftEncoder = new Encoder(
                 Constants.FRONT_LEFT_ENCODER_A_DIO,
-                Constants.FRONT_LEFT_ENCODER_A_DIO + 1,     // Assuming B channel is the next DIO port
+                Constants.FRONT_LEFT_ENCODER_A_DIO + 1, // Assuming B channel is the next DIO port
                 true);
 
         frontLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
@@ -112,6 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Get the wheel positions
+     * 
      * @return
      */
     private MecanumDriveWheelPositions getWheelPositions() {
@@ -121,7 +122,6 @@ public class DriveSubsystem extends SubsystemBase {
                 backLeftEncoder.getDistance(),
                 backRightEncoder.getDistance());
     }
-
 
     /**
      * This method will be called once per scheduler run
@@ -151,7 +151,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Move relative to the orientation on the field
+     * Move relative to the orientation on the field. This relies on the robot being
+     * in initial, field oriented position
      */
     public void fieldDrive(double strafe, double forward, double twist) {
 
@@ -162,13 +163,14 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
 
         // or using Field relative:
-        //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, null)
-        
+        // chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, null)
+
         MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
-        
-        // TODO Use PID control to get to the desired speeds (set point) by measuring the current wheel speed using encoders (process variable)
+
+        // TODO Use PID control to get to the desired speeds (set point) by measuring
+        // the current wheel speed using encoders (process variable)
         // For example:
-        
+
     }
 
     /**
@@ -196,6 +198,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Add a vision sample to adjust robot pose
+     * 
      * @param visionRobotPoseMeters
      * @param timeStamp
      */
