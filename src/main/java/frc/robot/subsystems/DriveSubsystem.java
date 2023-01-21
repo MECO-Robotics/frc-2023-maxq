@@ -4,15 +4,18 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -42,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
     private static final Translation2d BACK_RIGHT_POS = new Translation2d(0.0, 0.0);
 
     // This object defines the properties of how the robot turns
-    private static final MecanumDriveKinematics DRIVE_KINEMATICS = new MecanumDriveKinematics(null, null, null, null);
+    private final MecanumDriveKinematics driveKinematics = new MecanumDriveKinematics(null, null, null, null);
 
     // Encoders - front left, front right, rear left, rear right
     private Encoder frontLeftEncoder, frontRightEncoder, backLeftEncoder, backRightEncoder;
@@ -98,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
         // the field
         // TODO - initialize the odometry with initial states
-        odometry = new MecanumDrivePoseEstimator(DRIVE_KINEMATICS, imu.getRotation2d(), getWheelPositions(),
+        odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(),
                 getPoseMeters(), null, null);
 
         addChild("Drive", drive);
@@ -143,6 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
      * Move relative to the robot's orientation
      */
     public void robotDrive(double strafe, double forward, double twist) {
+
         drive.driveCartesian(strafe, forward, twist);
     }
 
@@ -152,6 +156,19 @@ public class DriveSubsystem extends SubsystemBase {
     public void fieldDrive(double strafe, double forward, double twist) {
 
         drive.driveCartesian(strafe, forward, twist, imu.getRotation2d());
+    }
+
+    public void fieldDrivePid(double vx, double vy, double rot) {
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
+
+        // or using Field relative:
+        //chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, null)
+        
+        MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
+        
+        // TODO Use PID control to get to the desired speeds (set point) by measuring the current wheel speed using encoders (process variable)
+        // For example:
+        
     }
 
     /**
