@@ -152,11 +152,17 @@ public class RobotContainer {
    * Setup the buttons for teleop drive.
    */
   private void configureTeleopDriveButtonBindings() {
+    
+    
     XboxController pilot = controllerSubsystem.getPilotController();
     JoystickButton aButton = new JoystickButton(pilot, XboxController.Button.kA.value);
 
     // Whenever holding A - run the auto level routine. When not holding, do normal driving
     aButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem)).whileFalse(new TeleopDrive(driveSubsystem, controllerSubsystem, DriveMode.RobotOrientedHolonomic));
+
+    // TODO: Bind buttons for the ResetSensors command. Brent recommands a "two man rule" for engaging, requiring a button on the pilot and co-pilot to press a button at the same time in order to reset.
+
+
   }
 
   /**
