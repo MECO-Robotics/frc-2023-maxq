@@ -144,22 +144,35 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Move relative to the robot's orientation
+     * @param forwardX Forward speed demand, [-1.0 .. 1.0]
+     * @param leftY Left strafe speed demand, [-1.0 .. 1.0]
+     * @param twist CCW rotation rate demand, [-1.0 .. 1.0]
      */
-    public void robotDrive(double strafe, double forward, double twist) {
+    public void robotDrive(double forwardX, double leftY, double twist) {
 
-        drive.driveCartesian(strafe, forward, twist);
+        drive.driveCartesian(forwardX, leftY, twist);
     }
+
 
     /**
      * Move relative to the orientation on the field. This relies on the robot being
      * in initial, field oriented position
+     * @param forwardX Forward speed demand, [-1.0 .. 1.0]
+     * @param leftY Left strafe speed demand, [-1.0 .. 1.0]
+     * @param twist CCW rotation rate demand, [-1.0 .. 1.0]
      */
-    public void fieldDrive(double strafe, double forward, double twist) {
+    public void fieldDrive(double forwardX, double leftY, double twist) {
 
-        drive.driveCartesian(strafe, forward, twist, imu.getRotation2d());
+        drive.driveCartesian(forwardX, leftY, twist, imu.getRotation2d());
     }
 
-    public void fieldDrivePid(double vx, double vy, double rot) {
+    /**
+     * Drive at specifc forward (x), left (y), and angular speeds
+     * @param vx Forward speed, in m/s
+     * @param vy Left strafe speed, in m/s
+     * @param rot Angular speed CCW, in rad/s
+     */
+    public void fieldDriveVelocity(double vx, double vy, double rot) {
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
 
         // or using Field relative:
