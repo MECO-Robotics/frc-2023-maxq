@@ -28,8 +28,16 @@ import com.kauailabs.navx.frc.AHRS;
 import frc.robot.Constants;
 
 /**
- * A mecanum drive train.
+ * A mecanum drive train. The setup is as follows:
+ * Motors are setup with a single stage of pinions of 12 to 72 from motor to wheel (1:6), so:
+ * 
+ * Left motors: Not inverted
+ * Right motors: Inverted
  */
+
+
+
+ 
 public class DriveSubsystem extends SubsystemBase {
 
     // We're using this encoder: https://www.revrobotics.com/rev-11-1271/
@@ -39,10 +47,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     // TODO: Define Wheel positions. Repeat the following for each wheel x andd y
     // are in meters
-    private static final Translation2d FRONT_LEFT_POS = new Translation2d(0.0, 0.0);
-    private static final Translation2d FRONT_RIGHT_POS = new Translation2d(0.0, 0.0);
-    private static final Translation2d BACK_LEFT_POS = new Translation2d(0.0, 0.0);
-    private static final Translation2d BACK_RIGHT_POS = new Translation2d(0.0, 0.0);
+    private static final Translation2d FRONT_LEFT_POS = new Translation2d(9.25, 24.23);
+    private static final Translation2d FRONT_RIGHT_POS = new Translation2d(-9.25, -24.23);
+    private static final Translation2d BACK_LEFT_POS = new Translation2d(9.25, 24.23);
+    private static final Translation2d BACK_RIGHT_POS = new Translation2d(-9.25, -24.23);
 
     // This object defines the properties of how the robot turns
     private final MecanumDriveKinematics driveKinematics = new MecanumDriveKinematics(null, null, null, null);
