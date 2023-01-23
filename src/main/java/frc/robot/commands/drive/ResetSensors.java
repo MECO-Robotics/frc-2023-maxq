@@ -14,8 +14,8 @@ public class ResetSensors extends CommandBase {
     public ResetSensors(DriveSubsystem driveSubsystem) {
         driveTrain = driveSubsystem;
 
-        // Since this is used as a default command, it must specify a required subsystem
-        addRequirements(driveSubsystem);
+        // Do NOT make the driveSubsystem a required system. The command is instananeous and
+        // would still allow normal teleop drive at the same time.
     }
 
     // Called when the command is initially scheduled.
