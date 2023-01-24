@@ -211,6 +211,13 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * Stop all motors
+     */
+    public void stop() {
+        drive.stopMotor();
+    }
+
+    /**
      * Normally, this should not be called, except form the setPose() method.
      * Using setPose() instead also updates the drive train, odometry, and drive
      * sim.bb
