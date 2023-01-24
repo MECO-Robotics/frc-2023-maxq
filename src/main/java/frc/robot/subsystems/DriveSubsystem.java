@@ -26,224 +26,238 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import frc.robot.Constants;
+import frc.robot.commands.lights.TurnBlueBothOn;
 
 /**
  * A mecanum drive train. The setup is as follows:
- * Motors are setup with a single stage of pinions of 12 to 72 from motor to wheel (1:6), so:
+ * Motors are setup with a single stage of pinions of 12 to 72 from motor to
+ * wheel (1:6), so:
  * 
  * Left motors: Not inverted
  * Right motors: Inverted
  */
 
-
-
- 
 public class DriveSubsystem extends SubsystemBase {
 
-    // We're using this encoder: https://www.revrobotics.com/rev-11-1271/
-    private static final int ENCODER_RESOLUTION = 8192;
-    private static final double WHEEL_DIAMETER_INCHES = 6.0; // inches
-    private static final double WHEEL_CIRCUM_METERS = Units.inchesToMeters(WHEEL_DIAMETER_INCHES) * Math.PI;
+  // We're using this encoder: https://www.revrobotics.com/rev-11-1271/
 
-    // TODO: Define Wheel positions. Repeat the following for each wheel x andd y
-    // are in meters
-    private static final Translation2d FRONT_LEFT_POS = new Translation2d(9.25, 24.23);
-    private static final Translation2d FRONT_RIGHT_POS = new Translation2d(-9.25, -24.23);
-    private static final Translation2d BACK_LEFT_POS = new Translation2d(9.25, 24.23);
-    private static final Translation2d BACK_RIGHT_POS = new Translation2d(-9.25, -24.23);
+  private static final int ENCODER_RESOLUTION = 8192;
+  private static final double WHEEL_DIAMETER_INCHES = 6.0; // inches
+  private static final double WHEEL_CIRCUM_METERS = Units.inchesToMeters(WHEEL_DIAMETER_INCHES) * Math.PI;
 
-    // This object defines the properties of how the robot turns
-    private final MecanumDriveKinematics driveKinematics = new MecanumDriveKinematics(null, null, null, null);
+  private static final Translation2d FRONT_LEFT_POS = new Translation2d(9.25, 24.23);
+  private static final Translation2d FRONT_RIGHT_POS = new Translation2d(-9.25, -24.23);
+  private static final Translation2d BACK_LEFT_POS = new Translation2d(9.25, 24.23);
+  private static final Translation2d BACK_RIGHT_POS = new Translation2d(-9.25, -24.23);
 
-    // Encoders - front left, front right, rear left, rear right
-    private Encoder frontLeftEncoder, frontRightEncoder, backLeftEncoder, backRightEncoder;
+  // This object defines the properties of how the robot turns
+  private final MecanumDriveKinematics driveKinematics = new MecanumDriveKinematics(FRONT_LEFT_POS, FRONT_RIGHT_POS,
+      BACK_LEFT_POS, BACK_RIGHT_POS);
 
-    // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP
-    // port, which is the wide female pin header in the middle of the Rio. Through
-    // the MXP, the Serial Port Interface (SPI) is used.
-    private final AHRS imu = new AHRS(SPI.Port.kMXP);
+  // Encoders - front left, front right, rear left, rear right
+  private Encoder frontLeftEncoder, frontRightEncoder, backLeftEncoder, backRightEncoder;
 
-    // Converts tank or arcade drive speed requests to voltage requests to the motor
-    // controllers
-    private final MecanumDrive drive;
+  // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP
+  // port, which is the wide female pin header in the middle of the Rio. Through
+  // the MXP, the Serial Port Interface (SPI) is used.
+  private final AHRS imu = new AHRS(SPI.Port.kMXP);
 
-    // Keeps track of where we are on the field based on gyro and encoder inputs.
-    private final MecanumDrivePoseEstimator odometry;
+  // Converts tank or arcade drive speed requests to voltage requests to the motor
+  // controllers
+  private final MecanumDrive drive;
 
-    // Sensor simulations
-    private final Field2d field2d = new Field2d();
+  // Keeps track of where we are on the field based on gyro and encoder inputs.
+  private final MecanumDrivePoseEstimator odometry;
 
-    /** Creates a new Subsystem. */
-    public DriveSubsystem() {
+  // Sensor simulations
+  private final Field2d field2d = new Field2d();
 
-        // Create a VictorSPX for each motor.
-        WPI_VictorSPX frontLeft = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1_CAN);
-        WPI_VictorSPX backLeft = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2_CAN);
-        WPI_VictorSPX frontRight = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3_CAN);
-        WPI_VictorSPX backRight = new WPI_VictorSPX(Constants.LEFT_DRIVE_1_CAN);
+  /** Creates a new Subsystem. */
+  public DriveSubsystem() {
 
-        frontLeft.setNeutralMode(NeutralMode.Brake);
-        backLeft.setNeutralMode(NeutralMode.Brake);
-        frontRight.setNeutralMode(NeutralMode.Brake);
-        backRight.setNeutralMode(NeutralMode.Brake);
+    // Create a VictorSPX for each motor.
+    WPI_VictorSPX frontLeft = new WPI_VictorSPX(Constants.RIGHT_DRIVE_1_CAN);
+    WPI_VictorSPX backLeft = new WPI_VictorSPX(Constants.RIGHT_DRIVE_2_CAN);
+    WPI_VictorSPX frontRight = new WPI_VictorSPX(Constants.RIGHT_DRIVE_3_CAN);
+    WPI_VictorSPX backRight = new WPI_VictorSPX(Constants.LEFT_DRIVE_1_CAN);
 
-        // TODO: Setup the left side or right side motors for inverted, depending on the
-        // gearing.
-        frontLeft.setInverted(false);
+    frontLeft.setNeutralMode(NeutralMode.Brake);
+    backLeft.setNeutralMode(NeutralMode.Brake);
+    frontRight.setNeutralMode(NeutralMode.Brake);
+    backRight.setNeutralMode(NeutralMode.Brake);
 
-        drive = new MecanumDrive(backLeft, frontLeft, backRight, frontRight);
+    frontLeft.setInverted(true);
+    backLeft.setInverted(true);
 
-        // TODO: Setup encoders
-        // Left: reverse direction (decreasing values go forward)
-        frontLeftEncoder = new Encoder(
-                Constants.FRONT_LEFT_ENCODER_A_DIO,
-                Constants.FRONT_LEFT_ENCODER_A_DIO + 1, // Assuming B channel is the next DIO port
-                true);
+    drive = new MecanumDrive(backLeft, frontLeft, backRight, frontRight);
 
-        frontLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        frontRightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        backLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        backRightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        // TODO: Repeat for other encoders
+    // TODO: Setup encoders
+    // Left: reverse direction (decreasing values go forward)
+    frontLeftEncoder = new Encoder(
+        Constants.FRONT_LEFT_ENCODER_A_DIO,
+        Constants.FRONT_LEFT_ENCODER_A_DIO + 1, // Assuming B channel is the next DIO port
+        true);
+// may need to negate the right encoders instead depends on how the gearing works
 
-        // Set the initial position (0,0) and heading (whatever it is) of the robot on
-        // the field
-        // TODO - initialize the odometry with initial states
-        odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(),
-                getPoseMeters(), null, null);
+    frontRightEncoder = new Encoder(
+        Constants.FRONT_RIGHT_ENCODER_A_DIO,
+        Constants.FRONT_RIGHT_ENCODER_A_DIO + 1);
 
-        addChild("Drive", drive);
-        addChild("IMU", imu);
-        addChild("Field", field2d);
+    backLeftEncoder = new Encoder(
+        Constants.BACK_LEFT_ENCODER_A_DIO,
+        Constants.BACK_LEFT_ENCODER_A_DIO + 1,
+        true);
 
-    }
+    backRightEncoder = new Encoder(
+        Constants.BACK_RIGH_ENCODER_A_DIO,
+        Constants.BACK_RIGH_ENCODER_A_DIO + 1);
 
-    /**
-     * Get the wheel positions
-     * 
-     * @return
-     */
-    private MecanumDriveWheelPositions getWheelPositions() {
-        return new MecanumDriveWheelPositions(
-                frontLeftEncoder.getDistance(),
-                frontRightEncoder.getDistance(),
-                backLeftEncoder.getDistance(),
-                backRightEncoder.getDistance());
-    }
+    frontLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+    frontRightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+    backLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+    backRightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+    
 
-    /**
-     * This method will be called once per scheduler run
-     */
-    @Override
-    public void periodic() {
+    // Set the initial position (0,0) and heading (whatever it is) of the robot on
+    // the field
+    // TODO - initialize the odometry with initial states
+    odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(),
+        getPoseMeters(), null, null);
 
-        odometry.update(imu.getRotation2d(), getWheelPositions());
+    addChild("Drive", drive);
+    addChild("IMU", imu);
+    addChild("Field", field2d);
 
-        // This allows us to see the robot's position and orientation on the
-        // Shuffleboard
-        field2d.setRobotPose(getPoseMeters());
+  }
 
-        // Update the motor safety. This makes sure the system knows we're in control of
-        // the motors.
-        // If the code crashes, or somehow gets stuck in a loop, and this method isn't
-        // called then the motors will automaitcally stop.
-        drive.feed();
-    }
+  /**
+   * Get the wheel positions
+   * 
+   * @return
+   */
+  private MecanumDriveWheelPositions getWheelPositions() {
+    return new MecanumDriveWheelPositions(
+        frontLeftEncoder.getDistance(),
+        frontRightEncoder.getDistance(),
+        backLeftEncoder.getDistance(),
+        backRightEncoder.getDistance());
+  }
 
-    /**
-     * Move relative to the robot's orientation
-     * @param forwardX Forward speed demand, [-1.0 .. 1.0]
-     * @param leftY Left strafe speed demand, [-1.0 .. 1.0]
-     * @param twist CCW rotation rate demand, [-1.0 .. 1.0]
-     */
-    public void robotDrive(double forwardX, double leftY, double twist) {
+  /**
+   * This method will be called once per scheduler run
+   */
+  @Override
+  public void periodic() {
 
-        drive.driveCartesian(forwardX, leftY, twist);
-    }
+    odometry.update(imu.getRotation2d(), getWheelPositions());
 
+    // This allows us to see the robot's position and orientation on the
+    // Shuffleboard
+    field2d.setRobotPose(getPoseMeters());
 
-    /**
-     * Move relative to the orientation on the field. This relies on the robot being
-     * in initial, field oriented position
-     * @param forwardX Forward speed demand, [-1.0 .. 1.0]
-     * @param leftY Left strafe speed demand, [-1.0 .. 1.0]
-     * @param twist CCW rotation rate demand, [-1.0 .. 1.0]
-     */
-    public void fieldDrive(double forwardX, double leftY, double twist) {
+    // Update the motor safety. This makes sure the system knows we're in control of
+    // the motors.
+    // If the code crashes, or somehow gets stuck in a loop, and this method isn't
+    // called then the motors will automaitcally stop.
+    drive.feed();
+  }
 
-        drive.driveCartesian(forwardX, leftY, twist, imu.getRotation2d());
-    }
+  /**
+   * Move relative to the robot's orientation
+   * 
+   * @param forwardX Forward speed demand, [-1.0 .. 1.0]
+   * @param leftY    Left strafe speed demand, [-1.0 .. 1.0]
+   * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
+   */
+  public void robotDrive(double forwardX, double leftY, double twist) {
 
-    /**
-     * Drive at specifc forward (x), left (y), and angular speeds
-     * @param vx Forward speed, in m/s
-     * @param vy Left strafe speed, in m/s
-     * @param rot Angular speed CCW, in rad/s
-     */
-    public void fieldDriveVelocity(double vx, double vy, double rot) {
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
+    drive.driveCartesian(forwardX, leftY, twist);
+  }
 
-        // or using Field relative:
-        // chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, null)
+  /**
+   * Move relative to the orientation on the field. This relies on the robot being
+   * in initial, field oriented position
+   * 
+   * @param forwardX Forward speed demand, [-1.0 .. 1.0]
+   * @param leftY    Left strafe speed demand, [-1.0 .. 1.0]
+   * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
+   */
+  public void fieldDrive(double forwardX, double leftY, double twist) {
 
-        MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
+    drive.driveCartesian(forwardX, leftY, twist, imu.getRotation2d());
+  }
 
-        // TODO Use PID control to get to the desired speeds (set point) by measuring
-        // the current wheel speed using encoders (process variable)
-        // For example:
+  /**
+   * Drive at specifc forward (x), left (y), and angular speeds
+   * 
+   * @param vx  Forward speed, in m/s
+   * @param vy  Left strafe speed, in m/s
+   * @param rot Angular speed CCW, in rad/s
+   */
+  public void fieldDriveVelocity(double vx, double vy, double rot) {
+    ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
 
-    }
+    // or using Field relative:
+    // chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, null)
 
-    /**
-     * Normally, this should not be called, except form the setPose() method.
-     * Using setPose() instead also updates the drive train, odometry, and drive
-     * sim.bb
-     */
-    public void resetSensors() {
-        imu.reset();
-        frontLeftEncoder.reset();
-        frontRightEncoder.reset();
-        backLeftEncoder.reset();
-        backRightEncoder.reset();
-    }
+    MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
 
-    /**
-     * Set the initial condition of the robot (where it is on the field)
-     */
-    public void setPoseMeters(Pose2d pose) {
-        field2d.setRobotPose(pose);
-        imu.reset();
-        odometry.resetPosition(imu.getRotation2d(), getWheelPositions(), getPoseMeters());
-        resetSensors();
-    }
+    // TODO Use PID control to get to the desired speeds (set point) by measuring
+    // the current wheel speed using encoders (process variable)
+    // For example:
 
-    /**
-     * Add a vision sample to adjust robot pose
-     * 
-     * @param visionRobotPoseMeters
-     * @param timeStamp
-     */
-    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timeStamp) {
-        odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
-    }
+  }
 
-    public Pose2d getPoseMeters() {
-        return odometry.getEstimatedPosition();
-    }
+  /**
+   * Normally, this should not be called, except form the setPose() method.
+   * Using setPose() instead also updates the drive train, odometry, and drive
+   * sim.bb
+   */
+  public void resetSensors() {
+    imu.reset();
+    frontLeftEncoder.reset();
+    frontRightEncoder.reset();
+    backLeftEncoder.reset();
+    backRightEncoder.reset();
+  }
 
-    public double getHeadingDegrees() {
-        return imu.getAngle();
-    }
+  /**
+   * Set the initial condition of the robot (where it is on the field)
+   */
+  public void setPoseMeters(Pose2d pose) {
+    field2d.setRobotPose(pose);
+    imu.reset();
+    odometry.resetPosition(imu.getRotation2d(), getWheelPositions(), getPoseMeters());
+    resetSensors();
+  }
 
-    public double getPitch() {
-        // TODO: Verify rio is mounted properly to return pitch
-        return imu.getPitch();
-    }
+  /**
+   * Add a vision sample to adjust robot pose
+   * 
+   * @param visionRobotPoseMeters
+   * @param timeStamp
+   */
+  public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timeStamp) {
+    odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
+  }
 
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
-        builder.addDoubleProperty("Pitch", this::getPitch, null);
-    }
+  public Pose2d getPoseMeters() {
+    return odometry.getEstimatedPosition();
+  }
+
+  public double getHeadingDegrees() {
+    return imu.getAngle();
+  }
+
+  public double getPitch() {
+    // TODO: Verify rio is mounted properly to return pitch
+    return imu.getPitch();
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.addDoubleProperty("Pitch", this::getPitch, null);
+  }
 
 }
