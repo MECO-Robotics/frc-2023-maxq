@@ -24,6 +24,11 @@ import edu.wpi.first.math.util.Units;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import frc.robot.Constants;
 import frc.robot.commands.lights.TurnBlueBothOn;
@@ -64,10 +69,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Converts tank or arcade drive speed requests to voltage requests to the motor
     // controllers
-    private final MecanumDrive drive;
+    private MecanumDrive drive;
 
     // Keeps track of where we are on the field based on gyro and encoder inputs.
-    private final MecanumDrivePoseEstimator odometry;
+    private MecanumDrivePoseEstimator odometry;
 
     // Sensor simulations
     private final Field2d field2d = new Field2d();
@@ -132,6 +137,21 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
+    public void configureUsingSparkMaxMotorControllers() {
+
+        CANSparkMax frontLeftController = new CANSparkMax(Constants.FRONT_LEFT_DRIVE_CAN, MotorType.kBrushed);
+        frontLeftController.setIdleMode(IdleMode.kBrake);
+        frontLeftController.setInverted(true);
+
+        // TODO Repeat for each motor controller
+
+        RelativeEncoder frontLeftEncoder = frontLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+
+        // TODO Repeat for each encoder
+
+        drive = new MecanumDrive(frontLeftController, null, null, null);
+        odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(), getPoseMeters(), null, null);
+    }
     /**
      * Get the wheel positions
      * 
