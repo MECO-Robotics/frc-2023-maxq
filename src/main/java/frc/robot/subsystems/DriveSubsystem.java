@@ -26,6 +26,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
@@ -233,7 +234,7 @@ public class DriveSubsystem extends SubsystemBase {
     /**
      * Drive at specifc forward (x), left (y), and angular speeds
      * 
-     * @param vx  Forward speed, in m/s
+     * @param vx  Forward speed away from alliance wall, in m/s
      * @param vy  Left strafe speed, in m/s
      * @param rot Angular speed CCW, in rad/s
      */
@@ -241,7 +242,7 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
 
         // or using Field relative:
-        // chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, null)
+        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, imu.getRotation2d());
 
         MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
 
@@ -249,6 +250,8 @@ public class DriveSubsystem extends SubsystemBase {
         // the current wheel speed using encoders (process variable)
         // For example:
 
+        frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond, ControlType.kVelocity);
+        // TODO Update other motor controllers
     }
 
     /**
