@@ -75,12 +75,15 @@ public class DriveSubsystem extends SubsystemBase {
     // Sensor simulations
     private final Field2d field2d = new Field2d();
 
+
+    CANSparkMax frontLeftController;
+    CANSparkMax frontRightController;
+    CANSparkMax backLeftController;
+    CANSparkMax backRightController;
+    
     RelativeEncoder frontLeftEncoderRev;
-
     RelativeEncoder backRightEncoderRev;
-
     RelativeEncoder frontRightEncoderRev;
-
     RelativeEncoder backLeftEncoderRev;
 
     /* Creates a new Subsystem. */
@@ -106,19 +109,19 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void configureUsingSparkMaxMotorControllers() {
 
-        CANSparkMax frontLeftController = new CANSparkMax(Constants.FRONT_LEFT_CAN, MotorType.kBrushed);
+        frontLeftController = new CANSparkMax(Constants.FRONT_LEFT_CAN, MotorType.kBrushed);
         frontLeftController.setIdleMode(IdleMode.kBrake);
         frontLeftController.setInverted(true);
 
-        CANSparkMax frontRightController = new CANSparkMax(Constants.FRONT_RIGHT_CAN, MotorType.kBrushed);
+        frontRightController = new CANSparkMax(Constants.FRONT_RIGHT_CAN, MotorType.kBrushed);
         frontRightController.setIdleMode(IdleMode.kBrake);
         frontRightController.setInverted(false);
 
-        CANSparkMax backLeftController = new CANSparkMax(Constants.BACK_LEFT_CAN, MotorType.kBrushed);
+        backLeftController = new CANSparkMax(Constants.BACK_LEFT_CAN, MotorType.kBrushed);
         backLeftController.setIdleMode(IdleMode.kBrake);
         backLeftController.setInverted(true);
 
-        CANSparkMax backRightController = new CANSparkMax(Constants.BACK_RIGHT_CAN, MotorType.kBrushed);
+        backRightController = new CANSparkMax(Constants.BACK_RIGHT_CAN, MotorType.kBrushed);
         backRightController.setIdleMode(IdleMode.kBrake);
         backRightController.setInverted(false);
 
@@ -174,6 +177,32 @@ public class DriveSubsystem extends SubsystemBase {
         // If the code crashes, or somehow gets stuck in a loop, and this method isn't
         // called then the motors will automaitcally stop.
         drive.feed();
+    }
+
+    /**
+     * Arcade drive. Inputs are directly fed to motor controllers as-is.
+     * @param throttle
+     * @param turn
+     */
+    public void arcadeDrive(double throttle, double turn) {
+        double left = throttle - turn;
+        double right = throttle + turn;
+        frontLeftController.set(left);
+        backLeftController.set(left);
+        frontRightController.set(right);
+        backRightController.set(right);
+    }
+
+    /**
+     * Tank drive. Inputs are directly fed to motor controllers as-is.
+     * @param left
+     * @param right
+     */
+    public void tankDrive(double left, double right) {
+        frontLeftController.set(left);
+        backLeftController.set(left);
+        frontRightController.set(right);
+        backRightController.set(right);
     }
 
     /**

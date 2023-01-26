@@ -10,7 +10,6 @@ import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-
 public class TeleopDrive extends CommandBase {
 
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
@@ -44,21 +43,27 @@ public class TeleopDrive extends CommandBase {
     public void execute() {
         switch (driveMode) {
             case SplitArcade:
-                // driveTrain.arcadeDrive(controllers.getThrottle(), controllers.getTurn());
+                driveTrain.arcadeDrive(controllers.getThrottle(), controllers.getTurn());
                 break;
 
             case Tank:
-                // driveTrain.tankDrive(controllers.getTankLeft(), controllers.getTankRight());
+                driveTrain.tankDrive(controllers.getTankLeft(), controllers.getTankRight());
                 break;
 
             case RobotOrientedHolonomic:
                 driveTrain.robotDrive(controllers.getJoystickX(), controllers.getJoystickY(),
                         controllers.getJoystickZ());
+
+                // driveTrain.robotDrive(controllers.getPilotController().getLeftY(),
+                //         controllers.getPilotController().getLeftX(),
+                //         controllers.getPilotController().getRightX());
                 break;
 
             case FieldOrientedHolonomic:
                 driveTrain.fieldDrive(controllers.getJoystickX(), controllers.getJoystickY(),
                         controllers.getJoystickZ());
+                
+                // TODO: Write alternate method using Xbox controllers 
                 break;
         }
 
