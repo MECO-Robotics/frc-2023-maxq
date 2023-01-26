@@ -25,7 +25,7 @@ public final class Constants {
     //
 
     // Victor SPX CAN Values
-    public static final int FRONT_LEFT_DRIVE_CAN = 1;
+    public static final int FRONT_LEFT_CAN = 1;
     public static final int FRONT_RIGHT_CAN = 2;
     public static final int BACK_LEFT_CAN = 3;
     public static final int BACK_RIGHT_CAN = 4;

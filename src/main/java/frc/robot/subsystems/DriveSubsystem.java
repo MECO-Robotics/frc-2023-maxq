@@ -59,12 +59,10 @@ public class DriveSubsystem extends SubsystemBase {
     private final MecanumDriveKinematics driveKinematics = new MecanumDriveKinematics(FRONT_LEFT_POS, FRONT_RIGHT_POS,
             BACK_LEFT_POS, BACK_RIGHT_POS);
 
-    // Encoders - front left, front right, rear left, rear right
-    private Encoder frontLeftEncoder, frontRightEncoder, backLeftEncoder, backRightEncoder;
-
     // The Inertial Measurement Unit (IMU) connects to the RoboRio through the MXP
     // port, which is the wide female pin header in the middle of the Rio. Through
     // the MXP, the Serial Port Interface (SPI) is used.
+
     private final AHRS imu = new AHRS(SPI.Port.kMXP);
 
     // Converts tank or arcade drive speed requests to voltage requests to the motor
@@ -77,57 +75,26 @@ public class DriveSubsystem extends SubsystemBase {
     // Sensor simulations
     private final Field2d field2d = new Field2d();
 
-    /** Creates a new Subsystem. */
+    RelativeEncoder frontLeftEncoderRev;
+
+    RelativeEncoder backRightEncoderRev;
+
+    RelativeEncoder frontRightEncoderRev;
+
+    RelativeEncoder backLeftEncoderRev;
+
+    /* Creates a new Subsystem. */
     public DriveSubsystem() {
 
-        // Create a VictorSPX for each motor.
-        WPI_VictorSPX frontLeft = new WPI_VictorSPX(Constants.FRONT_LEFT_DRIVE_CAN);
-        WPI_VictorSPX frontRight = new WPI_VictorSPX(Constants.FRONT_RIGHT_CAN);
-        WPI_VictorSPX backLeft = new WPI_VictorSPX(Constants.BACK_LEFT_CAN);
-        WPI_VictorSPX backRight = new WPI_VictorSPX(Constants.BACK_RIGHT_CAN);
+        frontLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        frontRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        backLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        backRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
 
-        frontLeft.setNeutralMode(NeutralMode.Brake);
-        frontRight.setNeutralMode(NeutralMode.Brake);
-        backLeft.setNeutralMode(NeutralMode.Brake);
-        backRight.setNeutralMode(NeutralMode.Brake);
-
-        // CIMs turn CCW for + voltage, and we have one stage of pinions, so the left
-        // side needs to be inverted
-        frontLeft.setInverted(true);
-        backLeft.setInverted(true);
-
-        drive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
-
-        // Left: reverse direction (decreasing values go forward)
-        frontLeftEncoder = new Encoder(
-                Constants.FRONT_LEFT_ENCODER_A_DIO,
-                Constants.FRONT_LEFT_ENCODER_A_DIO + 1, // Assuming B channel is the next DIO port
-                true);
-
-        // may need to negate the right encoders instead depends on how the gearing
-        // works
-
-        frontRightEncoder = new Encoder(
-                Constants.FRONT_RIGHT_ENCODER_A_DIO,
-                Constants.FRONT_RIGHT_ENCODER_A_DIO + 1);
-
-        backLeftEncoder = new Encoder(
-                Constants.BACK_LEFT_ENCODER_A_DIO,
-                Constants.BACK_LEFT_ENCODER_A_DIO + 1,
-                true);
-
-        backRightEncoder = new Encoder(
-                Constants.BACK_RIGHT_ENCODER_A_DIO,
-                Constants.BACK_RIGHT_ENCODER_A_DIO + 1);
-
-        frontLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        frontRightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        backLeftEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        backRightEncoder.setDistancePerPulse(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        configureUsingSparkMaxMotorControllers();
 
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
         // the field
-        // TODO - initialize the odometry with initial states
         odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(),
                 getPoseMeters(), null, null);
 
@@ -139,30 +106,55 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void configureUsingSparkMaxMotorControllers() {
 
-        CANSparkMax frontLeftController = new CANSparkMax(Constants.FRONT_LEFT_DRIVE_CAN, MotorType.kBrushed);
+        CANSparkMax frontLeftController = new CANSparkMax(Constants.FRONT_LEFT_CAN, MotorType.kBrushed);
         frontLeftController.setIdleMode(IdleMode.kBrake);
         frontLeftController.setInverted(true);
 
-        // TODO Repeat for each motor controller
+        CANSparkMax frontRightController = new CANSparkMax(Constants.FRONT_RIGHT_CAN, MotorType.kBrushed);
+        frontRightController.setIdleMode(IdleMode.kBrake);
+        frontRightController.setInverted(false);
 
-        RelativeEncoder frontLeftEncoder = frontLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+        CANSparkMax backLeftController = new CANSparkMax(Constants.BACK_LEFT_CAN, MotorType.kBrushed);
+        backLeftController.setIdleMode(IdleMode.kBrake);
+        backLeftController.setInverted(true);
 
-        // TODO Repeat for each encoder
+        CANSparkMax backRightController = new CANSparkMax(Constants.BACK_RIGHT_CAN, MotorType.kBrushed);
+        backRightController.setIdleMode(IdleMode.kBrake);
+        backRightController.setInverted(false);
 
-        drive = new MecanumDrive(frontLeftController, null, null, null);
-        odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(), getPoseMeters(), null, null);
+        frontLeftEncoderRev = frontLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+
+        backRightEncoderRev = backRightController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+
+        frontRightEncoderRev = frontRightController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+
+        backLeftEncoderRev = backLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+
+        drive = new MecanumDrive(frontLeftController, backLeftController, frontRightController, backRightController);
+        odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(),
+                getPoseMeters(), null, null);
     }
+
     /**
      * Get the wheel positions
      * 
      * @return
      */
     private MecanumDriveWheelPositions getWheelPositions() {
+        /*
+         * return new MecanumDriveWheelPositions(
+         * frontLeftEncoder.getDistance(),
+         * frontRightEncoder.getDistance(),
+         * backLeftEncoder.getDistance(),
+         * backRightEncoder.getDistance());
+         */
+
         return new MecanumDriveWheelPositions(
-                frontLeftEncoder.getDistance(),
-                frontRightEncoder.getDistance(),
-                backLeftEncoder.getDistance(),
-                backRightEncoder.getDistance());
+                frontLeftEncoderRev.getPosition(),
+                frontRightEncoderRev.getPosition(),
+                backLeftEncoderRev.getPosition(),
+                backRightEncoderRev.getPosition());
+
     }
 
     /**
@@ -244,10 +236,10 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void resetSensors() {
         imu.reset();
-        frontLeftEncoder.reset();
-        frontRightEncoder.reset();
-        backLeftEncoder.reset();
-        backRightEncoder.reset();
+        frontLeftEncoderRev.setPosition(0);
+        frontRightEncoderRev.setPosition(0);
+        backLeftEncoderRev.setPosition(0);
+        backRightEncoderRev.setPosition(0);
     }
 
     /**
