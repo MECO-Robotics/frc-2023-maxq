@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer;
 
-    private final Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    //private final Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
     /***************************************************************************/
     /* COMMON - Runs in all modes */
@@ -179,6 +179,7 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
+        robotContainer.testMode();
     }
 
     /***************************************************************************/

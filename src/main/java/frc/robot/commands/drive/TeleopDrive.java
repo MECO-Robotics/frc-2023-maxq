@@ -51,19 +51,20 @@ public class TeleopDrive extends CommandBase {
                 break;
 
             case RobotOrientedHolonomic:
-                driveTrain.robotDrive(controllers.getJoystickX(), controllers.getJoystickY(),
-                        controllers.getJoystickZ());
+                // driveTrain.robotDrive(controllers.getJoystickY(), controllers.getJoystickX(),
+                // controllers.getJoystickZ());
 
-                // driveTrain.robotDrive(controllers.getPilotController().getLeftY(),
-                //         controllers.getPilotController().getLeftX(),
-                //         controllers.getPilotController().getRightX());
+                driveTrain.robotDrive(controllers.getPilotController().getLeftY(),
+                        -controllers.getPilotController().getLeftX(),
+                        -controllers.getPilotController().getRightX());
                 break;
 
             case FieldOrientedHolonomic:
-                driveTrain.fieldDrive(controllers.getJoystickX(), controllers.getJoystickY(),
-                        controllers.getJoystickZ());
-                
-                // TODO: Write alternate method using Xbox controllers 
+                driveTrain.fieldDrive(controllers.getPilotController().getLeftY(),
+                        -controllers.getPilotController().getLeftX(),
+                        -controllers.getPilotController().getRightX());
+
+                // TODO: Write alternate method using Xbox controllers
                 break;
         }
 

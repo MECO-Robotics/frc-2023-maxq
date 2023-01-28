@@ -76,12 +76,11 @@ public class DriveSubsystem extends SubsystemBase {
     // Sensor simulations
     private final Field2d field2d = new Field2d();
 
-
     CANSparkMax frontLeftController;
     CANSparkMax frontRightController;
     CANSparkMax backLeftController;
     CANSparkMax backRightController;
-    
+
     RelativeEncoder frontLeftEncoderRev;
     RelativeEncoder backRightEncoderRev;
     RelativeEncoder frontRightEncoderRev;
@@ -90,22 +89,22 @@ public class DriveSubsystem extends SubsystemBase {
     /* Creates a new Subsystem. */
     public DriveSubsystem() {
 
+        configureUsingSparkMaxMotorControllers();
+
         frontLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
         frontRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
         backLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
         backRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
 
-        configureUsingSparkMaxMotorControllers();
-
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
         // the field
-        odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(),
-                getPoseMeters(), null, null);
+        // odometry = new MecanumDrivePoseEstimator(driveKinematics,
+        //         imu.getRotation2d(), getWheelPositions(),
+        //         getPoseMeters(), null, null);
 
         addChild("Drive", drive);
         addChild("IMU", imu);
         addChild("Field", field2d);
-
     }
 
     public void configureUsingSparkMaxMotorControllers() {
@@ -135,8 +134,6 @@ public class DriveSubsystem extends SubsystemBase {
         backLeftEncoderRev = backLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
 
         drive = new MecanumDrive(frontLeftController, backLeftController, frontRightController, backRightController);
-        odometry = new MecanumDrivePoseEstimator(driveKinematics, imu.getRotation2d(), getWheelPositions(),
-                getPoseMeters(), null, null);
     }
 
     /**
@@ -167,11 +164,11 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        odometry.update(imu.getRotation2d(), getWheelPositions());
+        // odometry.update(imu.getRotation2d(), getWheelPositions());
 
         // This allows us to see the robot's position and orientation on the
         // Shuffleboard
-        field2d.setRobotPose(getPoseMeters());
+        // field2d.setRobotPose(getPoseMeters());
 
         // Update the motor safety. This makes sure the system knows we're in control of
         // the motors.
@@ -182,10 +179,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Arcade drive. Inputs are directly fed to motor controllers as-is.
+     * 
      * @param throttle
      * @param turn
      */
     public void arcadeDrive(double throttle, double turn) {
+        System.out.println(String.format("Arcade: %f, %f", throttle, turn));
         double left = throttle - turn;
         double right = throttle + turn;
         frontLeftController.set(left);
@@ -196,6 +195,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Tank drive. Inputs are directly fed to motor controllers as-is.
+     * 
      * @param left
      * @param right
      */
@@ -203,7 +203,29 @@ public class DriveSubsystem extends SubsystemBase {
         frontLeftController.set(left);
         backLeftController.set(left);
         frontRightController.set(right);
+
+        /**
+         * Test an individual wheel
+         */
         backRightController.set(right);
+    }
+
+    public void runWheel(int wheel, double level) {
+        switch (wheel) {
+            case Constants.FRONT_LEFT_CAN:
+                frontLeftController.set(level);
+                break;
+            case Constants.FRONT_RIGHT_CAN:
+                frontRightController.set(level);
+                break;
+            case Constants.BACK_LEFT_CAN:
+                backLeftController.set(level);
+                break;
+            case Constants.BACK_RIGHT_CAN:
+                backRightController.set(level);
+                break;
+        }
+
     }
 
     /**
@@ -215,6 +237,8 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void robotDrive(double forwardX, double leftY, double twist) {
 
+        // System.out.println(String.format("X,Y,Z: %f, %f, %f", forwardX, leftY,
+        // twist));
         drive.driveCartesian(forwardX, leftY, twist);
     }
 
@@ -227,7 +251,6 @@ public class DriveSubsystem extends SubsystemBase {
      * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
      */
     public void fieldDrive(double forwardX, double leftY, double twist) {
-
         drive.driveCartesian(forwardX, leftY, twist, imu.getRotation2d());
     }
 
@@ -242,7 +265,8 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
 
         // or using Field relative:
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, imu.getRotation2d());
+        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds,
+                imu.getRotation2d());
 
         MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
 
@@ -250,11 +274,12 @@ public class DriveSubsystem extends SubsystemBase {
         // the current wheel speed using encoders (process variable)
         // For example:
 
-        frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond, ControlType.kVelocity);
+        frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond,
+                ControlType.kVelocity);
         // TODO Update other motor controllers
     }
 
-    /**
+    /*
      * Stop all motors
      */
     public void stop() {
@@ -280,7 +305,8 @@ public class DriveSubsystem extends SubsystemBase {
     public void setPoseMeters(Pose2d pose) {
         field2d.setRobotPose(pose);
         imu.reset();
-        odometry.resetPosition(imu.getRotation2d(), getWheelPositions(), getPoseMeters());
+        odometry.resetPosition(imu.getRotation2d(), getWheelPositions(),
+                getPoseMeters());
         resetSensors();
     }
 

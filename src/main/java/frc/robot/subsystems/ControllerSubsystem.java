@@ -12,7 +12,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 public class ControllerSubsystem extends SubsystemBase {
 
   private final XboxController pilotController = new XboxController(0);
-  private final XboxController copilotController = new XboxController(1);
+  private final XboxController copilotController = null; // new XboxController(1);
   private final Joystick joystick = new Joystick(0);
 
   double throttle;
@@ -102,14 +102,14 @@ public class ControllerSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // Pilot controls - dead band handled by the DifferentialDrive class within the DriveSubsystem
 
-    // Gamepads use negative values for up, and positive for down
-    throttle = -pilotController.getLeftY();
-    // Gamepads use positive values for right, negative for left
-    turn = pilotController.getRightX();
+    // // Gamepads use negative values for up, and positive for down
+    // throttle = -pilotController.getLeftY();
+    // // Gamepads use positive values for right, negative for left
+    // turn = pilotController.getRightX();
 
-    // Copilot controls
-    outtakeThrottle = deadzone(copilotController.getRightTriggerAxis(), 0.05);
-    intakeThrottle = deadzone(copilotController.getLeftTriggerAxis(), 0.05);
+    // // Copilot controls
+    // outtakeThrottle = deadzone(copilotController.getRightTriggerAxis(), 0.05);
+    // intakeThrottle = deadzone(copilotController.getLeftTriggerAxis(), 0.05);
     
   }
 

@@ -25,10 +25,10 @@ public final class Constants {
     //
 
     // Victor SPX CAN Values
-    public static final int FRONT_LEFT_CAN = 1;
-    public static final int FRONT_RIGHT_CAN = 2;
-    public static final int BACK_LEFT_CAN = 3;
-    public static final int BACK_RIGHT_CAN = 4;
+    public static final int FRONT_LEFT_CAN = 2;
+    public static final int FRONT_RIGHT_CAN = 3;
+    public static final int BACK_LEFT_CAN = 4;
+    public static final int BACK_RIGHT_CAN = 5;
 
     // DIO Values for encoders - just indicate A channel. Assume B channel will be the next port
     public static final int FRONT_LEFT_ENCODER_A_DIO = 0;

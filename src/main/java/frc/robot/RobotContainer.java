@@ -40,7 +40,7 @@ public class RobotContainer {
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
     private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
     private final LightSubsystem lightSubsystem = new LightSubsystem();
-    private final PowerHub powerHub = new PowerHub();
+    // private final PowerHub powerHub = new PowerHub();
 
     private final Map<String, Command> autoCommands = new HashMap<>();
     private final SendableChooser<String> autoCommandChoice = new SendableChooser<String>();
@@ -109,7 +109,7 @@ public class RobotContainer {
         // This is an example of button bindings using the new approach. The rest
         // of the button bindings are actually done in the ControllerSubsystem class.
 
-        configureTeleopDriveButtonBindings();
+        // configureTeleopDriveButtonBindings();
     }
 
     /**
@@ -155,9 +155,27 @@ public class RobotContainer {
 
         // TODO: Bind buttons for the ResetSensors command. Brent recommands a "two man
         // rule" for engaging, requiring a button on the pilot and co-pilot to press a
-        // button at the same time in order to reset.
-
+        // button at the same time in order to reset
     }
+
+    int testWheel = Constants.FRONT_LEFT_CAN;
+
+    public void testMode() {
+        XboxController pilot = controllerSubsystem.getPilotController();
+        double testThrottle = pilot.getLeftY();
+
+        if (pilot.getYButtonReleased()) {
+            testWheel = Constants.FRONT_LEFT_CAN;
+        } else if (pilot.getXButtonReleased()) {
+            testWheel = Constants.FRONT_RIGHT_CAN;
+        } else if (pilot.getBButtonReleased()) {
+            testWheel = Constants.BACK_LEFT_CAN;
+        } else if (pilot.getAButtonReleased()) {
+            testWheel = Constants.BACK_RIGHT_CAN;
+        }
+
+        driveSubsystem.runWheel(testWheel, testThrottle);
+    };
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
