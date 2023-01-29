@@ -11,124 +11,44 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 
 public class ControllerSubsystem extends SubsystemBase {
 
-  private final XboxController pilotController = new XboxController(0);
-  private final XboxController copilotController = null; // new XboxController(1);
-  private final Joystick joystick = new Joystick(0);
+    private final XboxController pilotController = new XboxController(0);
 
-  double throttle;
-  double turn;
-  double liftExtenderSpeed;
-  double intakeThrottle;
-  double outtakeThrottle;
-  boolean armUpButton, armDownButton;
-  double manualArm, manualIntake;
-  double direction = 1;
+    // TODO Add back in once we have a copilot ...
+    private final XboxController copilotController = null; // new XboxController(1);
 
-  /** Creates a new ExampleSubsystem. */
-  public ControllerSubsystem() {
-  }
+    // TODO Only use if joystick control is going to be used.
+    private final Joystick joystick = null; // new Joystick(0);
 
-  
-  public XboxController getPilotController() {
-    return pilotController;
-  }
+    public ControllerSubsystem() {
+    }
 
-  public XboxController getCopilotController() {
-    return copilotController;
-  }
+    public XboxController getPilotController() {
+        return pilotController;
+    }
 
-  public double getThrottle() {
-    return throttle * direction;
-  }
+    public XboxController getCopilotController() {
+        return copilotController;
+    }
 
-  public double getTurn() {
-    return turn;
-  }
+    public Joystick getJoystick() {
+        return joystick;
+    }
 
-  public void toggleDirection() {
-    direction = -direction;
-  }
+    @Override
+    public void periodic() {
+    }
 
-  public double getTankLeft() {
-    return pilotController.getLeftY();
-  }
+    /**
+     * Return value unless it is within deadzone of zero, then just return zero.
+     */
+    public static double deadzone(double value, double deadzone) {
+        if (Math.abs(value) < deadzone)
+            return 0;
+        return value;
+    }
 
-  public double getTankRight() {
-    return pilotController.getRightY();
-  }
-
-  public double getJoystickY() {
-    return -joystick.getY();
-  }
-
-  public double getJoystickX() {
-    return joystick.getX();
-  }
-
-  /**
-   * Get the twist of the joystick
-   * @return
-   */
-  public double getJoystickZ() {
-    return joystick.getZ();
-  }
-
-  public boolean getArmUpButton() {
-    return armUpButton;
-  }
-
-  public boolean getArmDownButton() {
-    return armDownButton;
-  }
-
-  public double getIntakeThrottle() {
-    return intakeThrottle;
-  }
-
-  public double getOuttakeThrottle() {
-    return outtakeThrottle;
-  }
-
-  public double getManualArm() {
-    return manualArm;
-  }
-
-  public double getManualIntake() {
-    return manualIntake;
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    // Pilot controls - dead band handled by the DifferentialDrive class within the DriveSubsystem
-
-    // // Gamepads use negative values for up, and positive for down
-    // throttle = -pilotController.getLeftY();
-    // // Gamepads use positive values for right, negative for left
-    // turn = pilotController.getRightX();
-
-    // // Copilot controls
-    // outtakeThrottle = deadzone(copilotController.getRightTriggerAxis(), 0.05);
-    // intakeThrottle = deadzone(copilotController.getLeftTriggerAxis(), 0.05);
-    
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
-
-  /**
-   * Return value unless it is within deadzone of zero, then just return zero.
-   */
-  public static double deadzone(double value, double deadzone) {
-    if (Math.abs(value) < deadzone)
-      return 0;
-    return value;
-  }
-
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
-  }
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+    }
 }

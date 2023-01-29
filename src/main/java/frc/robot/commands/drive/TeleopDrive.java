@@ -43,14 +43,17 @@ public class TeleopDrive extends CommandBase {
     public void execute() {
         switch (driveMode) {
             case SplitArcade:
-                driveTrain.arcadeDrive(controllers.getThrottle(), controllers.getTurn());
+                driveTrain.arcadeDrive(controllers.getPilotController().getLeftY(),
+                        controllers.getPilotController().getRightX());
                 break;
 
             case Tank:
-                driveTrain.tankDrive(controllers.getTankLeft(), controllers.getTankRight());
+                driveTrain.tankDrive(controllers.getPilotController().getLeftY(),
+                        controllers.getPilotController().getRightY());
                 break;
 
             case RobotOrientedHolonomic:
+                // Alternative using Joystick:
                 // driveTrain.robotDrive(controllers.getJoystickY(), controllers.getJoystickX(),
                 // controllers.getJoystickZ());
 
@@ -63,8 +66,6 @@ public class TeleopDrive extends CommandBase {
                 driveTrain.fieldDrive(controllers.getPilotController().getLeftY(),
                         -controllers.getPilotController().getLeftX(),
                         -controllers.getPilotController().getRightX());
-
-                // TODO: Write alternate method using Xbox controllers
                 break;
         }
 
