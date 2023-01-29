@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.VideoException;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -154,6 +156,9 @@ public class Robot extends TimedRobot {
 
         // Start up the teleop commands
 
+        // Put DriveSubsystem on Shuffleboard
+        SmartDashboard.putData(robotContainer.getDriveSubsystem());
+        
         robotContainer.getTeleopCommand().schedule();
     }
 

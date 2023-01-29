@@ -7,9 +7,11 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Encoder;
@@ -71,7 +73,7 @@ public class DriveSubsystem extends SubsystemBase {
     private MecanumDrive drive;
 
     // Keeps track of where we are on the field based on gyro and encoder inputs.
-    private MecanumDrivePoseEstimator odometry;
+    private final MecanumDriveOdometry odometry;
 
     // Sensor simulations
     private final Field2d field2d = new Field2d();
@@ -98,9 +100,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
         // the field
-        // odometry = new MecanumDrivePoseEstimator(driveKinematics,
-        //         imu.getRotation2d(), getWheelPositions(),
-        //         getPoseMeters(), null, null);
+        odometry = new MecanumDriveOdometry(driveKinematics,
+                imu.getRotation2d(), getWheelPositions());
 
         addChild("Drive", drive);
         addChild("IMU", imu);
@@ -126,11 +127,8 @@ public class DriveSubsystem extends SubsystemBase {
         backRightController.setInverted(false);
 
         frontLeftEncoderRev = frontLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-
         backRightEncoderRev = backRightController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-
         frontRightEncoderRev = frontRightController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-
         backLeftEncoderRev = backLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
 
         drive = new MecanumDrive(frontLeftController, backLeftController, frontRightController, backRightController);
@@ -142,14 +140,8 @@ public class DriveSubsystem extends SubsystemBase {
      * @return
      */
     private MecanumDriveWheelPositions getWheelPositions() {
-        /*
-         * return new MecanumDriveWheelPositions(
-         * frontLeftEncoder.getDistance(),
-         * frontRightEncoder.getDistance(),
-         * backLeftEncoder.getDistance(),
-         * backRightEncoder.getDistance());
-         */
 
+        // TODO Verify that the getPosition is return distance
         return new MecanumDriveWheelPositions(
                 frontLeftEncoderRev.getPosition(),
                 frontRightEncoderRev.getPosition(),
@@ -164,11 +156,11 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // odometry.update(imu.getRotation2d(), getWheelPositions());
+        odometry.update(imu.getRotation2d(), getWheelPositions());
 
         // This allows us to see the robot's position and orientation on the
         // Shuffleboard
-        // field2d.setRobotPose(getPoseMeters());
+        field2d.setRobotPose(getPoseMeters());
 
         // Update the motor safety. This makes sure the system knows we're in control of
         // the motors.
@@ -184,7 +176,6 @@ public class DriveSubsystem extends SubsystemBase {
      * @param turn
      */
     public void arcadeDrive(double throttle, double turn) {
-        System.out.println(String.format("Arcade: %f, %f", throttle, turn));
         double left = throttle - turn;
         double right = throttle + turn;
         frontLeftController.set(left);
@@ -203,10 +194,6 @@ public class DriveSubsystem extends SubsystemBase {
         frontLeftController.set(left);
         backLeftController.set(left);
         frontRightController.set(right);
-
-        /**
-         * Test an individual wheel
-         */
         backRightController.set(right);
     }
 
@@ -236,9 +223,6 @@ public class DriveSubsystem extends SubsystemBase {
      * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
      */
     public void robotDrive(double forwardX, double leftY, double twist) {
-
-        // System.out.println(String.format("X,Y,Z: %f, %f, %f", forwardX, leftY,
-        // twist));
         drive.driveCartesian(forwardX, leftY, twist);
     }
 
@@ -303,11 +287,12 @@ public class DriveSubsystem extends SubsystemBase {
      * Set the initial condition of the robot (where it is on the field)
      */
     public void setPoseMeters(Pose2d pose) {
-        field2d.setRobotPose(pose);
-        imu.reset();
+        resetSensors();
+
         odometry.resetPosition(imu.getRotation2d(), getWheelPositions(),
                 getPoseMeters());
-        resetSensors();
+
+        field2d.setRobotPose(pose);
     }
 
     /**
@@ -317,11 +302,14 @@ public class DriveSubsystem extends SubsystemBase {
      * @param timeStamp
      */
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timeStamp) {
-        odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
+        // TODO First switch from MecanumDriveOdometry to MecanumDrivePoseEstimator, then call this
+        //odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
     }
 
     public Pose2d getPoseMeters() {
-        return odometry.getEstimatedPosition();
+        return odometry.getPoseMeters();
+        // TODO switch to this if we switch odometry to use MecanumDrivePoseEstimator
+        //return odometry.getEstimatedPosition();
     }
 
     public double getHeadingDegrees() {
