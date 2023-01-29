@@ -52,6 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
     private static final int ENCODER_RESOLUTION = 8192;
     private static final double WHEEL_DIAMETER_INCHES = 6.0; // inches
     private static final double WHEEL_CIRCUM_METERS = Units.inchesToMeters(WHEEL_DIAMETER_INCHES) * Math.PI;
+    // TODO Add a constant that is the maximum wheel speed. We'll need this in the fieldDriveRelativeSpeed function
 
     private static final Translation2d FRONT_LEFT_POS = new Translation2d(9.25, 24.23);
     private static final Translation2d FRONT_RIGHT_POS = new Translation2d(-9.25, -24.23);
@@ -261,6 +262,8 @@ public class DriveSubsystem extends SubsystemBase {
         frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond,
                 ControlType.kVelocity);
         // TODO Update other motor controllers
+
+        // TODO Find and call a function on the wheelSpeeds object that resets the speed of all wheels based on a max allowable speed.
     }
 
     /*
