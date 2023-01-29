@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) MECO Robotics
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -16,11 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
-import frc.robot.commands.lights.TurnBlueBothOn;
-import frc.robot.commands.lights.TurnBlueOffBoth;
-import frc.robot.commands.lights.TurnGreenBothOn;
-import frc.robot.commands.lights.TurnPurpleRightOn;
-import frc.robot.commands.lights.TurnRedBothOn;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
@@ -85,12 +80,6 @@ public class RobotContainer {
         driveMode.addOption("Split Arcade", DriveMode.SplitArcade);
         driveMode.addOption("Tank", DriveMode.Tank);
         SmartDashboard.putData("Drive mode", driveMode);
-
-        SmartDashboard.putData("Red", new TurnRedBothOn(lightSubsystem));
-        SmartDashboard.putData("Blue", new TurnBlueBothOn(lightSubsystem));
-        SmartDashboard.putData("Off", new TurnBlueOffBoth(lightSubsystem));
-        SmartDashboard.putData("Green", new TurnGreenBothOn(lightSubsystem));
-        SmartDashboard.putData("Purple", new TurnPurpleRightOn(lightSubsystem));
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));

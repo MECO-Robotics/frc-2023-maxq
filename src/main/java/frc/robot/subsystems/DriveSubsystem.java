@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) MECO Robotics
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -34,7 +34,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import frc.robot.Constants;
-import frc.robot.commands.lights.TurnBlueBothOn;
 
 /**
  * A mecanum drive train. The setup is as follows:
