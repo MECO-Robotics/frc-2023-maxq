@@ -1,1 +1,2 @@
-# frc-2022-robot
+# MECO Robotics 2023 FRC Robot - "Rivet"
+

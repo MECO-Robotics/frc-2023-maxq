@@ -4,34 +4,26 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAlternateEncoder.Type;
+import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import frc.robot.Constants;
 
@@ -51,7 +43,8 @@ public class DriveSubsystem extends SubsystemBase {
     private static final int ENCODER_RESOLUTION = 8192;
     private static final double WHEEL_DIAMETER_INCHES = 6.0; // inches
     private static final double WHEEL_CIRCUM_METERS = Units.inchesToMeters(WHEEL_DIAMETER_INCHES) * Math.PI;
-    // TODO Add a constant that is the maximum wheel speed. We'll need this in the fieldDriveRelativeSpeed function
+    // TODO Add a constant that is the maximum wheel speed. We'll need this in the
+    // fieldDriveRelativeSpeed function
 
     private static final Translation2d FRONT_LEFT_POS = new Translation2d(9.25, 24.23);
     private static final Translation2d FRONT_RIGHT_POS = new Translation2d(-9.25, -24.23);
@@ -93,6 +86,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         configureUsingSparkMaxMotorControllers();
 
+        // Setting this conversion factor allows us to get a distance traveled when we
+        // call RelativeEncoder.getPosition() from the getWheelPositions() method.
         frontLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
         frontRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
         backLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
@@ -126,10 +121,11 @@ public class DriveSubsystem extends SubsystemBase {
         backRightController.setIdleMode(IdleMode.kBrake);
         backRightController.setInverted(false);
 
-        frontLeftEncoderRev = frontLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-        backRightEncoderRev = backRightController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-        frontRightEncoderRev = frontRightController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-        backLeftEncoderRev = backLeftController.getAlternateEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+        // TODO Verify we're using the Encoder and not the AlternateEncoder.
+        frontLeftEncoderRev = frontLeftController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+        backRightEncoderRev = backRightController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+        frontRightEncoderRev = frontRightController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+        backLeftEncoderRev = backLeftController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
 
         drive = new MecanumDrive(frontLeftController, backLeftController, frontRightController, backRightController);
     }
@@ -262,7 +258,8 @@ public class DriveSubsystem extends SubsystemBase {
                 ControlType.kVelocity);
         // TODO Update other motor controllers
 
-        // TODO Find and call a function on the wheelSpeeds object that resets the speed of all wheels based on a max allowable speed.
+        // TODO Find and call a function on the wheelSpeeds object that resets the speed
+        // of all wheels based on a max allowable speed.
     }
 
     /*
@@ -304,14 +301,15 @@ public class DriveSubsystem extends SubsystemBase {
      * @param timeStamp
      */
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timeStamp) {
-        // TODO First switch from MecanumDriveOdometry to MecanumDrivePoseEstimator, then call this
-        //odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
+        // TODO First switch from MecanumDriveOdometry to MecanumDrivePoseEstimator,
+        // then call this
+        // odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
     }
 
     public Pose2d getPoseMeters() {
         return odometry.getPoseMeters();
         // TODO switch to this if we switch odometry to use MecanumDrivePoseEstimator
-        //return odometry.getEstimatedPosition();
+        // return odometry.getEstimatedPosition();
     }
 
     public double getHeadingDegrees() {
