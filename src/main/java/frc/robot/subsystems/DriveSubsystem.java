@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -307,6 +308,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Pose2d getPoseMeters() {
+        MecanumDrivePoseEstimator e;
         return odometry.getPoseMeters();
         // TODO switch to this if we switch odometry to use MecanumDrivePoseEstimator
         // return odometry.getEstimatedPosition();

@@ -4,59 +4,37 @@
 
 package frc.robot.subsystems;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableListener;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
 
-    NetworkTable fixedVisionCameraTable;
-
-    DoubleSubscriber ySub;
-    // use an AtomicReference to make updating the value thread-safe
-    AtomicReference<Double> yValue = new AtomicReference<Double>();
-    // retain listener handles for later removal
-    int connListenerHandle;
-    int valueListenerHandle;
-    int topicListenerHandle;
-
-    
-    public class RobotPoseSample {
-
-        public Pose2d robotPose;
-        public double timeStamp;
-    }
+    NetworkTable limeLight;
 
     public VisionSubsystem() {
 
-        NetworkTableInstance inst = NetworkTableInstance.getDefault();
-
-        fixedVisionCameraTable = inst.getTable("field-camera");
-
-        // add a connection listener; the first parameter will cause the
-        // callback to be called immediately for any current connections
-        // connListenerHandle = inst.addConnectionListener(true, event -> {
-        //     if (event.is(NetworkTableEvent.Kind.kConnected)) {
-        //         System.out.println("Connected to " + event.connInfo.remote_id);
-        //     } else if (event.is(NetworkTableEvent.Kind.kDisconnected)) {
-        //         System.out.println("Disconnected from " + event.connInfo.remote_id);
-        //     }
-        // });
-
+        limeLight = NetworkTableInstance.getDefault().getTable("limelight");
     }
 
     @Override
     public void periodic() {
-
     }
 
-    RobotPoseSample getVisionMeasurement() {
+    /**
+     * Get the 
+     * @return
+     */
+    Pose2d getVisionMeasurement() {
 
+        double d = Timer.getFPGATimestamp();
+        // TODO: Follow these instructions:
+        // https://docs.limelightvision.io/en/latest/networktables_api.html
+        // 1. Read the botpose entry from the lime light
+        // 2. Move the values into a Pose2d data type
+        // 3. Return the pose
         return null;
     }
 }

@@ -188,4 +188,11 @@ public class RobotContainer {
     public Command getTeleopCommand() {
         return new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected());
     }
+
+    public void robotPeriodic() {
+
+        // TODO Update drive subsystem with latest 
+        // Get the latest vision measurement from the vision subsystem
+        // Update the pose on the drive subsystem
+    }
 }
