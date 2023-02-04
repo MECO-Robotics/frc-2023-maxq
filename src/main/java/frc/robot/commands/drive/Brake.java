@@ -39,7 +39,7 @@ public class Brake extends CommandBase {
         //
         // 2. Determine the period from the frequency
         //
-        // 3. Assume we want to change the motor direction every 1/th of a second.
+        // 3. Assume we want to change the motor direction every 1/10 th of a second.
         // Assume this execute() method is called every 20ms.
         //
         // 4. Calculate the number of times
