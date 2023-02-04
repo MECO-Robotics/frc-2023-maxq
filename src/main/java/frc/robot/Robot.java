@@ -19,11 +19,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the
- * functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the
- * name of this class or
- * the package after creating this project, you must also update the
- * build.gradle file in the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
@@ -31,7 +29,8 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer;
 
-    //private final Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    // private final Compressor compressor = new
+    // Compressor(PneumaticsModuleType.CTREPCM);
 
     /***************************************************************************/
     /* COMMON - Runs in all modes */
@@ -41,22 +40,19 @@ public class Robot extends TimedRobot {
      *
      * <p>
      * Users should override this method for default Robot-wide initialization which
-     * will be called
-     * when the robot is first powered on. It will be called exactly one time.
+     * will be called when the robot is first powered on. It will be called exactly
+     * one time.
      *
      * <p>
      * Warning: the Driver Station "Robot Code" light and FMS "Robot Ready"
-     * indicators will be off
-     * until RobotInit() exits. Code in RobotInit() that waits for enable will cause
-     * the robot to
-     * never indicate that the code is ready, causing the robot to be bypassed in a
-     * match.
+     * indicators will be off until RobotInit() exits. Code in RobotInit() that
+     * waits for enable will cause the robot to never indicate that the code is
+     * ready, causing the robot to be bypassed in a match.
      */
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer. This will perform all our button bindings,
-        // and put our
-        // autonomous chooser on the dashboard.
+        // and put our autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
 
         try {
@@ -70,14 +66,12 @@ public class Robot extends TimedRobot {
 
     /**
      * This function is called every robot packet, no matter the mode. Use this for
-     * items like
-     * diagnostics that you want ran during disabled, autonomous, teleoperated and
-     * test.
+     * items like diagnostics that you want ran during disabled, autonomous,
+     * teleoperated and test.
      *
      * <p>
      * This runs after the mode specific periodic functions, but before LiveWindow
-     * and
-     * SmartDashboard integrated updating.
+     * and SmartDashboard integrated updating.
      */
     @Override
     public void robotPeriodic() {
@@ -150,17 +144,19 @@ public class Robot extends TimedRobot {
 
         // Left center field
         // TODO: Update with initial pose
-        //robotContainer.getDriveSubsystem().setPoseMeters(new Pose2d(1.5, 4.0, Rotation2d.fromDegrees(0)));
+        // robotContainer.getDriveSubsystem().setPoseMeters(new Pose2d(1.5, 4.0,
+        // Rotation2d.fromDegrees(0)));
 
         // Lower left blue tarmac, facing hub
         // robotContainer.getDriveSubsystem()
-        //         .setPoseMeters(new Pose2d(7.532176, 2.963651, Rotation2d.fromDegrees(-69.349228)));
+        // .setPoseMeters(new Pose2d(7.532176, 2.963651,
+        // Rotation2d.fromDegrees(-69.349228)));
 
         // Start up the teleop commands
 
         // Put DriveSubsystem on Shuffleboard
         SmartDashboard.putData(robotContainer.getDriveSubsystem());
-        
+
         robotContainer.getTeleopCommand().schedule();
     }
 

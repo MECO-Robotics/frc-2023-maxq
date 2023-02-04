@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -166,6 +167,10 @@ public class DriveSubsystem extends SubsystemBase {
         drive.feed();
     }
 
+    /***********************************************************************/
+    /* ROBOT RELATIVE DRIVE */
+    /***********************************************************************/
+
     /**
      * Arcade drive. Inputs are directly fed to motor controllers as-is.
      * 
@@ -223,6 +228,10 @@ public class DriveSubsystem extends SubsystemBase {
         drive.driveCartesian(forwardX, leftY, twist);
     }
 
+    /***********************************************************************/
+    /* FIELD RELATIVE DRIVE */
+    /***********************************************************************/
+
     /**
      * Move relative to the orientation on the field. This relies on the robot being
      * in initial, field oriented position
@@ -235,14 +244,30 @@ public class DriveSubsystem extends SubsystemBase {
         drive.driveCartesian(forwardX, leftY, twist, imu.getRotation2d());
     }
 
+    // TODO: Move these three constants to Constants.java
+
+    // Feet per second 
+    private static final double FPS_TO_MPS = 0.308;
+
+    // Allow travel up  to 15 feet per second
+    private static final double MAX_SPEED_MPS = 15 * FPS_TO_MPS;
+
+    // Allow twist up to 90 degrees per second
+    private static final double MAX_TWIST_RADS_PER_SECOND = Math.toRadians(90);
+
     /**
      * Drive at specifc forward (x), left (y), and angular speeds
      * 
-     * @param vx  Forward speed away from alliance wall, in m/s
-     * @param vy  Left strafe speed, in m/s
-     * @param rot Angular speed CCW, in rad/s
+     * @param forwardX Forward speed demand, [-1.0 .. 1.0]
+     * @param leftY    Left strafe speed demand, [-1.0 .. 1.0]
+     * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
      */
-    public void fieldDriveVelocity(double vx, double vy, double rot) {
+    public void fieldDriveVelocity(double forwardX, double leftY, double twist) {
+
+        double vx = forwardX * MAX_SPEED_MPS;
+        double vy = leftY * MAX_SPEED_MPS;
+        double rot = twist * MAX_TWIST_RADS_PER_SECOND;
+
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
 
         // or using Field relative:
@@ -251,17 +276,54 @@ public class DriveSubsystem extends SubsystemBase {
 
         MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
 
-        // TODO Use PID control to get to the desired speeds (set point) by measuring
+        
+        // Use PID control to get to the desired speeds (set point) by measuring
         // the current wheel speed using encoders (process variable)
-        // For example:
 
         frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond,
                 ControlType.kVelocity);
         // TODO Update other motor controllers
 
+
         // TODO Find and call a function on the wheelSpeeds object that resets the speed
         // of all wheels based on a max allowable speed.
     }
+
+    /***********************************************************************/
+    /* AUTONOMOUS DRIVING */
+    /***********************************************************************/
+
+    /**
+     * Automatically level the charge station by moving the robot forward and
+     * backward. The robot must either be at least partially on one of the inclines.
+     * If the robot is flat on the field floor, this routine will think it's on
+     * top of the charge station and already leveled.
+     * 
+     * @return true if the robot is level on the charge station (energized) and
+     *         false if not
+     */
+    public boolean chargeStationEnergize() {
+
+        // TODO The basic algorithm is: 
+        // 1. Get the roll
+        // 2. Convert roll to a roll-slope
+        // 3. Calculate a change in twist to counteract a non-zero roll
+        // 4. Get the pitch 
+        // 5. Convert the pitch to a pitch-slope
+        // 6. Calculate the change in robot relative, forward velocity needed to achieve 0 pitch 
+        // 7. drive the motor using robot relative drive passing in forward and twist
+        // 8. Return true if the pitch is within 2 degrees of zero and the roll is within 2 degrees of 0.
+        return false;
+
+        // HINTS:
+        // - Slope is rise over run, so it's the tan(angle). 
+        // - Assume the pitch and roll can be -12 to +12 degrees
+        // - To calculate motor input from slope, scale by a single value.
+    }
+
+    /***********************************************************************/
+    /* CONTROL */
+    /***********************************************************************/
 
     /*
      * Stop all motors
@@ -276,7 +338,7 @@ public class DriveSubsystem extends SubsystemBase {
      * sim.bb
      */
     public void resetSensors() {
-        imu.reset();
+        imu.zeroYaw();
         frontLeftEncoderRev.setPosition(0);
         frontRightEncoderRev.setPosition(0);
         backLeftEncoderRev.setPosition(0);
@@ -315,6 +377,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getHeadingDegrees() {
+        // TODO: If the rio mounts vertically, you have to call something on the AHRS class I believe.
         return imu.getAngle();
     }
 
@@ -322,11 +385,25 @@ public class DriveSubsystem extends SubsystemBase {
         // TODO: Verify rio is mounted properly to return pitch
         return imu.getPitch();
     }
-
+    
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.addDoubleProperty("Pitch", this::getPitch, null);
+        
+        // This syntax might look a little weird. Here's what it means:
+        //
+        // This part:
+        //      () -> { return frontLeftEncoderRev.getPosition(); }
+        //
+        // is called a lambda function. It's away of defining a function where it's being used.
+        // In the Pitch line above, we use the this::getPitch argument instead because we have
+        // an actual function already defined.
+
+        builder.addDoubleProperty("FL Encoder", () -> { return frontLeftEncoderRev.getPosition(); }, null);
+        builder.addDoubleProperty("FR Encoder", () -> { return frontRightEncoderRev.getPosition(); }, null);
+        builder.addDoubleProperty("BL Encoder", () -> { return backLeftEncoderRev.getPosition(); }, null);
+        builder.addDoubleProperty("BR Encoder", () -> { return backRightEncoderRev.getPosition(); }, null);
     }
 
 }

@@ -52,6 +52,13 @@ public class TeleopDrive extends CommandBase {
                         controllers.getPilotController().getRightY());
                 break;
 
+            case RobotOrientedOpenLoop:
+                driveTrain.robotDrive(controllers.getPilotController().getLeftY(),
+                        -controllers.getPilotController().getLeftX(),
+                        -controllers.getPilotController().getRightX());
+
+                break;
+
             case RobotOrientedHolonomic:
                 // Alternative using Joystick:
                 // driveTrain.robotDrive(controllers.getJoystickY(), controllers.getJoystickX(),

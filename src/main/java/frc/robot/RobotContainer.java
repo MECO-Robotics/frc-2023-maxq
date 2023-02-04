@@ -44,6 +44,7 @@ public class RobotContainer {
 
     public enum DriveMode {
         RobotOrientedHolonomic,
+        RobotOrientedOpenLoop,
         FieldOrientedHolonomic,
         SplitArcade,
         Tank
@@ -75,14 +76,20 @@ public class RobotContainer {
         autoCommandChoice.setDefaultOption("DriveBack", "DriveBack");
         SmartDashboard.putData("Autonomous Mode", autoCommandChoice);
 
-        driveMode.setDefaultOption("Robot Oriented", DriveMode.RobotOrientedHolonomic);
-        driveMode.addOption("Field Oriented", DriveMode.FieldOrientedHolonomic);
+        driveMode.setDefaultOption("Robot Open Loop", DriveMode.RobotOrientedOpenLoop);
+        driveMode.addOption("Robot Closed Loop", DriveMode.RobotOrientedHolonomic);
+        driveMode.addOption("Field", DriveMode.FieldOrientedHolonomic);
         driveMode.addOption("Split Arcade", DriveMode.SplitArcade);
         driveMode.addOption("Tank", DriveMode.Tank);
         SmartDashboard.putData("Drive mode", driveMode);
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
+
+        // In WPILib 2023, subsystems are no longer automatically added to the smart
+        // dashboard. you have to add them yourself.
+        // however, in test mode, they are added so it might appear twice in test mode.
+        SmartDashboard.putData("Mecanum Drive", driveSubsystem);
     }
 
     /**
@@ -191,7 +198,7 @@ public class RobotContainer {
 
     public void robotPeriodic() {
 
-        // TODO Update drive subsystem with latest 
+        // TODO Update drive subsystem with latest
         // Get the latest vision measurement from the vision subsystem
         // Update the pose on the drive subsystem
     }

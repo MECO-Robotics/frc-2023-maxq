@@ -12,18 +12,12 @@ public class Strobe extends CommandBase {
 
     public Strobe(LightSubsystem lightSubsystem) {
         lights = lightSubsystem;
-
     }
 
-    
     @Override
     public void execute() {
-        lights.strobe();
-        
+        // TODO Write the Strobe.execute() method
     }
-
-
-
 
     @Override
     public boolean isFinished() {
