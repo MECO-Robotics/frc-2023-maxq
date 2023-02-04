@@ -30,6 +30,8 @@ public class TeleopDrive extends CommandBase {
         this.driveMode = driveMode;
 
         // Cancel any other currently running drive subsystem commands before we run.
+        // this includes the StopCommand, which is the default command always running 
+        // for the drive subsystem. 
         addRequirements(driveSubsystem);
     }
 

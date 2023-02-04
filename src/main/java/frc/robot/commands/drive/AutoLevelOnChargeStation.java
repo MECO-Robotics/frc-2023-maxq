@@ -30,8 +30,6 @@ public class AutoLevelOnChargeStation extends CommandBase {
     public void execute() {
         // TODO Call the function on the DriveSubsystem to energize the charge station,
         // then set the boolean return value on the energized boolean on this class
-
-        // TODO IF LEVEL THEN DEPLOY BRAKES!!!!
     }
 
     // Called once the command ends or is interrupted.
