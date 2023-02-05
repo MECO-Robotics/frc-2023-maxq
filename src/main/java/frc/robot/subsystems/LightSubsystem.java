@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LightSubsystem extends SubsystemBase {
 
     PWM r = new PWM(0);
-    PWM g = new PWM(0);
-    PWM b = new PWM(0);
+    PWM g = new PWM(1);
+    PWM b = new PWM(2);
 
     public LightSubsystem() {
 
