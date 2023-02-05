@@ -90,10 +90,10 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Setting this conversion factor allows us to get a distance traveled when we
         // call RelativeEncoder.getPosition() from the getWheelPositions() method.
-        frontLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        frontRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        backLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
-        backRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS / ENCODER_RESOLUTION);
+        frontLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
+        frontRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
+        backLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
+        backRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
 
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
         // the field
@@ -133,7 +133,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Get the wheel positions
+     * Get the wheel positions in terms of distance traveled by each wheel.
      * 
      * @return
      */

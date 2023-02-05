@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
 import frc.robot.commands.drive.Brake;
+import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.subsystems.ControllerSubsystem;
@@ -145,16 +146,18 @@ public class RobotContainer {
         XboxController pilot = controllerSubsystem.getPilotController();
         JoystickButton aButton = new JoystickButton(pilot, XboxController.Button.kA.value);
         JoystickButton bButton = new JoystickButton(pilot, XboxController.Button.kB.value);
+        JoystickButton xButton = new JoystickButton(pilot, XboxController.Button.kX.value);
+
         // Whenever holding A - run the auto level routine. 
         aButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
-                //.whileFalse(new TeleopDrive(driveSubsystem, controllerSubsystem, DriveMode.RobotOrientedHolonomic));
 
-        //Whenever holding B - run brake command. 
+        // Whenever holding B - run brake command. 
         bButton.whileTrue(new Brake(driveSubsystem));
 
-        // TODO: Bind buttons for the ResetSensors command. Brent recommands a "two man
+        // TODO: Brent recommands a "two man
         // rule" for engaging, requiring a button on the pilot and co-pilot to press a
         // button at the same time in order to reset
+        xButton.whileTrue(new ResetSensors(driveSubsystem));
     }
 
     int testWheel = Constants.FRONT_LEFT_CAN;
