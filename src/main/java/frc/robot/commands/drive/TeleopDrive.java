@@ -38,6 +38,7 @@ public class TeleopDrive extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        System.out.println("Current drive mode: " + driveMode);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -66,7 +67,7 @@ public class TeleopDrive extends CommandBase {
                 // driveTrain.robotDrive(controllers.getJoystickY(), controllers.getJoystickX(),
                 // controllers.getJoystickZ());
 
-                driveTrain.robotDrive(controllers.getPilotController().getLeftY(),
+                driveTrain.robotDriveClosed(controllers.getPilotController().getLeftY(),
                         -controllers.getPilotController().getLeftX(),
                         -controllers.getPilotController().getRightX());
                 break;

@@ -91,8 +91,10 @@ public class DriveSubsystem extends SubsystemBase {
         // Setting this conversion factor allows us to get a distance traveled when we
         // call RelativeEncoder.getPosition() from the getWheelPositions() method.
         frontLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
+        frontLeftEncoderRev.setInverted(true);
         frontRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
         backLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
+        backLeftEncoderRev.setInverted(true);
         backRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
 
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
@@ -123,7 +125,6 @@ public class DriveSubsystem extends SubsystemBase {
         backRightController.setIdleMode(IdleMode.kBrake);
         backRightController.setInverted(false);
 
-        // TODO Verify we're using the Encoder and not the AlternateEncoder.
         frontLeftEncoderRev = frontLeftController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
         backRightEncoderRev = backRightController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
         frontRightEncoderRev = frontRightController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
@@ -138,14 +139,11 @@ public class DriveSubsystem extends SubsystemBase {
      * @return
      */
     private MecanumDriveWheelPositions getWheelPositions() {
-
-        // TODO Verify that the getPosition is return distance
         return new MecanumDriveWheelPositions(
                 frontLeftEncoderRev.getPosition(),
                 frontRightEncoderRev.getPosition(),
                 backLeftEncoderRev.getPosition(),
                 backRightEncoderRev.getPosition());
-
     }
 
     /**
@@ -225,7 +223,41 @@ public class DriveSubsystem extends SubsystemBase {
      * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
      */
     public void robotDrive(double forwardX, double leftY, double twist) {
-        drive.driveCartesian(forwardX, leftY, twist);
+        drive.driveCartesian(forwardX / 2.0, leftY / 2.0, twist / 2.0);
+    }
+
+    /**
+     * Move relative to the robot's orientation using closed loop control
+     * 
+     * @param forwardX Forward speed demand, [-1.0 .. 1.0]
+     * @param leftY    Left strafe speed demand, [-1.0 .. 1.0]
+     * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
+     */
+    public void robotDriveClosed(double forwardX, double leftY, double twist) {
+        double vx = forwardX * MAX_SPEED_MPS;
+        double vy = leftY * MAX_SPEED_MPS;
+        double rot = twist * MAX_TWIST_RADS_PER_SECOND;
+
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
+        MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
+
+        wheelSpeeds.desaturate(MAX_SPEED_MPS);
+
+        System.out.println(String.format("WHEEL SPEEDS: %f, %f, %f, %f", wheelSpeeds.frontLeftMetersPerSecond,
+                wheelSpeeds.frontRightMetersPerSecond, wheelSpeeds.rearLeftMetersPerSecond,
+                wheelSpeeds.rearRightMetersPerSecond));
+
+        // Use PID control to get to the desired speeds (set point) by measuring
+        // the current wheel speed using encoders (process variable)
+
+        frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond,
+                ControlType.kVelocity);
+        frontRightController.getPIDController().setReference(wheelSpeeds.frontRightMetersPerSecond,
+                ControlType.kVelocity);
+        backLeftController.getPIDController().setReference(wheelSpeeds.rearLeftMetersPerSecond,
+                ControlType.kVelocity);
+        backRightController.getPIDController().setReference(wheelSpeeds.rearRightMetersPerSecond,
+                ControlType.kVelocity);
     }
 
     /***********************************************************************/
@@ -246,10 +278,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     // TODO: Move these three constants to Constants.java
 
-    // Feet per second 
+    // Feet per second
     private static final double FPS_TO_MPS = 0.308;
 
-    // Allow travel up  to 15 feet per second
+    // Allow travel up to 15 feet per second
     private static final double MAX_SPEED_MPS = 15 * FPS_TO_MPS;
 
     // Allow twist up to 90 degrees per second
@@ -276,14 +308,12 @@ public class DriveSubsystem extends SubsystemBase {
 
         MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
 
-        
         // Use PID control to get to the desired speeds (set point) by measuring
         // the current wheel speed using encoders (process variable)
 
         frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond,
                 ControlType.kVelocity);
         // TODO Update other motor controllers
-
 
         // TODO Find and call a function on the wheelSpeeds object that resets the speed
         // of all wheels based on a max allowable speed.
@@ -304,19 +334,21 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public boolean chargeStationEnergize() {
 
-        // TODO The basic algorithm is: 
+        // TODO The basic algorithm is:
         // 1. Get the roll
         // 2. Convert roll to a roll-slope
         // 3. Calculate a change in twist to counteract a non-zero roll
-        // 4. Get the pitch 
+        // 4. Get the pitch
         // 5. Convert the pitch to a pitch-slope
-        // 6. Calculate the change in robot relative, forward velocity needed to achieve 0 pitch 
+        // 6. Calculate the change in robot relative, forward velocity needed to achieve
+        // 0 pitch
         // 7. drive the motor using robot relative drive passing in forward and twist
-        // 8. Return true if the pitch is within 2 degrees of zero and the roll is within 2 degrees of 0.
+        // 8. Return true if the pitch is within 2 degrees of zero and the roll is
+        // within 2 degrees of 0.
         return false;
 
         // HINTS:
-        // - Slope is rise over run, so it's the tan(angle). 
+        // - Slope is rise over run, so it's the tan(angle).
         // - Assume the pitch and roll can be -12 to +12 degrees
         // - To calculate motor input from slope, scale by a single value.
     }
@@ -377,7 +409,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getHeadingDegrees() {
-        // TODO: If the rio mounts vertically, you have to call something on the AHRS class I believe.
+        // TODO: If the rio mounts vertically, you have to call something on the AHRS
+        // class I believe.
         return imu.getAngle();
     }
 
@@ -385,25 +418,35 @@ public class DriveSubsystem extends SubsystemBase {
         // TODO: Verify rio is mounted properly to return pitch
         return imu.getPitch();
     }
-    
+
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.addDoubleProperty("Pitch", this::getPitch, null);
-        
+
         // This syntax might look a little weird. Here's what it means:
         //
         // This part:
-        //      () -> { return frontLeftEncoderRev.getPosition(); }
+        // () -> { return frontLeftEncoderRev.getPosition(); }
         //
-        // is called a lambda function. It's away of defining a function where it's being used.
-        // In the Pitch line above, we use the this::getPitch argument instead because we have
+        // is called a lambda function. It's away of defining a function where it's
+        // being used.
+        // In the Pitch line above, we use the this::getPitch argument instead because
+        // we have
         // an actual function already defined.
 
-        builder.addDoubleProperty("FL Encoder", () -> { return frontLeftEncoderRev.getPosition(); }, null);
-        builder.addDoubleProperty("FR Encoder", () -> { return frontRightEncoderRev.getPosition(); }, null);
-        builder.addDoubleProperty("BL Encoder", () -> { return backLeftEncoderRev.getPosition(); }, null);
-        builder.addDoubleProperty("BR Encoder", () -> { return backRightEncoderRev.getPosition(); }, null);
+        builder.addDoubleProperty("FL Encoder", () -> {
+            return frontLeftEncoderRev.getPosition();
+        }, null);
+        builder.addDoubleProperty("FR Encoder", () -> {
+            return frontRightEncoderRev.getPosition();
+        }, null);
+        builder.addDoubleProperty("BL Encoder", () -> {
+            return backLeftEncoderRev.getPosition();
+        }, null);
+        builder.addDoubleProperty("BR Encoder", () -> {
+            return backRightEncoderRev.getPosition();
+        }, null);
     }
 
 }
