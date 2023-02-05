@@ -18,7 +18,8 @@ import frc.robot.subsystems.DriveSubsystem;
 public class Brake extends CommandBase {
 
     DriveSubsystem driveSubsystem;
-    double executeTime = 10;
+    double executeTime = 5;
+    //execute time orgigionally 10
     double sinePeriod = (2 * Math.PI) / executeTime;
     double currentSampleRads = 0;
 
@@ -43,7 +44,8 @@ public class Brake extends CommandBase {
         currentSampleRads = currentSampleRads + sinePeriod;
 
         double motorInputLevel = Math.sin(currentSampleRads);
-        motorInputLevel = motorInputLevel * 0.05;
+        motorInputLevel = motorInputLevel * 0.2;
+        //Origional value of ^ at 0.5 didnt even move
 
         driveSubsystem.robotDrive(motorInputLevel, 0, 0);
 

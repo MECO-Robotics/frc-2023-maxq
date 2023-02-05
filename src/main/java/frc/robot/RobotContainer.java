@@ -161,7 +161,7 @@ public class RobotContainer {
 
     public void testMode() {
         XboxController pilot = controllerSubsystem.getPilotController();
-        double testThrottle = pilot.getLeftY();
+        double testThrottle = pilot.getLeftY() * .25;
 
         if (pilot.getYButtonReleased()) {
             testWheel = Constants.FRONT_LEFT_CAN;
