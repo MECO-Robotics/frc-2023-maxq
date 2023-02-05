@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
+import frc.robot.commands.drive.Brake;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.subsystems.ControllerSubsystem;
@@ -105,7 +106,7 @@ public class RobotContainer {
         // This is an example of button bindings using the new approach. The rest
         // of the button bindings are actually done in the ControllerSubsystem class.
 
-        // configureTeleopDriveButtonBindings();
+        configureTeleopDriveButtonBindings();
     }
 
     /**
@@ -143,11 +144,13 @@ public class RobotContainer {
 
         XboxController pilot = controllerSubsystem.getPilotController();
         JoystickButton aButton = new JoystickButton(pilot, XboxController.Button.kA.value);
+        JoystickButton bButton = new JoystickButton(pilot, XboxController.Button.kB.value);
+        // Whenever holding A - run the auto level routine. 
+        aButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
+                //.whileFalse(new TeleopDrive(driveSubsystem, controllerSubsystem, DriveMode.RobotOrientedHolonomic));
 
-        // Whenever holding A - run the auto level routine. When not holding, do normal
-        // driving
-        aButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem))
-                .whileFalse(new TeleopDrive(driveSubsystem, controllerSubsystem, DriveMode.RobotOrientedHolonomic));
+        //Whenever holding B - run brake command. 
+        bButton.whileTrue(new Brake(driveSubsystem));
 
         // TODO: Bind buttons for the ResetSensors command. Brent recommands a "two man
         // rule" for engaging, requiring a button on the pilot and co-pilot to press a

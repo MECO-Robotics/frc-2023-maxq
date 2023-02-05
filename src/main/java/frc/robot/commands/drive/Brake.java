@@ -18,56 +18,35 @@ import frc.robot.subsystems.DriveSubsystem;
 public class Brake extends CommandBase {
 
     DriveSubsystem driveSubsystem;
+    double executeTime = 10;
+    double sinePeriod = (2 * Math.PI) / executeTime;
+    double currentSampleRads = 0;
 
     public Brake(DriveSubsystem drive) {
         driveSubsystem = drive;
-        addRequirements(drive);
+        //addRequirements(drive);
+        //if you are using brake do not use the joysticks since the command will battle it and the auto brake
     }
 
     public void execute() {
 
-        // TODO: Write this command.
+        // output frequency = 20 kh (cycles per second)
         //
-
-        //
-        // PART 1 - CALCULATIONS
-        //
-
-        // 1. Goto
-        // https://www.andymark.com/products/spark-max-brushless-and-brushed-dc-motor-controller
-        // and get the output frequency from the specifications.
-        //
-        // 2. Determine the period from the frequency
-        //
+        // period = 0.00005 seconds per cycle = .05 ms per cycle
         // 3. Assume we want to change the motor direction every 1/10 th of a second.
         // Assume this execute() method is called every 20ms.
         //
         // 4. Calculate the number of times
-        // execute() should be called between switching motor directions
-        //
+        // execute() should be called between periods of the sine wave
+        // 10
 
-        //
-        // PART 2 - READY TO CODE
-        //
+        currentSampleRads = currentSampleRads + sinePeriod;
 
-        // 1. Define a constant on this class that is the number of times execute()
-        // should be called between changing motor directions
+        double motorInputLevel = Math.sin(currentSampleRads);
+        motorInputLevel = motorInputLevel * 0.05;
 
-        // 2. Define a constant on this class that is 2 X Pi divided by the constant
-        // just defined.
+        driveSubsystem.robotDrive(motorInputLevel, 0, 0);
 
-        // 3. Define a variable on this class initialized to zero that is a number of
-        // radians
-
-        // 4. Write a line in this function that increments the radians variable by the
-        // the constant in step 3.
-
-        // 5. Write a line that takes the sine of the variable. Put the result in a new
-        // variable
-
-        // 6. Call the robot drive method on the Drive Subsystem and pass in the new
-        // variable in for the forward parameter, and zero for the strafe and twist
-        // parameters.
     }
 
     public void end(boolean interrupted) {
