@@ -88,15 +88,6 @@ public class DriveSubsystem extends SubsystemBase {
 
         configureUsingSparkMaxMotorControllers();
 
-        // Setting this conversion factor allows us to get a distance traveled when we
-        // call RelativeEncoder.getPosition() from the getWheelPositions() method.
-        frontLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
-        frontLeftEncoderRev.setInverted(true);
-        frontRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
-        backLeftEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
-        backLeftEncoderRev.setInverted(true);
-        backRightEncoderRev.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
-
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
         // the field
         odometry = new MecanumDriveOdometry(driveKinematics,
@@ -107,28 +98,36 @@ public class DriveSubsystem extends SubsystemBase {
         addChild("Field", field2d);
     }
 
+    private CANSparkMax setupMotorController(int canID, boolean inverted) {
+        CANSparkMax controller = new CANSparkMax(canID, MotorType.kBrushed);
+        controller.setIdleMode(IdleMode.kBrake);
+        controller.setInverted(inverted);
+        controller.getPIDController().setP(0.1);
+        controller.getPIDController().setI(0);
+        controller.getPIDController().setD(0);
+        controller.getPIDController().setIZone(0);
+        controller.getPIDController().setFF(0.1);
+        return controller;
+    }
+
+    private RelativeEncoder setupRelativeEncoder(CANSparkMax controller){
+        RelativeEncoder encoder = controller.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+        encoder.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
+        encoder.setInverted(controller.getInverted());
+        return encoder;
+    }
+
     public void configureUsingSparkMaxMotorControllers() {
 
-        frontLeftController = new CANSparkMax(Constants.FRONT_LEFT_CAN, MotorType.kBrushed);
-        frontLeftController.setIdleMode(IdleMode.kBrake);
-        frontLeftController.setInverted(true);
+        frontLeftController = setupMotorController(Constants.FRONT_LEFT_CAN, true);
+        backLeftController = setupMotorController(Constants.BACK_LEFT_CAN, true);
+        frontRightController = setupMotorController(Constants.FRONT_RIGHT_CAN, false);
+        backRightController = setupMotorController(Constants.BACK_RIGHT_CAN, false);
 
-        frontRightController = new CANSparkMax(Constants.FRONT_RIGHT_CAN, MotorType.kBrushed);
-        frontRightController.setIdleMode(IdleMode.kBrake);
-        frontRightController.setInverted(false);
-
-        backLeftController = new CANSparkMax(Constants.BACK_LEFT_CAN, MotorType.kBrushed);
-        backLeftController.setIdleMode(IdleMode.kBrake);
-        backLeftController.setInverted(true);
-
-        backRightController = new CANSparkMax(Constants.BACK_RIGHT_CAN, MotorType.kBrushed);
-        backRightController.setIdleMode(IdleMode.kBrake);
-        backRightController.setInverted(false);
-
-        frontLeftEncoderRev = frontLeftController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-        backRightEncoderRev = backRightController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-        frontRightEncoderRev = frontRightController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-        backLeftEncoderRev = backLeftController.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+        frontLeftEncoderRev = setupRelativeEncoder(frontLeftController);
+        backLeftEncoderRev = setupRelativeEncoder(backLeftController);
+        frontRightEncoderRev = setupRelativeEncoder(frontRightController);
+        backRightEncoderRev = setupRelativeEncoder(backRightController);
 
         drive = new MecanumDrive(frontLeftController, backLeftController, frontRightController, backRightController);
     }
