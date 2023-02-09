@@ -10,6 +10,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -32,6 +33,18 @@ public class ArmSubsystem extends SubsystemBase {
     
     public ArmSubsystem() {
 
+        gripperController = new TalonSRX(Constants.GRIPPER_CAN);
+        linearControllerLeft = new TalonSRX(Constants.LINEAR_LEFT_CAN);
+        linearControllerRight = new TalonSRX(Constants.LINEAR_RIGHT_CAN);
+        shoulderController = new TalonSRX(Constants.SHOULDER_CAN);
+
+        elbowExtensionLeft = new AnalogInput(Constants.LINEAR_LEFT_ALG);
+        elbowExtensionRight = new AnalogInput(Constants.LINEAR_RIGHT_ALG);
+
+        gripperClosed = new DigitalInput(Constants.GRIPPER_LIMIT_CLOSED);
+        gripperOpen = new DigitalInput(Constants.GRIPPER_LIMIT_OPEN);
+        shoulderForward = new DigitalInput(Constants.SHOULDER_LIMIT_FORWARD);
+        shoulderBackward = new DigitalInput(Constants.SHOULDER_LIMIT_BACKWARD);
     }
 
     @Override
