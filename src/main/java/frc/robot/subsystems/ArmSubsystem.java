@@ -4,31 +4,33 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
 
-    // TODO Declare variables for 4 motor controllers. Let's assume CAN Motor
-    // controllers for now.
-    // The gripper and shoulder motor need to be TalonSRX or SparkMax's because they
+    // The gripper and shoulder motor need to be TalonSRX because they
     // have built-in current limiting, which allows us to automatically kill power
     // when the motor stalls when reaching the end
-    // 1. Gripper
-    // 2. Linear actuators - left & right - "elbow"
-    // 3. The shoulder motor
 
-    // TODO Declare 2 AnalogInput variables that will provide feedback on how far
-    // the elbow is extended
+    TalonSRX gripperController;
+    TalonSRX linearControllerLeft;
+    TalonSRX linearControllerRight;
+    TalonSRX shoulderController;
 
-    // TODO Declare 2 limit switches - one for gripper and one for the shoulder
+    AnalogInput elbowExtensionLeft;
+    AnalogInput elbowExtensionRight;
 
+    DigitalInput gripperClosed;
+    DigitalInput gripperOpen;
+    DigitalInput shoulderForward;
+    DigitalInput shoulderBackward;
+    
     public ArmSubsystem() {
-
-        // TODO Add constants to the Constants.java file for the CAN IDs of the montor
-        // controllers
-
-        // Setup the VictorSPX motor controllers
 
     }
 
