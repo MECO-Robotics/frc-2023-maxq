@@ -60,8 +60,18 @@ public class ArmSubsystem extends SubsystemBase {
     // 6. position to pick up from dual loading station
     // 7. position to pick up from single loading station
     // 8. position to pickup from floow
-    // 9. manual arm control - elbow, shoulder, gripper   <-- LET'S CODE THIS FIRST!!!!
     
+    /**
+     * Move the articulations of the arm. Parameters are the speed the motors should move.
+     * @param elbow -1 .. 1 - Contract .. Expand linear actuators (1.0 runs to extend the elbow)
+     * @param shoulder -1 .. 1 - backward .. forward 
+     * @param gripper -1 .. 1 - close .. open
+     */
+    public void manualControl(double elbow, double shoulder, double gripper) {
+
+        // TODO call the appropriate motor controllers, passing in the parameters directly to the set() functions on the motor controllers
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
     }
