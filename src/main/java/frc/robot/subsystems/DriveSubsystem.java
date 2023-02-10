@@ -116,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
         return controller;
     }
 
-    private RelativeEncoder setupRelativeEncoder(CANSparkMax controller){
+    private RelativeEncoder setupRelativeEncoder(CANSparkMax controller) {
         RelativeEncoder encoder = controller.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
         encoder.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
         encoder.setInverted(controller.getInverted());
@@ -246,23 +246,7 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vx, vy, rot);
         MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
 
-        wheelSpeeds.desaturate(MAX_SPEED_MPS);
-
-        System.out.println(String.format("WHEEL SPEEDS: %f, %f, %f, %f", wheelSpeeds.frontLeftMetersPerSecond,
-                wheelSpeeds.frontRightMetersPerSecond, wheelSpeeds.rearLeftMetersPerSecond,
-                wheelSpeeds.rearRightMetersPerSecond));
-
-        // Use PID control to get to the desired speeds (set point) by measuring
-        // the current wheel speed using encoders (process variable)
-
-        frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond,
-                ControlType.kVelocity);
-        frontRightController.getPIDController().setReference(wheelSpeeds.frontRightMetersPerSecond,
-                ControlType.kVelocity);
-        backLeftController.getPIDController().setReference(wheelSpeeds.rearLeftMetersPerSecond,
-                ControlType.kVelocity);
-        backRightController.getPIDController().setReference(wheelSpeeds.rearRightMetersPerSecond,
-                ControlType.kVelocity);
+        setWheelSpeeds(wheelSpeeds);
     }
 
     /***********************************************************************/
@@ -302,15 +286,29 @@ public class DriveSubsystem extends SubsystemBase {
 
         MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
 
+        setWheelSpeeds(wheelSpeeds);
+    }
+
+    /**
+     * Run the motors using PID control to achieve specific wheel speeds
+     * @param wheelSpeeds The desired speeds of each of the wheels
+     */
+    private void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
+
+        // Make sure none of the wheels tries to go faster than our max allowed.
+        wheelSpeeds.desaturate(MAX_SPEED_MPS);
+
         // Use PID control to get to the desired speeds (set point) by measuring
         // the current wheel speed using encoders (process variable)
 
         frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond,
-                ControlType.kVelocity);
-        // TODO Update other motor controllers
-
-        // TODO Find and call a function on the wheelSpeeds object that resets the speed
-        // of all wheels based on a max allowable speed.
+                CANSparkMax.ControlType.kVelocity);
+        frontRightController.getPIDController().setReference(wheelSpeeds.frontRightMetersPerSecond,
+                CANSparkMax.ControlType.kVelocity);
+        backLeftController.getPIDController().setReference(wheelSpeeds.rearLeftMetersPerSecond,
+                CANSparkMax.ControlType.kVelocity);
+        backRightController.getPIDController().setReference(wheelSpeeds.rearRightMetersPerSecond,
+                CANSparkMax.ControlType.kVelocity);
     }
 
     /***********************************************************************/
@@ -330,15 +328,15 @@ public class DriveSubsystem extends SubsystemBase {
 
         double pitch = getPitch();
 
-        if(pitch < -2) {                    // leaning forward - drive backward
+        if (pitch < -2) { // leaning forward - drive backward
 
             robotDrive(0.2, 0, 0);
 
-        } else if(pitch > 2) {              // leaning back - drive forward
+        } else if (pitch > 2) { // leaning back - drive forward
 
             robotDrive(-.2, 0, 0);
 
-        } else {                            // LEVEL!
+        } else { // LEVEL!
             stop();
             return true;
         }
