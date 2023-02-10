@@ -24,6 +24,25 @@ public final class Constants {
         Cube
     };
 
+    public enum GripperPosition {
+        GripOpen,
+        GripClosedCube,
+        GripClosedCone
+    };
+
+    public enum ShoulderPosition {
+        allFoward,
+        allBack,
+        middle
+    };
+
+    public enum ElbowPosition {
+        allOut,
+        allIn,
+        middle
+
+    };
+
     //
     // DRIVE SUBSYSTEM
     //
@@ -49,7 +68,6 @@ public final class Constants {
     // Analog Inputs for Elbow Extension Linear Actuator Potentiometer
     public static final int LINEAR_LEFT_ALG = 0;
     public static final int LINEAR_RIGHT_ALG = 1;
-
 
     public static final double HIGH_CURRENT_THRESHOLD = 20.0;
 

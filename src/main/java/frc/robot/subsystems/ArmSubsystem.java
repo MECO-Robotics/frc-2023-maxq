@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.ejml.dense.row.decomposition.eig.SwitchingEigenDecomposition_DDRM;
+
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -79,6 +81,13 @@ public class ArmSubsystem extends SubsystemBase {
         shoulderController.set(TalonSRXControlMode.Velocity, shoulder);
         gripperController.set(TalonSRXControlMode.Velocity, gripper);
     }
+
+
+    public void armPositionControl(Constants.GripperPosition gripperPosition, Constants.ShoulderPosition shoulderPosition, Constants.ElbowPosition elbowPosition){
+        
+    }
+
+
 
     @Override
     public void initSendable(SendableBuilder builder) {
