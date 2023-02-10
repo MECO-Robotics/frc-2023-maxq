@@ -5,6 +5,7 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
@@ -18,18 +19,58 @@ import frc.robot.subsystems.DriveSubsystem;
 public class Brake extends CommandBase {
 
     DriveSubsystem driveSubsystem;
-    double executeTime = 5;
-    //execute time orgigionally 10
-    double sinePeriod = (2 * Math.PI) / executeTime;
+
+    // orgigionally 10
+    static final double SAMPLES_PER_SINE_PERIOD = 5;
+    static final double SINE_SAMPLE_PERIOD = (2 * Math.PI) / SAMPLES_PER_SINE_PERIOD;
     double currentSampleRads = 0;
+
+    static final int TICKS_PER_SQUARE_PULSE = 5;
+    int ticks = 0;
+    double MOTOR_LEVEL = 0.2; // How much motor to apply with each pulse
 
     public Brake(DriveSubsystem drive) {
         driveSubsystem = drive;
-        //addRequirements(drive);
-        //if you are using brake do not use the joysticks since the command will battle it and the auto brake
+        // addRequirements(drive);
+        // if you are using brake do not use the joysticks since the command will battle
+        // it and the auto brake
     }
 
+    /**************************************************************************/
+
+    @Override
     public void execute() {
+        executeSquare();
+        // executeSine();
+        // executeImplode();
+    }
+
+    /**
+     * Make the right mecanum wheels push opposite directions,
+     * causing it to remain in place, fighting each other.
+     */
+    public void executeImplode() {
+
+        // Drive front wheels backward and backwheels forward. This should cause the
+        // right wheels to try and push right and the left wheels to push left
+        driveSubsystem.runWheel(Constants.FRONT_LEFT_CAN, -MOTOR_LEVEL);
+        driveSubsystem.runWheel(Constants.FRONT_RIGHT_CAN, -MOTOR_LEVEL);
+        driveSubsystem.runWheel(Constants.BACK_LEFT_CAN, MOTOR_LEVEL);
+        driveSubsystem.runWheel(Constants.BACK_RIGHT_CAN, MOTOR_LEVEL);
+    }
+
+    /**
+     * Rapidly change the motor direction.
+     */
+    public void executeSquare() {
+        ticks++;
+        if (ticks % TICKS_PER_SQUARE_PULSE == 0) {
+            MOTOR_LEVEL = -MOTOR_LEVEL;
+            driveSubsystem.robotDrive(MOTOR_LEVEL, 0, 0);
+        }
+    }
+
+    public void executeSine() {
 
         // output frequency = 20 kh (cycles per second)
         //
@@ -41,16 +82,17 @@ public class Brake extends CommandBase {
         // execute() should be called between periods of the sine wave
         // 10
 
-        currentSampleRads = currentSampleRads + sinePeriod;
+        currentSampleRads = currentSampleRads + SINE_SAMPLE_PERIOD;
 
-        double motorInputLevel = Math.sin(currentSampleRads);
-        motorInputLevel = motorInputLevel * 0.2;
-        //Origional value of ^ at 0.5 didnt even move
+        // Origional value of ^ at 0.5 didnt even move
+        double motorInputLevel = Math.sin(currentSampleRads) * MOTOR_LEVEL;
 
         driveSubsystem.robotDrive(motorInputLevel, 0, 0);
-
     }
 
+    /**************************************************************************/
+
+    @Override
     public void end(boolean interrupted) {
         driveSubsystem.stop();
     }
@@ -58,6 +100,7 @@ public class Brake extends CommandBase {
     /**
      * This command never finishes.
      */
+    @Override
     public boolean isFinished() {
         return false;
     }

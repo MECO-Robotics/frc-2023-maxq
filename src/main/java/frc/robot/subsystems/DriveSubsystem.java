@@ -48,6 +48,12 @@ public class DriveSubsystem extends SubsystemBase {
     // TODO Add a constant that is the maximum wheel speed. We'll need this in the
     // fieldDriveRelativeSpeed function
 
+    // Allow travel up to 15 feet per second
+    private static final double MAX_SPEED_MPS = 15 * Constants.FPS_TO_MPS;
+
+    // Allow twist up to 90 degrees per second
+    private static final double MAX_TWIST_RADS_PER_SECOND = Math.toRadians(90);
+
     private static final Translation2d FRONT_LEFT_POS = new Translation2d(9.25, 24.23);
     private static final Translation2d FRONT_RIGHT_POS = new Translation2d(-9.25, -24.23);
     private static final Translation2d BACK_LEFT_POS = new Translation2d(9.25, 24.23);
@@ -275,17 +281,6 @@ public class DriveSubsystem extends SubsystemBase {
         drive.driveCartesian(forwardX, leftY, twist, imu.getRotation2d());
     }
 
-    // TODO: Move these three constants to Constants.java
-
-    // Feet per second
-    private static final double FPS_TO_MPS = 0.308;
-
-    // Allow travel up to 15 feet per second
-    private static final double MAX_SPEED_MPS = 15 * FPS_TO_MPS;
-
-    // Allow twist up to 90 degrees per second
-    private static final double MAX_TWIST_RADS_PER_SECOND = Math.toRadians(90);
-
     /**
      * Drive at specifc forward (x), left (y), and angular speeds
      * 
@@ -333,23 +328,22 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public boolean chargeStationEnergize() {
 
-        // TODO The basic algorithm is:
-        // 1. Get the roll
-        // 2. Convert roll to a roll-slope
-        // 3. Calculate a change in twist to counteract a non-zero roll
-        // 4. Get the pitch
-        // 5. Convert the pitch to a pitch-slope
-        // 6. Calculate the change in robot relative, forward velocity needed to achieve
-        // 0 pitch
-        // 7. drive the motor using robot relative drive passing in forward and twist
-        // 8. Return true if the pitch is within 2 degrees of zero and the roll is
-        // within 2 degrees of 0.
-        return false;
+        double pitch = getPitch();
 
-        // HINTS:
-        // - Slope is rise over run, so it's the tan(angle).
-        // - Assume the pitch and roll can be -12 to +12 degrees
-        // - To calculate motor input from slope, scale by a single value.
+        if(pitch < -2) {                    // leaning forward - drive backward
+
+            robotDrive(0.2, 0, 0);
+
+        } else if(pitch > 2) {              // leaning back - drive forward
+
+            robotDrive(-.2, 0, 0);
+
+        } else {                            // LEVEL!
+            stop();
+            return true;
+        }
+
+        return false;
     }
 
     /***********************************************************************/

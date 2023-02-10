@@ -57,4 +57,6 @@ public final class Constants {
      * How fast we should travel for autonomous commands.
      */
     public static final double AUTO_SPEED = .5;
+    // Feet per second
+    public static final double FPS_TO_MPS = 0.308;
 }

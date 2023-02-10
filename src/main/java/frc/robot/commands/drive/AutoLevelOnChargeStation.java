@@ -28,8 +28,7 @@ public class AutoLevelOnChargeStation extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // TODO Call the function on the DriveSubsystem to energize the charge station,
-        // then set the boolean return value on the energized boolean on this class
+        energized = driveTrain.chargeStationEnergize();
     }
 
     // Called once the command ends or is interrupted.
