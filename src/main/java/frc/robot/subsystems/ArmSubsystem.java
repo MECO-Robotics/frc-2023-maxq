@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -30,7 +31,7 @@ public class ArmSubsystem extends SubsystemBase {
     DigitalInput gripperOpen;
     DigitalInput shoulderForward;
     DigitalInput shoulderBackward;
-    
+
     public ArmSubsystem() {
 
         gripperController = new TalonSRX(Constants.GRIPPER_CAN);
@@ -52,7 +53,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     // TODO Write functions to perform the following:
-    // 1. Stow arm -  this would fully contract the linear actuators and probably position the shoulder back
+    // 1. Stow arm - this would fully contract the linear actuators and probably
+    // position the shoulder back
     // 2. Top grid - fully extend elbow and shoulder
     // 3. middle grid - partially extend elbow & shoulder
     // 4. low grid - floor placement
@@ -60,16 +62,25 @@ public class ArmSubsystem extends SubsystemBase {
     // 6. position to pick up from dual loading station
     // 7. position to pick up from single loading station
     // 8. position to pickup from floow
-    
+
     /**
-     * Move the articulations of the arm. Parameters are the speed the motors should move.
-     * @param elbow -1 .. 1 - Contract .. Expand linear actuators (1.0 runs to extend the elbow)
-     * @param shoulder -1 .. 1 - backward .. forward 
-     * @param gripper -1 .. 1 - close .. open
+     * Move the articulations of the arm. Parameters are the speed the motors should
+     * move.
+     * 
+     * @param elbow    -1 .. 1 - Contract .. Expand linear actuators (1.0 runs to
+     *                 extend the elbow)
+     * @param shoulder -1 .. 1 - backward .. forward
+     * @param gripper  -1 .. 1 - close .. open
      */
     public void manualControl(double elbow, double shoulder, double gripper) {
 
-        // TODO call the appropriate motor controllers, passing in the parameters directly to the set() functions on the motor controllers
+        // TODO call the appropriate motor controllers, passing in the parameters
+        // directly to the set() functions on the motor controllers
+
+        linearControllerLeft.set(TalonSRXControlMode.Velocity, elbow);
+        linearControllerRight.set(TalonSRXControlMode.Velocity, elbow);
+        shoulderController.set(TalonSRXControlMode.Velocity, shoulder);
+        gripperController.set(TalonSRXControlMode.Velocity, gripper);
     }
 
     @Override

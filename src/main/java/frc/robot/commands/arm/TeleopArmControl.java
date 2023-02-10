@@ -22,8 +22,13 @@ public class TeleopArmControl extends CommandBase {
     @Override
     public void execute() {
 
-        // TODO Call the arm subsystem manualControl() method, passing in inputs from
-        // the controller subsystem
+        double shoulder = controllerSubsystem.getCopilotController().getLeftX();
+        double elbow = controllerSubsystem.getCopilotController().getRightX();
+        double gripper = controllerSubsystem.getCopilotController().getRightY();
+
+        armSubsystem.manualControl(elbow, shoulder, gripper);
+
+        
     }
 
     @Override
