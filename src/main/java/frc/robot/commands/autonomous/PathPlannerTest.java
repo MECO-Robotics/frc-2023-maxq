@@ -4,6 +4,9 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.commands.PPMecanumControllerCommand;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
@@ -32,18 +35,13 @@ public class PathPlannerTest extends CommandBase {
         PathPlannerTrajectory examplePath = PathPlanner.loadPath("test Path", new PathConstraints(4, 3));
 
         // This trajectory can then be passed to a path follower such as a
-        // PPSwerveControllerCommand
+        // PPMecanumControllerCommand
         // Or the path can be sampled at a given point in time for custom path following
 
         // Sample the state of the path at 1.2 seconds
         PathPlannerState exampleState = (PathPlannerState) examplePath.sample(1.2);
-        exampleState.poseMeters.getX();
-        exampleState.poseMeters.getY();
-        exampleState.poseMeters.getRotation();
-
 
        // driveTrain.fieldDrive(exampleState.poseMeters.getX(), exampleState.poseMeters.getY(), exampleState.poseMeters.getRotation());
-
 
         // Print the velocity at the sampled time
         System.out.println(exampleState.velocityMetersPerSecond);

@@ -74,9 +74,6 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void manualControl(double elbow, double shoulder, double gripper) {
 
-        // TODO call the appropriate motor controllers, passing in the parameters
-        // directly to the set() functions on the motor controllers
-
         linearControllerLeft.set(TalonSRXControlMode.Velocity, elbow);
         linearControllerRight.set(TalonSRXControlMode.Velocity, elbow);
         shoulderController.set(TalonSRXControlMode.Velocity, shoulder);

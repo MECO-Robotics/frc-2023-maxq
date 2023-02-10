@@ -27,8 +27,6 @@ public class TeleopArmControl extends CommandBase {
         double gripper = controllerSubsystem.getCopilotController().getRightY();
 
         armSubsystem.manualControl(elbow, shoulder, gripper);
-
-        
     }
 
     @Override
