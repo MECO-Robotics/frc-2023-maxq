@@ -37,10 +37,10 @@ public class AutoLevelOnChargeStation extends CommandBase {
         driveTrain.stop();
     }
 
-    // Returns true when the command should end.
+    // Command is never finished.
     @Override
     public boolean isFinished() {
-        return energized;
+        return false;
     }
 
 };

@@ -339,11 +339,11 @@ public class DriveSubsystem extends SubsystemBase {
 
         if (pitch < -2) { // leaning forward - drive backward
 
-            robotDrive(0.2, 0, 0);
+            robotDrive(0.35, 0, 0);
 
         } else if (pitch > 2) { // leaning back - drive forward
 
-            robotDrive(-.2, 0, 0);
+            robotDrive(-0.35, 0, 0);
 
         } else { // LEVEL!
             stop();
@@ -428,13 +428,20 @@ public class DriveSubsystem extends SubsystemBase {
 
     public double getPitch() {
         // TODO: Verify rio is mounted properly to return pitch
-        return imu.getPitch();
+        return -imu.getPitch();
+    }
+
+    public double getRoll() {
+        // TODO: Verify rio is mounted properly to return pitch
+        return imu.getRoll();
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.addDoubleProperty("Pitch", this::getPitch, null);
+        builder.addDoubleProperty("Heading", this::getHeadingDegrees, null);
+        builder.addDoubleProperty("Roll", this::getRoll, null);
 
         // This syntax might look a little weird. Here's what it means:
         //

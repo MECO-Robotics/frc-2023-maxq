@@ -40,9 +40,9 @@ public class Brake extends CommandBase {
 
     @Override
     public void execute() {
-        executeSquare();
+        // executeSquare();
         // executeSine();
-        // executeImplode();
+        executeImplode();
     }
 
     /**

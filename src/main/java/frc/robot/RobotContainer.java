@@ -148,16 +148,17 @@ public class RobotContainer {
         JoystickButton bButton = new JoystickButton(pilot, XboxController.Button.kB.value);
         JoystickButton xButton = new JoystickButton(pilot, XboxController.Button.kX.value);
 
-        // Whenever holding A - run the auto level routine. 
-        aButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
 
         // Whenever holding B - run brake command. 
         bButton.whileTrue(new Brake(driveSubsystem));
 
+        // Whenever holding X - run autolevel command. 
+        xButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
+
         // TODO: Brent recommands a "two man
         // rule" for engaging, requiring a button on the pilot and co-pilot to press a
         // button at the same time in order to reset
-        xButton.whileTrue(new ResetSensors(driveSubsystem));
+        aButton.whileTrue(new ResetSensors(driveSubsystem));
     }
 
     int testWheel = Constants.FRONT_LEFT_CAN;
