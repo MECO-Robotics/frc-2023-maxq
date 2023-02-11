@@ -290,10 +290,19 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * Given field relative chassis speeds, drive the wheels
+     * @param chassisSpeeds
+     */
+    public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        MecanumDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(chassisSpeeds);
+        setWheelSpeeds(wheelSpeeds);
+    }
+
+    /**
      * Run the motors using PID control to achieve specific wheel speeds
      * @param wheelSpeeds The desired speeds of each of the wheels
      */
-    private void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
+    public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
 
         // Make sure none of the wheels tries to go faster than our max allowed.
         wheelSpeeds.desaturate(MAX_SPEED_MPS);
@@ -369,6 +378,29 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * Add a vision sample to adjust robot pose
+     * 
+     * @param visionRobotPoseMeters
+     * @param timeStamp
+     */
+    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timeStamp) {
+        // TODO First switch from MecanumDriveOdometry to MecanumDrivePoseEstimator,
+        // then call this
+        // odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
+    }
+
+    /**
+     * Get the field position and orientation of the robot.
+     * @return
+     */
+    public Pose2d getPoseMeters() {
+        MecanumDrivePoseEstimator e;
+        return odometry.getPoseMeters();
+        // TODO switch to this if we switch odometry to use MecanumDrivePoseEstimator
+        // return odometry.getEstimatedPosition();
+    }
+
+    /**
      * Set the initial condition of the robot (where it is on the field)
      */
     public void setPoseMeters(Pose2d pose) {
@@ -381,22 +413,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Add a vision sample to adjust robot pose
-     * 
-     * @param visionRobotPoseMeters
-     * @param timeStamp
+     * Get the drive kinematics.
+     * @return
      */
-    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timeStamp) {
-        // TODO First switch from MecanumDriveOdometry to MecanumDrivePoseEstimator,
-        // then call this
-        // odometry.addVisionMeasurement(visionRobotPoseMeters, timeStamp);
-    }
-
-    public Pose2d getPoseMeters() {
-        MecanumDrivePoseEstimator e;
-        return odometry.getPoseMeters();
-        // TODO switch to this if we switch odometry to use MecanumDrivePoseEstimator
-        // return odometry.getEstimatedPosition();
+    public MecanumDriveKinematics getKinematics() {
+        return this.driveKinematics;
     }
 
     public double getHeadingDegrees() {
