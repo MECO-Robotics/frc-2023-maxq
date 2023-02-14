@@ -76,7 +76,6 @@ public class DriveSubsystem extends SubsystemBase {
     // Keeps track of where we are on the field based on gyro and encoder inputs.
     private final MecanumDriveOdometry odometry;
 
-    // Sensor simulations
     private final Field2d field2d = new Field2d();
 
     CANSparkMax frontLeftController;
@@ -99,6 +98,8 @@ public class DriveSubsystem extends SubsystemBase {
         odometry = new MecanumDriveOdometry(driveKinematics,
                 imu.getRotation2d(), getWheelPositions());
 
+        resetSensors();
+
         addChild("Drive", drive);
         addChild("IMU", imu);
         addChild("Field", field2d);
@@ -108,11 +109,11 @@ public class DriveSubsystem extends SubsystemBase {
         CANSparkMax controller = new CANSparkMax(canID, MotorType.kBrushed);
         controller.setIdleMode(IdleMode.kBrake);
         controller.setInverted(inverted);
+        controller.getPIDController().setFF(0.1);
         controller.getPIDController().setP(0.1);
         controller.getPIDController().setI(0);
         controller.getPIDController().setD(0);
         controller.getPIDController().setIZone(0);
-        controller.getPIDController().setFF(0.1);
         return controller;
     }
 
@@ -291,6 +292,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Given field relative chassis speeds, drive the wheels
+     * 
      * @param chassisSpeeds
      */
     public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
@@ -300,6 +302,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Run the motors using PID control to achieve specific wheel speeds
+     * 
      * @param wheelSpeeds The desired speeds of each of the wheels
      */
     public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
@@ -333,21 +336,39 @@ public class DriveSubsystem extends SubsystemBase {
      * @return true if the robot is level on the charge station (energized) and
      *         false if not
      */
-    public boolean chargeStationEnergize() {
+    public boolean chargeStationEnergize(boolean strafeClimb) {
 
-        double pitch = getPitch();
+        // NOTES
+        /*
+         * The pitch is currently negated, but that looks backwards now, relative to the
+         * code here. Need to switch back
+         * 
+         * Algorithm approach for strafe climb:
+         * 1. Orient field left or right
+         * 2. Pitch -> Twist right, or use heading to maintain field left orientation
+         * 3. Roll -> Left
+         * 
+         * Algorithm approah for straight climb:
+         * 1. Orient field forward or backward
+         * 2. Pitch -> Forward
+         * 3. Roll -> Twist left
+         * 
+         */
 
-        if (pitch < -2) { // leaning forward - drive backward
-
-            robotDrive(0.35, 0, 0);
-
-        } else if (pitch > 2) { // leaning back - drive forward
-
-            robotDrive(-0.35, 0, 0);
-
-        } else { // LEVEL!
-            stop();
-            return true;
+        double MAX_ANGLE = 12.0;
+        double MAX_MOTOR = 0.7;
+        if (strafeClimb) {
+            double twist = getPitch() / MAX_ANGLE * MAX_MOTOR;
+            double left = getRoll() / MAX_ANGLE * MAX_MOTOR;
+            if (Math.abs(twist) > 0.1 || Math.abs(left) > 0.1) {
+                robotDrive(0, left, twist);
+            }
+        } else {
+            double twist = getRoll() / MAX_ANGLE * MAX_MOTOR;
+            double forward = getPitch() / MAX_ANGLE * MAX_MOTOR;
+            if (Math.abs(twist) > 0.1 || Math.abs(forward) > 0.1) {
+                robotDrive(forward, 0, twist);
+            }
         }
 
         return false;
@@ -370,6 +391,17 @@ public class DriveSubsystem extends SubsystemBase {
      * sim.bb
      */
     public void resetSensors() {
+
+        // TODO For now, leave out until we can research if this should be done and if
+        // it's necessary
+        // try {
+        // imu.calibrate();
+
+        // while (imu.isCalibrating())
+        // Thread.sleep(100);
+        // } catch (InterruptedException e) {
+        // }
+
         imu.zeroYaw();
         frontLeftEncoderRev.setPosition(0);
         frontRightEncoderRev.setPosition(0);
@@ -391,6 +423,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Get the field position and orientation of the robot.
+     * 
      * @return
      */
     public Pose2d getPoseMeters() {
@@ -414,6 +447,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * Get the drive kinematics.
+     * 
      * @return
      */
     public MecanumDriveKinematics getKinematics() {
@@ -423,6 +457,9 @@ public class DriveSubsystem extends SubsystemBase {
     public double getHeadingDegrees() {
         // TODO: If the rio mounts vertically, you have to call something on the AHRS
         // class I believe.
+        // TODO AHRS also has getFusedHeading(). This method is probably more accurate,
+        // but is designed to just correct the compass, so the value is always 0 to 360
+        // unlike getAngle, which is continuous.
         return imu.getAngle();
     }
 

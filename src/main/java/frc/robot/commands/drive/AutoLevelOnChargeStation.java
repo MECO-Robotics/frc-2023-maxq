@@ -28,7 +28,7 @@ public class AutoLevelOnChargeStation extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        energized = driveTrain.chargeStationEnergize();
+        energized = driveTrain.chargeStationEnergize(true);
     }
 
     // Called once the command ends or is interrupted.
