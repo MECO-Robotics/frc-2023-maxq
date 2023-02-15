@@ -22,6 +22,7 @@ import edu.wpi.first.math.util.Units;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -109,8 +110,20 @@ public class DriveSubsystem extends SubsystemBase {
         CANSparkMax controller = new CANSparkMax(canID, MotorType.kBrushed);
         controller.setIdleMode(IdleMode.kBrake);
         controller.setInverted(inverted);
-        controller.getPIDController().setFF(0.1);
-        controller.getPIDController().setP(0.1);
+
+        // The PID Controller reference is set in velocity mode, so the
+        // controller is designed to take a reference that is first converted
+        // from m/s to RPMs, and then the output is in duty cycle (-1..1).
+        // The feed forward provided in percent output
+        controller.getPIDController().setOutputRange(-1, 1);
+
+        // A value of 0.5 basically means "add on 1/2 the expected input level"
+        controller.getPIDController().setFF(0.5);
+
+        // At max speed of 15mps, our RPMS would be 4.62m/s X 1/0.4787646 rev/s * 60sec/min = 579 rpm
+        // So, to jump to max speed, if our FF gets us half way there - 289.5, then the P term gets us
+        // the rest of the way:  289.5 X kP = 0.5.  kP = 0.01727
+        controller.getPIDController().setP(0.01727);
         controller.getPIDController().setI(0);
         controller.getPIDController().setD(0);
         controller.getPIDController().setIZone(0);
@@ -314,13 +327,17 @@ public class DriveSubsystem extends SubsystemBase {
         // the current wheel speed using encoders (process variable)
 
         frontLeftController.getPIDController().setReference(wheelSpeeds.frontLeftMetersPerSecond,
-                CANSparkMax.ControlType.kVelocity);
+                CANSparkMax.ControlType.kVelocity, 0, wheelSpeeds.frontLeftMetersPerSecond / MAX_SPEED_MPS,
+                SparkMaxPIDController.ArbFFUnits.kPercentOut);
         frontRightController.getPIDController().setReference(wheelSpeeds.frontRightMetersPerSecond,
-                CANSparkMax.ControlType.kVelocity);
+                CANSparkMax.ControlType.kVelocity, 0, wheelSpeeds.frontRightMetersPerSecond / MAX_SPEED_MPS,
+                SparkMaxPIDController.ArbFFUnits.kPercentOut);
         backLeftController.getPIDController().setReference(wheelSpeeds.rearLeftMetersPerSecond,
-                CANSparkMax.ControlType.kVelocity);
+                CANSparkMax.ControlType.kVelocity, 0, wheelSpeeds.rearLeftMetersPerSecond / MAX_SPEED_MPS,
+                SparkMaxPIDController.ArbFFUnits.kPercentOut);
         backRightController.getPIDController().setReference(wheelSpeeds.rearRightMetersPerSecond,
-                CANSparkMax.ControlType.kVelocity);
+                CANSparkMax.ControlType.kVelocity, 0, wheelSpeeds.rearRightMetersPerSecond / MAX_SPEED_MPS,
+                SparkMaxPIDController.ArbFFUnits.kPercentOut);
     }
 
     /***********************************************************************/
