@@ -20,14 +20,17 @@ public class ArmSubsystem extends SubsystemBase {
 
     TalonSRX gripperController;
     TalonSRX linearController;
+
+    // TODO Separate shoulderController into left & right
+    // TODO Verify Talons - not necesary because we'll have encoders
     TalonSRX shoulderController;
+
+    // TODO Add Encoder for left and right shoulder
 
     AnalogInput elbowExtension;
 
     DigitalInput gripperClosed;
     DigitalInput gripperOpen;
-    DigitalInput shoulderForward;
-    DigitalInput shoulderBackward;
 
     public ArmSubsystem() {
 
@@ -36,19 +39,19 @@ public class ArmSubsystem extends SubsystemBase {
         shoulderController = new TalonSRX(Constants.SHOULDER_CAN);
 
         // TODO: Configure the continuous current limit for the gripper motor.
-        //      Hint: Goto the Andy Mark Snow blower motor product page and configure the continuous limit to 1/2 the stall current. (as a starting value) 
-        
-        // TODO: Configure the continuous current limit for the shoulder controller
-        //      Hint: Find the motor we plan on using and do the same process.
+        // Hint: Goto the Andy Mark Snow blower motor product page and configure the
+        // continuous limit to 1/2 the stall current. (as a starting value)
 
-        // NOTE: Current limiting is NOT required on the linear actuator because it has built in limit switches that prevent stalling the motor
+        // TODO: Configure the continuous current limit for the shoulder controller
+        // Hint: Find the motor we plan on using and do the same process.
+
+        // NOTE: Current limiting is NOT required on the linear actuator because it has
+        // built in limit switches that prevent stalling the motor
 
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
 
         gripperClosed = new DigitalInput(Constants.GRIPPER_LIMIT_CLOSED);
         gripperOpen = new DigitalInput(Constants.GRIPPER_LIMIT_OPEN);
-        shoulderForward = new DigitalInput(Constants.SHOULDER_LIMIT_FORWARD);
-        shoulderBackward = new DigitalInput(Constants.SHOULDER_LIMIT_BACKWARD);
     }
 
     @Override
@@ -77,17 +80,35 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void manualControl(double elbow, double shoulder, double gripper) {
 
-        linearController.set(TalonSRXControlMode.Velocity, elbow);
-        shoulderController.set(TalonSRXControlMode.Velocity, shoulder);
-        gripperController.set(TalonSRXControlMode.Velocity, gripper);
+        linearController.set(TalonSRXControlMode.PercentOutput, elbow);
+        shoulderController.set(TalonSRXControlMode.PercentOutput, shoulder);
+        gripperController.set(TalonSRXControlMode.PercentOutput, gripper);
     }
 
     public void armPositionControl(Constants.GripperPosition gripperPosition,
             Constants.ShoulderPosition shoulderPosition, Constants.ElbowPosition elbowPosition) {
 
+        // TODO write function to set to a position
+    }
+
+    /**
+     * Set the percent output on each shoulder using a single input level. Account
+     * for differences in motor efficiency, friction, etc.. By verifying the
+     * position of each shoulder are the same.
+     * 
+     * @param level
+     */
+    private void setShoulderLevels(double level) {
+
+        // TODO Write an algorithm that uses the input level, and determines a correct
+        // levels for each shoulder such that they stay in sync.
+
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
+
+        // TODO Add a shuffleboard variable that displays the difference between the
+        // left and right shoulder positions, in millimeters.
     }
 }

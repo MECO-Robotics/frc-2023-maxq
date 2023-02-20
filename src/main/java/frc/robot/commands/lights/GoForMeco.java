@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LightSubsystem;
 
+/**
+ * Quickly blink between red and blue - conveinently both MECO colors and
+ * aliance colors! :)
+ */
 public class GoForMeco extends CommandBase {
     private final LightSubsystem lights;
     int i = 0;
@@ -16,8 +20,7 @@ public class GoForMeco extends CommandBase {
     public GoForMeco(LightSubsystem lightSubsystem) {
         lights = lightSubsystem;
     }
-    
-    //This line of code makes it so that the LEDs on the robot slowly blink between white & black when called.
+
     @Override
     public void execute() {
 
@@ -32,7 +35,7 @@ public class GoForMeco extends CommandBase {
             } else {
                 c = Color.kRed;
             }
-            
+
         }
 
         lights.set(c);
