@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
@@ -18,6 +19,7 @@ import frc.robot.commands.drive.Brake;
 import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.commands.lights.SetColor;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
@@ -147,7 +149,7 @@ public class RobotContainer {
         JoystickButton aButton = new JoystickButton(pilot, XboxController.Button.kA.value);
         JoystickButton bButton = new JoystickButton(pilot, XboxController.Button.kB.value);
         JoystickButton xButton = new JoystickButton(pilot, XboxController.Button.kX.value);
-
+        JoystickButton yButton = new JoystickButton(pilot, XboxController.Button.kY.value);
 
         // Whenever holding B - run brake command. 
         bButton.whileTrue(new Brake(driveSubsystem));
@@ -155,10 +157,14 @@ public class RobotContainer {
         // Whenever holding X - run autolevel command. 
         xButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
 
+        yButton.onTrue(new SetColor(lightSubsystem, Color.kYellow));
+
+        aButton.onTrue(new SetColor(lightSubsystem, Color.kPurple)); 
+
         // TODO: Brent recommands a "two man
         // rule" for engaging, requiring a button on the pilot and co-pilot to press a
         // button at the same time in order to reset
-        aButton.whileTrue(new ResetSensors(driveSubsystem));
+        //aButton.whileTrue(new ResetSensors(driveSubsystem));
     }
 
     int testWheel = Constants.FRONT_LEFT_CAN;

@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightSubsystem extends SubsystemBase {
@@ -18,6 +19,7 @@ public class LightSubsystem extends SubsystemBase {
         // The idea here is to set the max value (1.0) to be 100% duty cycle - all on,
         // and 0 to be 0% duty cycle - all off.
         // The timer runs every 5.005 ms, so 5.005 is the largest width possible.
+        // Setting the center pulse width to zero ensures 
         r.setBounds(5.005, 0, 0, 0, 0);
         g.setBounds(5.005, 0, 0, 0, 0);
         b.setBounds(5.005, 0, 0, 0, 0);
@@ -30,10 +32,17 @@ public class LightSubsystem extends SubsystemBase {
      * @param green
      * @param blue
      */
-    public void set(double red, double green, double blue) {
-        r.setPosition(red);
-        g.setPosition(green);
-        b.setPosition(blue);
+    public void set(Color color) {
+        // TODO Set the r, g, and b PWM signals based on color provided
+
+
+     r.setSpeed(color.red);
+     g.setSpeed(color.green);
+     b.setSpeed(color.blue);
+
+
+
+
     }
 
 }

@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LightSubsystem;
 
-public class Strobe extends CommandBase {
+public class GoForMeco extends CommandBase {
     private final LightSubsystem lights;
     int i = 0;
-    Color c = Color.kBlack;
+    Color c = Color.kPaleGoldenrod;
 
-    public Strobe(LightSubsystem lightSubsystem) {
+    public GoForMeco(LightSubsystem lightSubsystem) {
         lights = lightSubsystem;
     }
     
@@ -23,14 +23,14 @@ public class Strobe extends CommandBase {
 
         i = i + 1;
 
-        if (i == 50) {
+        if (i == 13) {
 
             i = 0;
 
-            if (c == Color.kWhite) {
-                c = Color.kBlack;
+            if (c == Color.kRed) {
+                c = Color.kBlue;
             } else {
-                c = Color.kWhite;
+                c = Color.kRed;
             }
             
         }

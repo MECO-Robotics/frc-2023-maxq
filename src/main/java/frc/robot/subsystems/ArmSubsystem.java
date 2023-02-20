@@ -4,11 +4,8 @@
 
 package frc.robot.subsystems;
 
-import org.ejml.dense.row.decomposition.eig.SwitchingEigenDecomposition_DDRM;
-
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -22,12 +19,10 @@ public class ArmSubsystem extends SubsystemBase {
     // when the motor stalls when reaching the end
 
     TalonSRX gripperController;
-    TalonSRX linearControllerLeft;
-    TalonSRX linearControllerRight;
+    TalonSRX linearController;
     TalonSRX shoulderController;
 
-    AnalogInput elbowExtensionLeft;
-    AnalogInput elbowExtensionRight;
+    AnalogInput elbowExtension;
 
     DigitalInput gripperClosed;
     DigitalInput gripperOpen;
@@ -37,12 +32,18 @@ public class ArmSubsystem extends SubsystemBase {
     public ArmSubsystem() {
 
         gripperController = new TalonSRX(Constants.GRIPPER_CAN);
-        linearControllerLeft = new TalonSRX(Constants.LINEAR_LEFT_CAN);
-        linearControllerRight = new TalonSRX(Constants.LINEAR_RIGHT_CAN);
+        linearController = new TalonSRX(Constants.LINEAR_LEFT);
         shoulderController = new TalonSRX(Constants.SHOULDER_CAN);
 
-        elbowExtensionLeft = new AnalogInput(Constants.LINEAR_LEFT_ALG);
-        elbowExtensionRight = new AnalogInput(Constants.LINEAR_RIGHT_ALG);
+        // TODO: Configure the continuous current limit for the gripper motor.
+        //      Hint: Goto the Andy Mark Snow blower motor product page and configure the continuous limit to 1/2 the stall current. (as a starting value) 
+        
+        // TODO: Configure the continuous current limit for the shoulder controller
+        //      Hint: Find the motor we plan on using and do the same process.
+
+        // NOTE: Current limiting is NOT required on the linear actuator because it has built in limit switches that prevent stalling the motor
+
+        elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
 
         gripperClosed = new DigitalInput(Constants.GRIPPER_LIMIT_CLOSED);
         gripperOpen = new DigitalInput(Constants.GRIPPER_LIMIT_OPEN);
@@ -76,18 +77,15 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void manualControl(double elbow, double shoulder, double gripper) {
 
-        linearControllerLeft.set(TalonSRXControlMode.Velocity, elbow);
-        linearControllerRight.set(TalonSRXControlMode.Velocity, elbow);
+        linearController.set(TalonSRXControlMode.Velocity, elbow);
         shoulderController.set(TalonSRXControlMode.Velocity, shoulder);
         gripperController.set(TalonSRXControlMode.Velocity, gripper);
     }
 
+    public void armPositionControl(Constants.GripperPosition gripperPosition,
+            Constants.ShoulderPosition shoulderPosition, Constants.ElbowPosition elbowPosition) {
 
-    public void armPositionControl(Constants.GripperPosition gripperPosition, Constants.ShoulderPosition shoulderPosition, Constants.ElbowPosition elbowPosition){
-        
     }
-
-
 
     @Override
     public void initSendable(SendableBuilder builder) {
