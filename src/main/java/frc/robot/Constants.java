@@ -53,20 +53,25 @@ public final class Constants {
     public static final int BACK_LEFT_CAN = 4;
     public static final int BACK_RIGHT_CAN = 5;
 
-    // Arm subsystem motors
-    public static final int GRIPPER_CAN = 6;
-    public static final int LINEAR_LEFT = 7;
-    public static final int SHOULDER_CAN = 9;
+    // Arm gripper motors
+    public static final int GRIPPER_PWM = 2;
+    
 
-    // Limit switch DIO Values
-    public static final int GRIPPER_LIMIT_OPEN = 0;
-    public static final int GRIPPER_LIMIT_CLOSED = 1;
-    public static final int SHOULDER_LIMIT_FORWARD = 2;
-    public static final int SHOULDER_LIMIT_BACKWARD = 3;
+    // Arm elbow motors
+    public static final int LINEAR_CAN = 7;
 
     // Analog Inputs for Elbow Extension Linear Actuator Potentiometer
     public static final int LINEAR_ALG = 0;
 
+    // Arm shoulder motors
+    public static final int LEFT_SHOULDER_PWM = 0;
+    public static final int RIGHT_SHOULDER_PWM = 1;
+    public static final int LEFT_SHOULDER_ENC_A_DIO = 0;
+    public static final int LEFT_SHOULDER_ENC_B_DIO = 1;
+    public static final int RIGHT_SHOULDER_ENC_A_DIO = 2;
+    public static final int RIGHT_SHOULDER_ENC_B_DIO = 3;
+
+    // Common motor limits
     public static final double HIGH_CURRENT_THRESHOLD = 20.0;
 
     /**

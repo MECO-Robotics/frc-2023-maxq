@@ -5,58 +5,71 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
 
-    // The gripper and shoulder motor need to be TalonSRX because they
-    // have built-in current limiting, which allows us to automatically kill power
-    // when the motor stalls when reaching the end
+    // Gripper
+    VictorSP gripperController;
 
-    TalonSRX gripperController;
+    // Elbow
     TalonSRX linearController;
-
-    // TODO Separate shoulderController into left & right
-    // TODO Verify Talons - not necesary because we'll have encoders
-    TalonSRX shoulderController;
-
-    // TODO Add Encoder for left and right shoulder
-
     AnalogInput elbowExtension;
 
-    DigitalInput gripperClosed;
-    DigitalInput gripperOpen;
+    // Shoulder
+    VictorSP leftShoulderController;
+    VictorSP rightShoulderController;
+    Encoder leftShoulderEncoder;
+    Encoder rightShoulderEncoder;
 
     public ArmSubsystem() {
 
-        gripperController = new TalonSRX(Constants.GRIPPER_CAN);
-        linearController = new TalonSRX(Constants.LINEAR_LEFT);
-        shoulderController = new TalonSRX(Constants.SHOULDER_CAN);
-
-        // TODO: Configure the continuous current limit for the gripper motor.
-        // Hint: Goto the Andy Mark Snow blower motor product page and configure the
-        // continuous limit to 1/2 the stall current. (as a starting value)
-
-        // TODO: Configure the continuous current limit for the shoulder controller
-        // Hint: Find the motor we plan on using and do the same process.
-
-        // NOTE: Current limiting is NOT required on the linear actuator because it has
-        // built in limit switches that prevent stalling the motor
-
+        gripperController = new VictorSP(Constants.GRIPPER_PWM);
+        linearController = new TalonSRX(Constants.LINEAR_CAN);
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
+        leftShoulderController = new VictorSP(Constants.LEFT_SHOULDER_PWM);
+        rightShoulderController = new VictorSP(Constants.RIGHT_SHOULDER_PWM);
 
-        gripperClosed = new DigitalInput(Constants.GRIPPER_LIMIT_CLOSED);
-        gripperOpen = new DigitalInput(Constants.GRIPPER_LIMIT_OPEN);
+        leftShoulderEncoder = new Encoder(Constants.LEFT_SHOULDER_ENC_A_DIO, Constants.LEFT_SHOULDER_ENC_B_DIO);
+        rightShoulderEncoder = new Encoder(Constants.RIGHT_SHOULDER_ENC_A_DIO, Constants.RIGHT_SHOULDER_ENC_B_DIO);
     }
+
+    // This variable creates a timer for the "auger" motor that turns on the gripper
+    // motor for a set amount of time (hopefully enough for it to fully open from a
+    // fully closed state)
+
+    double gripperStartTime;
 
     @Override
     public void periodic() {
+        if((Timer.getFPGATimestamp() - gripperStartTime) > 0.85) {
+            gripperController.set(0);
+        }
+
     }
+
+    public void openGripper() {
+        gripperStartTime = Timer.getFPGATimestamp();
+        gripperController.set(1.0);
+    }
+
+    public void closeGripper() {
+        gripperStartTime = Timer.getFPGATimestamp();
+        gripperController.set(-1.0);
+    }
+
+
 
     // TODO Write functions to perform the following:
     // 1. Stow arm - this would fully contract the linear actuators and probably
@@ -81,8 +94,9 @@ public class ArmSubsystem extends SubsystemBase {
     public void manualControl(double elbow, double shoulder, double gripper) {
 
         linearController.set(TalonSRXControlMode.PercentOutput, elbow);
-        shoulderController.set(TalonSRXControlMode.PercentOutput, shoulder);
-        gripperController.set(TalonSRXControlMode.PercentOutput, gripper);
+        leftShoulderController.set(shoulder);
+        rightShoulderController.set(shoulder);
+        gripperController.set(gripper);
     }
 
     public void armPositionControl(Constants.GripperPosition gripperPosition,
