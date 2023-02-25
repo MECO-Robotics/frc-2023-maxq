@@ -46,14 +46,15 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     // This variable creates a timer for the "auger" motor that turns on the gripper
-    // motor for a set amount of time (hopefully enough for it to fully open from a
-    // fully closed state)
+    // motor for a set amount of time (0.85 seconds allows the motor to fully open
+    // from a fully closed state & vice versa, with a bit of leniency just to make
+    // sure)
 
     double gripperStartTime;
 
     @Override
     public void periodic() {
-        if((Timer.getFPGATimestamp() - gripperStartTime) > 0.85) {
+        if ((Timer.getFPGATimestamp() - gripperStartTime) > 0.85) {
             gripperController.set(0);
         }
 
@@ -69,15 +70,13 @@ public class ArmSubsystem extends SubsystemBase {
         gripperController.set(-1.0);
     }
 
-
-
     // TODO Write functions to perform the following:
     // 1. Stow arm - this would fully contract the linear actuators and probably
     // position the shoulder back
     // 2. Top grid - fully extend elbow and shoulder
     // 3. middle grid - partially extend elbow & shoulder
     // 4. low grid - floor placement
-    // 5. open / close gripper
+    // 5. open / close gripper - DONE!
     // 6. position to pick up from dual loading station
     // 7. position to pick up from single loading station
     // 8. position to pickup from floow
@@ -94,8 +93,9 @@ public class ArmSubsystem extends SubsystemBase {
     public void manualControl(double elbow, double shoulder, double gripper) {
 
         linearController.set(TalonSRXControlMode.PercentOutput, elbow);
-        leftShoulderController.set(shoulder);
-        rightShoulderController.set(shoulder);
+        
+        setShoulderLevels(shoulder);
+        
         gripperController.set(gripper);
     }
 
@@ -104,6 +104,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         // TODO write function to set to a position
     }
+
+    final static double MOTOR_ERROR_CONVERSION = .01;
 
     /**
      * Set the percent output on each shoulder using a single input level. Account
@@ -114,9 +116,20 @@ public class ArmSubsystem extends SubsystemBase {
      */
     private void setShoulderLevels(double level) {
 
-        // TODO Write an algorithm that uses the input level, and determines a correct
-        // levels for each shoulder such that they stay in sync.
+        double deltaArmMotor = (rightShoulderEncoder.get() - leftShoulderEncoder.get()) * MOTOR_ERROR_CONVERSION;
 
+        rightShoulderController.set(level - deltaArmMotor);
+        leftShoulderController.set(level + deltaArmMotor);
+
+        /* right encoder value subtracted from left to find disparity
+        *  divided by constant (100) to turn into motor value
+        *  subtracted from right motor value, added to left motor value
+        *    if right is greater than left, delta is positive value
+        *    right motor moves slower, left motor mvoes faster
+        *    if left is greater than right, delta is negative value
+        *    right motor moves faster, left motor mvoes slower
+        */
+        
     }
 
     @Override

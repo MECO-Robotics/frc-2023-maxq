@@ -26,8 +26,7 @@ public final class Constants {
 
     public enum GripperPosition {
         GripOpen,
-        GripClosedCube,
-        GripClosedCone
+        GripClosed
     };
 
     public enum ShoulderPosition {

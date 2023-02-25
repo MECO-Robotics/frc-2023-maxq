@@ -13,13 +13,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.arm.TeleopArmControl;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
 import frc.robot.commands.drive.Brake;
 import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.lights.SetColor;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
@@ -37,6 +41,7 @@ import frc.robot.subsystems.PowerHub;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+    private final ArmSubsystem armSubsystem = new ArmSubsystem();
     private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
     private final LightSubsystem lightSubsystem = new LightSubsystem();
     // private final PowerHub powerHub = new PowerHub();
@@ -206,7 +211,12 @@ public class RobotContainer {
     }
 
     public Command getTeleopCommand() {
-        return new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected());
+        ParallelCommandGroup command = new ParallelCommandGroup(
+            new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
+            new TeleopArmControl(armSubsystem, controllerSubsystem)
+            );
+
+        return command;
     }
 
     public void robotPeriodic() {
