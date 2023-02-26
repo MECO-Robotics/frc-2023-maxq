@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -20,18 +21,26 @@ import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
 
+    // we are multiplying the difference between the left and right encoders 
+    //by this constant to apply a motor speed delta to each shoulder motor.
+    final static double MOTOR_ERROR_CONVERSION = .01;
+    
     // Gripper
     VictorSP gripperController;
+    Constants.GripperPosition desiredGripperPosition;
 
     // Elbow
     TalonSRX linearController;
     AnalogInput elbowExtension;
+    Constants.ElbowPosition desiredElbowPosition;
 
     // Shoulder
     VictorSP leftShoulderController;
     VictorSP rightShoulderController;
     Encoder leftShoulderEncoder;
     Encoder rightShoulderEncoder;
+    Constants.ShoulderPosition desiredShoulderPosition;
+    
 
     public ArmSubsystem() {
 
@@ -52,12 +61,34 @@ public class ArmSubsystem extends SubsystemBase {
 
     double gripperStartTime;
 
+    // 0.3 of a second to get to full power on linear actuator
+    SlewRateLimiter linearRateLimiter = new SlewRateLimiter(3.3);
+    // 0.5 of a second to get to full power on sholder motors
+    SlewRateLimiter shoulderRateLimiter = new SlewRateLimiter(2);
+
     @Override
     public void periodic() {
         if ((Timer.getFPGATimestamp() - gripperStartTime) > 0.85) {
-            gripperController.set(0);
+
         }
 
+        if (desiredGripperPosition == Constants.GripperPosition.GripOpen && gripperController.get() <= 0) {
+            openGripper();
+        } else if (desiredGripperPosition == Constants.GripperPosition.GripClose && gripperController.get() >= 0) {
+            closeGripper();
+        }
+
+        if (desiredShoulderPosition == Constants.ShoulderPosition.allForward && leftShoulderController.get() <= 0) {
+            setShoulderLevels(shoulderRateLimiter.calculate(0.5));
+        } else if (desiredShoulderPosition == Constants.ShoulderPosition.allBack && leftShoulderController.get() >= 0) {
+            setShoulderLevels(shoulderRateLimiter.calculate(-0.5));
+        }
+
+        if (desiredElbowPosition == Constants.ElbowPosition.allOut && linearController.getMotorOutputPercent() <= 0) {
+            linearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(1));
+        } else if (desiredElbowPosition == Constants.ElbowPosition.allIn && linearController.getMotorOutputPercent() >= 0) {
+            linearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(-1));
+        }
     }
 
     public void openGripper() {
@@ -79,7 +110,7 @@ public class ArmSubsystem extends SubsystemBase {
     // 5. open / close gripper - DONE!
     // 6. position to pick up from dual loading station
     // 7. position to pick up from single loading station
-    // 8. position to pickup from floow
+    // 8. position to pickup from floor 
 
     /**
      * Move the articulations of the arm. Parameters are the speed the motors should
@@ -93,19 +124,29 @@ public class ArmSubsystem extends SubsystemBase {
     public void manualControl(double elbow, double shoulder, double gripper) {
 
         linearController.set(TalonSRXControlMode.PercentOutput, elbow);
-        
+
         setShoulderLevels(shoulder);
-        
+
         gripperController.set(gripper);
     }
 
-    public void armPositionControl(Constants.GripperPosition gripperPosition,
-            Constants.ShoulderPosition shoulderPosition, Constants.ElbowPosition elbowPosition) {
+    
 
-        // TODO write function to set to a position
+    /**
+     * Uses automatic ramping to control arm segments
+     * 
+     * @param gripperPositionIn  Where we want the gripper to be
+     * @param shoulderPositionIn Where we want the shoulder to be
+     * @param elbowPositionIn    Where we want the elbow to be
+     */
+    public void armPositionControl(Constants.GripperPosition gripperPositionIn,
+            Constants.ShoulderPosition shoulderPositionIn, Constants.ElbowPosition elbowPositionIn) {
+
+        desiredGripperPosition = gripperPositionIn;
+        desiredShoulderPosition = shoulderPositionIn;
+        desiredElbowPosition = elbowPositionIn;
     }
 
-    final static double MOTOR_ERROR_CONVERSION = .01;
 
     /**
      * Set the percent output on each shoulder using a single input level. Account
@@ -121,21 +162,25 @@ public class ArmSubsystem extends SubsystemBase {
         rightShoulderController.set(level - deltaArmMotor);
         leftShoulderController.set(level + deltaArmMotor);
 
-        /* right encoder value subtracted from left to find disparity
-        *  divided by constant (100) to turn into motor value
-        *  subtracted from right motor value, added to left motor value
-        *    if right is greater than left, delta is positive value
-        *    right motor moves slower, left motor mvoes faster
-        *    if left is greater than right, delta is negative value
-        *    right motor moves faster, left motor mvoes slower
-        */
-        
+        /*
+         * right encoder value subtracted from left to find disparity
+         * divided by constant (100) to turn into motor value
+         * subtracted from right motor value, added to left motor value
+         * if right is greater than left, delta is positive value
+         * right motor moves slower, left motor moves faster
+         * if left is greater than right, delta is negative value
+         * right motor moves faster, left motor moves slower
+         */
+
+    }
+
+    public double getShoulderEncoderDelta() {
+        return (rightShoulderEncoder.get() - leftShoulderEncoder.get());
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
-
-        // TODO Add a shuffleboard variable that displays the difference between the
-        // left and right shoulder positions, in millimeters.
+        super.initSendable(builder);
+        builder.addDoubleProperty("Shoulder Encoder Delta", this::getShoulderEncoderDelta, null);
     }
 }

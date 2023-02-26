@@ -492,7 +492,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
+        
         super.initSendable(builder);
+
         builder.addDoubleProperty("Pitch", this::getPitch, null);
         builder.addDoubleProperty("Heading", this::getHeadingDegrees, null);
         builder.addDoubleProperty("Roll", this::getRoll, null);

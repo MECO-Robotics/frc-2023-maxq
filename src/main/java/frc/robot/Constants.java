@@ -26,11 +26,11 @@ public final class Constants {
 
     public enum GripperPosition {
         GripOpen,
-        GripClosed
+        GripClose
     };
 
     public enum ShoulderPosition {
-        allFoward,
+        allForward,
         allBack,
         middle
     };
@@ -73,6 +73,10 @@ public final class Constants {
     // Common motor limits
     public static final double HIGH_CURRENT_THRESHOLD = 20.0;
 
+    public static final int LIGHTS_R_PWM = 2;
+    public static final int LIGHTS_G_PWM = 3;
+    public static final int LIGHTS_B_PWM = 4;
+    
     /**
      * How fast we should travel for autonomous commands.
      */
