@@ -86,10 +86,12 @@ public final class Constants {
 
 
     // 
-    // Brake subsystem
+    // Pneumatics subsystem
     //
 
-    public static final int BRAKES_EXTEND = 0;
-    public static final int BRAKES_CONTRACT = 1;
+    public static final int BRAKES_EXTEND_PCM = 0;
+    public static final int BRAKES_CONTRACT_PCM = 1;
+    public static final int INTAKE_OUT = 2;
+    public static final int INTAKE_IN = 3;
 
 }

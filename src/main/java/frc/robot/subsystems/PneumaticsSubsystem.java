@@ -18,8 +18,8 @@ public class PneumaticsSubsystem extends SubsystemBase {
 
     DoubleSolenoid brakes = new DoubleSolenoid(
             PneumaticsModuleType.CTREPCM,
-            Constants.BRAKES_EXTEND,
-            Constants.BRAKES_CONTRACT);
+            Constants.BRAKES_EXTEND_PCM,
+            Constants.BRAKES_CONTRACT_PCM);
 
     public void lowerBrakes() {
         // TODO call the method on the brakes object to extend the brakes
