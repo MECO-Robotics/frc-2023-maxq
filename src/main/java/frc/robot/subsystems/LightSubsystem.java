@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,5 +38,50 @@ public class LightSubsystem extends SubsystemBase {
         r.setSpeed(color.red);
         g.setSpeed(color.green);
         b.setSpeed(color.blue);
+    }
+
+    // THE CODE BELOW THIS LINE IS AN ALTERNATE APPROACH IF WE HAVE TO USE DIGITAL
+    // I/O
+
+    private static final int CYCLES = 10;
+
+    class DutyCycle {
+        long flip = 0;
+        long count = 0;
+
+        public DutyCycle(long flipIn) {
+            flip = flipIn;
+        }
+
+        public boolean get() {
+            if (flip == 0) {
+                return false;
+            } else if (flip == CYCLES) {
+                return true;
+            } else if (count % flip == 0) {
+                count++;
+                return false;
+            } else {
+                count++;
+                return true;
+            }
+        }
+
+    }
+
+    DutyCycle red = new DutyCycle(0), green = new DutyCycle(0), blue = new DutyCycle(0);
+    DigitalOutput redOut = new DigitalOutput(0), greenOut = new DigitalOutput(0), blueOut = new DigitalOutput(0);
+
+    public void setDigital(Color color) {
+        red = new DutyCycle(Math.round(color.red * CYCLES));
+        green = new DutyCycle(Math.round(color.green * CYCLES));
+        blue = new DutyCycle(Math.round(color.blue * CYCLES));
+    }
+
+    @Override
+    public void periodic() {
+        redOut.set(red.get());
+        greenOut.set(green.get());
+        blueOut.set(blue.get());
     }
 }

@@ -83,4 +83,13 @@ public final class Constants {
     public static final double AUTO_SPEED = .5;
     // Feet per second
     public static final double FPS_TO_MPS = 0.308;
+
+
+    // 
+    // Brake subsystem
+    //
+
+    public static final int BRAKES_EXTEND = 0;
+    public static final int BRAKES_CONTRACT = 1;
+
 }

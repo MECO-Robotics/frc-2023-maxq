@@ -28,6 +28,7 @@ import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
 import frc.robot.subsystems.PowerHub;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -44,6 +45,8 @@ public class RobotContainer {
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
     private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
     private final LightSubsystem lightSubsystem = new LightSubsystem();
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+
     // private final PowerHub powerHub = new PowerHub();
 
     private final Map<String, Command> autoCommands = new HashMap<>();
@@ -156,20 +159,20 @@ public class RobotContainer {
         JoystickButton xButton = new JoystickButton(pilot, XboxController.Button.kX.value);
         JoystickButton yButton = new JoystickButton(pilot, XboxController.Button.kY.value);
 
-        // Whenever holding B - run brake command. 
+        // Whenever holding B - run brake command.
         bButton.whileTrue(new Brake(driveSubsystem));
 
-        // Whenever holding X - run autolevel command. 
+        // Whenever holding X - run autolevel command.
         xButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
 
         yButton.onTrue(new SetColor(lightSubsystem, Color.kYellow));
 
-        aButton.onTrue(new SetColor(lightSubsystem, Color.kPurple)); 
+        aButton.onTrue(new SetColor(lightSubsystem, Color.kPurple));
 
         // TODO: Brent recommands a "two man
         // rule" for engaging, requiring a button on the pilot and co-pilot to press a
         // button at the same time in order to reset
-        //aButton.whileTrue(new ResetSensors(driveSubsystem));
+        // aButton.whileTrue(new ResetSensors(driveSubsystem));
     }
 
     int testWheel = Constants.FRONT_LEFT_CAN;
@@ -212,17 +215,16 @@ public class RobotContainer {
 
     public Command getTeleopCommand() {
         ParallelCommandGroup command = new ParallelCommandGroup(
-            new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
-            new TeleopArmControl(armSubsystem, controllerSubsystem)
-            );
+                new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
+                new TeleopArmControl(armSubsystem, controllerSubsystem));
 
         return command;
     }
 
     public void robotPeriodic() {
 
-        // TODO Update drive subsystem with latest
-        // Get the latest vision measurement from the vision subsystem
-        // Update the pose on the drive subsystem
+        driveSubsystem.addVisionMeasurement(
+                visionSubsystem.getVisionMeasurement(),
+                visionSubsystem.getVisionMeasurementTimestamp());
     }
 }
