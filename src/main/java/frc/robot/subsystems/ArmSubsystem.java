@@ -21,10 +21,15 @@ import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
 
-    // we are multiplying the difference between the left and right encoders 
-    //by this constant to apply a motor speed delta to each shoulder motor.
+    /**
+     * Time to run the  gripper motor open or closed at 100%.
+     */
+    private static final double GRIPPER_MOVE_TIME_SEC = 0.85;
+
+    // we are multiplying the difference between the left and right encoders
+    // by this constant to apply a motor speed delta to each shoulder motor.
     final static double MOTOR_ERROR_CONVERSION = .01;
-    
+
     // Gripper
     VictorSP gripperController;
     Constants.GripperPosition desiredGripperPosition;
@@ -40,7 +45,6 @@ public class ArmSubsystem extends SubsystemBase {
     Encoder leftShoulderEncoder;
     Encoder rightShoulderEncoder;
     Constants.ShoulderPosition desiredShoulderPosition;
-    
 
     public ArmSubsystem() {
 
@@ -68,25 +72,49 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if ((Timer.getFPGATimestamp() - gripperStartTime) > 0.85) {
 
-        }
+        //
+        // GRIPPER
+        //
 
-        if (desiredGripperPosition == Constants.GripperPosition.GripOpen && gripperController.get() <= 0) {
+        // No matter what, if the motor has been running more than the max amount of
+        // time, then stop the motor.
+        if ((Timer.getFPGATimestamp() - gripperStartTime) > GRIPPER_MOVE_TIME_SEC) {
+            gripperController.set(0);
+            gripperStartTime = 0;
+
+        } else if (desiredGripperPosition == Constants.GripperPosition.GripOpen && gripperController.get() <= 0) {
             openGripper();
+
         } else if (desiredGripperPosition == Constants.GripperPosition.GripClose && gripperController.get() >= 0) {
             closeGripper();
         }
 
-        if (desiredShoulderPosition == Constants.ShoulderPosition.allForward && leftShoulderController.getMotorOutputPercent() <= 0) {
+        //
+        // SHOULDER
+        //
+
+        if (desiredShoulderPosition == Constants.ShoulderPosition.allForward
+                && leftShoulderController.getMotorOutputPercent() <= 0) {
+
             setShoulderLevels(shoulderRateLimiter.calculate(0.5));
-        } else if (desiredShoulderPosition == Constants.ShoulderPosition.allBack && leftShoulderController.getMotorOutputPercent() >= 0) {
+
+        } else if (desiredShoulderPosition == Constants.ShoulderPosition.allBack
+                && leftShoulderController.getMotorOutputPercent() >= 0) {
+                    
             setShoulderLevels(shoulderRateLimiter.calculate(-0.5));
         }
 
-        if (desiredElbowPosition == Constants.ElbowPosition.allOut && elbowLinearController.getMotorOutputPercent() <= 0) {
+        //
+        // ELBOW
+        //
+
+        if (desiredElbowPosition == Constants.ElbowPosition.allOut
+                && elbowLinearController.getMotorOutputPercent() <= 0) {
             elbowLinearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(1));
-        } else if (desiredElbowPosition == Constants.ElbowPosition.allIn && elbowLinearController.getMotorOutputPercent() >= 0) {
+
+        } else if (desiredElbowPosition == Constants.ElbowPosition.allIn
+                && elbowLinearController.getMotorOutputPercent() >= 0) {
             elbowLinearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(-1));
         }
     }
@@ -110,7 +138,7 @@ public class ArmSubsystem extends SubsystemBase {
     // 5. open / close gripper - DONE!
     // 6. position to pick up from dual loading station
     // 7. position to pick up from single loading station
-    // 8. position to pickup from floor 
+    // 8. position to pickup from floor
 
     /**
      * Move the articulations of the arm. Parameters are the speed the motors should
@@ -130,8 +158,6 @@ public class ArmSubsystem extends SubsystemBase {
         gripperController.set(gripper);
     }
 
-    
-
     /**
      * Uses automatic ramping to control arm segments
      * 
@@ -147,7 +173,6 @@ public class ArmSubsystem extends SubsystemBase {
         desiredElbowPosition = elbowPositionIn;
     }
 
-
     /**
      * Set the percent output on each shoulder using a single input level. Account
      * for differences in motor efficiency, friction, etc.. By verifying the
@@ -157,7 +182,8 @@ public class ArmSubsystem extends SubsystemBase {
      */
     private void setShoulderLevels(double level) {
 
-        double deltaArmMotor = (rightShoulderEncoder.get() - leftShoulderEncoder.get()) * MOTOR_ERROR_CONVERSION;
+        // TODO Switch to using encoders
+        double deltaArmMotor = 0; //  (rightShoulderEncoder.get() - leftShoulderEncoder.get()) * MOTOR_ERROR_CONVERSION;
 
         rightShoulderController.set(ControlMode.PercentOutput, level - deltaArmMotor);
         leftShoulderController.set(ControlMode.PercentOutput, level + deltaArmMotor);
