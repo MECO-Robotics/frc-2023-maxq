@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -12,7 +13,6 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
@@ -30,13 +30,13 @@ public class ArmSubsystem extends SubsystemBase {
     Constants.GripperPosition desiredGripperPosition;
 
     // Elbow
-    TalonSRX linearController;
+    TalonSRX elbowLinearController;
     AnalogInput elbowExtension;
     Constants.ElbowPosition desiredElbowPosition;
 
     // Shoulder
-    VictorSP leftShoulderController;
-    VictorSP rightShoulderController;
+    TalonSRX leftShoulderController;
+    TalonSRX rightShoulderController;
     Encoder leftShoulderEncoder;
     Encoder rightShoulderEncoder;
     Constants.ShoulderPosition desiredShoulderPosition;
@@ -45,10 +45,10 @@ public class ArmSubsystem extends SubsystemBase {
     public ArmSubsystem() {
 
         gripperController = new VictorSP(Constants.GRIPPER_PWM);
-        linearController = new TalonSRX(Constants.LINEAR_CAN);
+        elbowLinearController = new TalonSRX(Constants.LINEAR_CAN);
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
-        leftShoulderController = new VictorSP(Constants.LEFT_SHOULDER_PWM);
-        rightShoulderController = new VictorSP(Constants.RIGHT_SHOULDER_PWM);
+        leftShoulderController = new TalonSRX(Constants.LEFT_SHOULDER_PWM);
+        rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_PWM);
 
         leftShoulderEncoder = new Encoder(Constants.LEFT_SHOULDER_ENC_A_DIO, Constants.LEFT_SHOULDER_ENC_B_DIO);
         rightShoulderEncoder = new Encoder(Constants.RIGHT_SHOULDER_ENC_A_DIO, Constants.RIGHT_SHOULDER_ENC_B_DIO);
@@ -78,16 +78,16 @@ public class ArmSubsystem extends SubsystemBase {
             closeGripper();
         }
 
-        if (desiredShoulderPosition == Constants.ShoulderPosition.allForward && leftShoulderController.get() <= 0) {
+        if (desiredShoulderPosition == Constants.ShoulderPosition.allForward && leftShoulderController.getMotorOutputPercent() <= 0) {
             setShoulderLevels(shoulderRateLimiter.calculate(0.5));
-        } else if (desiredShoulderPosition == Constants.ShoulderPosition.allBack && leftShoulderController.get() >= 0) {
+        } else if (desiredShoulderPosition == Constants.ShoulderPosition.allBack && leftShoulderController.getMotorOutputPercent() >= 0) {
             setShoulderLevels(shoulderRateLimiter.calculate(-0.5));
         }
 
-        if (desiredElbowPosition == Constants.ElbowPosition.allOut && linearController.getMotorOutputPercent() <= 0) {
-            linearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(1));
-        } else if (desiredElbowPosition == Constants.ElbowPosition.allIn && linearController.getMotorOutputPercent() >= 0) {
-            linearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(-1));
+        if (desiredElbowPosition == Constants.ElbowPosition.allOut && elbowLinearController.getMotorOutputPercent() <= 0) {
+            elbowLinearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(1));
+        } else if (desiredElbowPosition == Constants.ElbowPosition.allIn && elbowLinearController.getMotorOutputPercent() >= 0) {
+            elbowLinearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(-1));
         }
     }
 
@@ -123,7 +123,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void manualControl(double elbow, double shoulder, double gripper) {
 
-        linearController.set(TalonSRXControlMode.PercentOutput, elbow);
+        elbowLinearController.set(TalonSRXControlMode.PercentOutput, elbow);
 
         setShoulderLevels(shoulder);
 
@@ -159,8 +159,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         double deltaArmMotor = (rightShoulderEncoder.get() - leftShoulderEncoder.get()) * MOTOR_ERROR_CONVERSION;
 
-        rightShoulderController.set(level - deltaArmMotor);
-        leftShoulderController.set(level + deltaArmMotor);
+        rightShoulderController.set(ControlMode.PercentOutput, level - deltaArmMotor);
+        leftShoulderController.set(ControlMode.PercentOutput, level + deltaArmMotor);
 
         /*
          * right encoder value subtracted from left to find disparity
