@@ -89,9 +89,22 @@ public final class Constants {
     // Pneumatics subsystem
     //
 
-    public static final int BRAKES_EXTEND_PCM = 0;
-    public static final int BRAKES_CONTRACT_PCM = 1;
-    public static final int INTAKE_OUT = 2;
-    public static final int INTAKE_IN = 3;
+    public static final int BRAKES_EXTEND_LEFT_PCM = 0;
+    public static final int BRAKES_CONTRACT_LEFT_PCM = 1;
+    public static final int BRAKES_EXTEND_RIGHT_PCM = 2;
+    public static final int BRAKES_CONTRACT_RIGHT_PCM = 3;
+    public static final int INTAKE_OUT = 4;
+    public static final int INTAKE_IN = 5;
+
+    //
+    // Intake subsystem
+    //
+
+    public static final int INTAKE_EXTEND_PCM = 6;
+    public static final int INTAKE_CONTRACT_PCM = 7;
+    public static final int INTAKE_CONTROLLER_CAN = 8;
+
+
+
 
 }

@@ -136,6 +136,8 @@ public class RobotContainer {
         XboxController pilot = controllerSubsystem.getPilotController();
         JoystickButton xButtonpilot = new JoystickButton(pilot, XboxController.Button.kX.value);
         JoystickButton yButtonpilot = new JoystickButton(pilot, XboxController.Button.kY.value);
+        
+
 
         // leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem),
         // false);
@@ -158,9 +160,14 @@ public class RobotContainer {
         JoystickButton bButton = new JoystickButton(pilot, XboxController.Button.kB.value);
         JoystickButton xButton = new JoystickButton(pilot, XboxController.Button.kX.value);
         JoystickButton yButton = new JoystickButton(pilot, XboxController.Button.kY.value);
+        JoystickButton triggerJoystickButton = new JoystickButton(pilot, XboxController.Button.kY.value);
+        JoystickButton dpadButton = new JoystickButton(pilot, XboxController.Button.kY.value);
 
         // Whenever holding B - run brake command.
         bButton.whileTrue(new Brake(driveSubsystem));
+
+       
+         
 
         // Whenever holding X - run autolevel command.
         xButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
@@ -190,6 +197,7 @@ public class RobotContainer {
         } else if (pilot.getAButtonReleased()) {
             testWheel = Constants.BACK_RIGHT_CAN;
         }
+        
 
         driveSubsystem.runWheel(testWheel, testThrottle);
     };

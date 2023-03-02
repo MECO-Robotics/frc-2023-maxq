@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -14,22 +15,28 @@ import frc.robot.Constants;
  * Controls the pneumatically deployed brake shoes that hold the robot in
  * position.
  */
-public class PneumaticsSubsystem extends SubsystemBase {
+public class BrakesSubsystem extends SubsystemBase {
 
-    DoubleSolenoid brakes = new DoubleSolenoid(
+    DoubleSolenoid leftBrakes = new DoubleSolenoid(
             PneumaticsModuleType.CTREPCM,
-            Constants.BRAKES_EXTEND_PCM,
-            Constants.BRAKES_CONTRACT_PCM);
+            Constants.BRAKES_EXTEND_LEFT_PCM,
+            Constants.BRAKES_CONTRACT_LEFT_PCM);
+
+    DoubleSolenoid rightBrakes = new DoubleSolenoid(
+            PneumaticsModuleType.CTREPCM,
+            Constants.BRAKES_EXTEND_RIGHT_PCM,
+            Constants.BRAKES_CONTRACT_RIGHT_PCM);
 
     public void lowerBrakes() {
-        // TODO call the method on the brakes object to extend the brakes
+        leftBrakes.set(Value.kForward);
+        rightBrakes.set(Value.kForward);
     }
 
     public void raiseBrakes() {
-        // TODO call the method on the brakes object to contract the brakes
+        leftBrakes.set(Value.kReverse);
+        rightBrakes.set(Value.kReverse);
     }
 
-    // TODO write functions to control intake
 
     @Override
     public void initSendable(SendableBuilder builder) {
