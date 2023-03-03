@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.arm.TeleopArmControl;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
-import frc.robot.commands.drive.Brake;
 import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
@@ -121,36 +121,6 @@ public class RobotContainer {
     }
 
     /**
-     * Setup the buttons for controlling climbing during teleop
-     */
-    private void configureTeleopClimbButtonBindings() {
-
-        // NATE: bind buttons for teleop climb
-        XboxController copilot = controllerSubsystem.getCopilotController();
-        JoystickButton leftBumper = new JoystickButton(copilot, XboxController.Button.kLeftBumper.value);
-        JoystickButton righBumper = new JoystickButton(copilot, XboxController.Button.kRightBumper.value);
-        JoystickButton xButton = new JoystickButton(copilot, XboxController.Button.kX.value);
-        JoystickButton yButton = new JoystickButton(copilot, XboxController.Button.kY.value);
-        JoystickButton bButton = new JoystickButton(copilot, XboxController.Button.kB.value);
-
-        XboxController pilot = controllerSubsystem.getPilotController();
-        JoystickButton xButtonpilot = new JoystickButton(pilot, XboxController.Button.kX.value);
-        JoystickButton yButtonpilot = new JoystickButton(pilot, XboxController.Button.kY.value);
-        
-
-
-        // leftBumper.whenPressed(new TeleopRotatingArmPneumaticIn(climbingSubsystem),
-        // false);
-        // righBumper.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem),
-        // false);
-        // xButton.whenPressed(new TeleopRotatingArmPneumaticOff(climbingSubsystem),
-        // false);
-        // bButton.whenPressed(new Climb(climbingSubsystem), false);
-        // yButton.whenPressed(new TeleopRotatingArmPneumaticOut(climbingSubsystem),
-        // false);
-    }
-
-    /**
      * Setup the buttons for teleop drive.
      */
     private void configureTeleopDriveButtonBindings() {
@@ -161,13 +131,7 @@ public class RobotContainer {
         JoystickButton xButton = new JoystickButton(pilot, XboxController.Button.kX.value);
         JoystickButton yButton = new JoystickButton(pilot, XboxController.Button.kY.value);
         JoystickButton triggerJoystickButton = new JoystickButton(pilot, XboxController.Button.kY.value);
-        JoystickButton dpadButton = new JoystickButton(pilot, XboxController.Button.kY.value);
-
-        // Whenever holding B - run brake command.
-        bButton.whileTrue(new Brake(driveSubsystem));
-
-       
-         
+        POVButton dpadButton = new POVButton(pilot, 0);
 
         // Whenever holding X - run autolevel command.
         xButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
@@ -182,7 +146,9 @@ public class RobotContainer {
         // aButton.whileTrue(new ResetSensors(driveSubsystem));
     }
 
-    int testWheel = Constants.FRONT_LEFT_CAN;
+    // --------------------------------------------------------------------
+
+    private int testWheel = Constants.FRONT_LEFT_CAN;
 
     public void testMode() {
         XboxController pilot = controllerSubsystem.getPilotController();
@@ -197,11 +163,12 @@ public class RobotContainer {
         } else if (pilot.getAButtonReleased()) {
             testWheel = Constants.BACK_RIGHT_CAN;
         }
-        
 
         driveSubsystem.runWheel(testWheel, testThrottle);
     };
 
+    // --------------------------------------------------------------------
+    
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *

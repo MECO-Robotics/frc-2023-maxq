@@ -42,8 +42,6 @@ public class ArmSubsystem extends SubsystemBase {
     // Shoulder
     TalonSRX leftShoulderController;
     TalonSRX rightShoulderController;
-    Encoder leftShoulderEncoder;
-    Encoder rightShoulderEncoder;
     Constants.ShoulderPosition desiredShoulderPosition;
 
     public ArmSubsystem() {
@@ -53,9 +51,6 @@ public class ArmSubsystem extends SubsystemBase {
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
         leftShoulderController = new TalonSRX(Constants.LEFT_SHOULDER_CAN);
         rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_CAN);
-
-        leftShoulderEncoder = new Encoder(Constants.LEFT_SHOULDER_ENC_A_DIO, Constants.LEFT_SHOULDER_ENC_B_DIO);
-        rightShoulderEncoder = new Encoder(Constants.RIGHT_SHOULDER_ENC_A_DIO, Constants.RIGHT_SHOULDER_ENC_B_DIO);
     }
 
     // This variable creates a timer for the "auger" motor that turns on the gripper
@@ -182,8 +177,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     private void setShoulderLevels(double level) {
 
-        // TODO Switch to using encoders
-        double deltaArmMotor = 0; //  (rightShoulderEncoder.get() - leftShoulderEncoder.get()) * MOTOR_ERROR_CONVERSION;
+        double deltaArmMotor = getShoulderEncoderDelta() * MOTOR_ERROR_CONVERSION;
 
         rightShoulderController.set(ControlMode.PercentOutput, level - deltaArmMotor);
         leftShoulderController.set(ControlMode.PercentOutput, level + deltaArmMotor);
@@ -200,8 +194,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
 
+    /**
+     * Get the difference between the right and left motor
+     * @return
+     */
     public double getShoulderEncoderDelta() {
-        return (rightShoulderEncoder.get() - leftShoulderEncoder.get());
+        // TODO Get delta from integrated encoders
+        return 0.0;
     }
 
     @Override
