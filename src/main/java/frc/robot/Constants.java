@@ -49,8 +49,8 @@ public final class Constants {
     // Mecanum motor controllers
     public static final int FRONT_LEFT_CAN = 2;
     public static final int FRONT_RIGHT_CAN = 3;
-    public static final int BACK_LEFT_CAN = 4;
-    public static final int BACK_RIGHT_CAN = 5;
+    public static final int BACK_LEFT_CAN = 5;
+    public static final int BACK_RIGHT_CAN = 4;
 
     // Arm gripper motors
     public static final int GRIPPER_PWM = 2;
@@ -63,8 +63,8 @@ public final class Constants {
     public static final int LINEAR_ALG = 0;
 
     // Arm shoulder motors
-    public static final int LEFT_SHOULDER_PWM = 0;
-    public static final int RIGHT_SHOULDER_PWM = 1;
+    public static final int LEFT_SHOULDER_CAN = 20;
+    public static final int RIGHT_SHOULDER_CAN = 21;
     public static final int LEFT_SHOULDER_ENC_A_DIO = 0;
     public static final int LEFT_SHOULDER_ENC_B_DIO = 1;
     public static final int RIGHT_SHOULDER_ENC_A_DIO = 2;
@@ -73,9 +73,9 @@ public final class Constants {
     // Common motor limits
     public static final double HIGH_CURRENT_THRESHOLD = 20.0;
 
-    public static final int LIGHTS_R_PWM = 2;
-    public static final int LIGHTS_G_PWM = 3;
-    public static final int LIGHTS_B_PWM = 4;
+    public static final int LIGHTS_R_PWM = 3;
+    public static final int LIGHTS_G_PWM = 4;
+    public static final int LIGHTS_B_PWM = 5;
     
     /**
      * How fast we should travel for autonomous commands.

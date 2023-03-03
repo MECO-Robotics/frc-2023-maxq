@@ -51,8 +51,8 @@ public class ArmSubsystem extends SubsystemBase {
         gripperController = new VictorSP(Constants.GRIPPER_PWM);
         elbowLinearController = new TalonSRX(Constants.LINEAR_CAN);
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
-        leftShoulderController = new TalonSRX(Constants.LEFT_SHOULDER_PWM);
-        rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_PWM);
+        leftShoulderController = new TalonSRX(Constants.LEFT_SHOULDER_CAN);
+        rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_CAN);
 
         leftShoulderEncoder = new Encoder(Constants.LEFT_SHOULDER_ENC_A_DIO, Constants.LEFT_SHOULDER_ENC_B_DIO);
         rightShoulderEncoder = new Encoder(Constants.RIGHT_SHOULDER_ENC_A_DIO, Constants.RIGHT_SHOULDER_ENC_B_DIO);

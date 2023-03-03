@@ -22,11 +22,11 @@ public class TeleopArmControl extends CommandBase {
     @Override
     public void execute() {
 
-        double shoulder = controllerSubsystem.getCopilotController().getLeftX();
-        double elbow = controllerSubsystem.getCopilotController().getRightX();
-        double gripper = controllerSubsystem.getCopilotController().getRightY();
+        // double shoulder = controllerSubsystem.getCopilotController().getLeftX();
+        // double elbow = controllerSubsystem.getCopilotController().getRightX();
+        // double gripper = controllerSubsystem.getCopilotController().getRightY();
 
-        armSubsystem.manualControl(elbow, shoulder, gripper);
+        // armSubsystem.manualControl(elbow, shoulder, gripper);
     }
 
     @Override

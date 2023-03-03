@@ -69,6 +69,7 @@ public class LightSubsystem extends SubsystemBase {
 
     }
 
+    /*
     DutyCycle red = new DutyCycle(0), green = new DutyCycle(0), blue = new DutyCycle(0);
     DigitalOutput redOut = new DigitalOutput(0), greenOut = new DigitalOutput(0), blueOut = new DigitalOutput(0);
 
@@ -84,4 +85,5 @@ public class LightSubsystem extends SubsystemBase {
         greenOut.set(green.get());
         blueOut.set(blue.get());
     }
+    */
 }
