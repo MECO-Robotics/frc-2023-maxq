@@ -22,6 +22,7 @@ public class VisionSubsystem extends SubsystemBase {
     double latencySeconds;
     double currentTimestamp;
     Pose2d currentPose;
+    private boolean validPose = false;
 
     public VisionSubsystem() {
 
@@ -30,7 +31,7 @@ public class VisionSubsystem extends SubsystemBase {
             limeLight = NetworkTableInstance.getDefault().getTable("limelight");
 
             if (limeLight != null) {
-
+                System.out.println("found the Limelight!!!!!!!!!!!!!!");
                 // Get the latency. Assuming this only needs to be queried once
                 double tl = limeLight.getEntry("tl").getDouble(0);
                 double cl = limeLight.getEntry("cl").getDouble(0);
@@ -56,16 +57,27 @@ public class VisionSubsystem extends SubsystemBase {
             // Get the current bot pose x,y,z in meters; roll, pitch, yaw in degrees
             limeLight.getEntry("botpose").getDoubleArray(sample);
 
-            // Get the time at which the measurement was taken by using the current time and
-            // subtracting the limelight latency
-            currentTimestamp = Timer.getFPGATimestamp() - latencySeconds;
+            if (Math.abs(sample[0]) > 0.0001 && Math.abs(sample[1]) > 0.0001) {
 
-            // sample[0] is x (field forward)
-            // sample[1] is y (field left)
-            // sample[5] is yaw
-            currentPose = new Pose2d(new Translation2d(sample[0], sample[1]),
-                    new Rotation2d(Math.toRadians(sample[5])));
+                System.out.println(String.format("VISION SAMPLE (x,y): %f,%f", sample[0], sample[1]));
+
+                // Get the time at which the measurement was taken by using the current time and
+                // subtracting the limelight latency
+                currentTimestamp = Timer.getFPGATimestamp() - latencySeconds;
+
+                // sample[0] is x (field forward)
+                // sample[1] is y (field left)
+                // sample[5] is yaw
+                currentPose = new Pose2d(new Translation2d(sample[0], sample[1]),
+                        new Rotation2d(Math.toRadians(sample[5])));
+
+                validPose = true;
+            }
         }
+    }
+
+    public boolean hasValidPose() {
+        return validPose;
     }
 
     /**

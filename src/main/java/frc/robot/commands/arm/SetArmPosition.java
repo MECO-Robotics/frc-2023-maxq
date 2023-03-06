@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 
-public class TeleopArmControl extends CommandBase {
+public class SetArmPosition extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
     private final ControllerSubsystem controllerSubsystem;
 
-    public TeleopArmControl(ArmSubsystem arm, ControllerSubsystem controller) {
+    public SetArmPosition(ArmSubsystem arm, ControllerSubsystem controller) {
         armSubsystem = arm;
         controllerSubsystem = controller;
 
@@ -34,7 +34,7 @@ public class TeleopArmControl extends CommandBase {
             double elbow = controllerSubsystem.getCopilotController().getRightX();
             double gripper = controllerSubsystem.getCopilotController().getRightY();
 
-            armSubsystem.manualControl(elbow, shoulder, gripper);
+            //armSubsystem.armPositionControl(null, null, null);
         }
     }
 

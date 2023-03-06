@@ -53,7 +53,7 @@ public final class Constants {
     public static final int BACK_RIGHT_CAN = 4;
 
     // Arm gripper motors
-    public static final int GRIPPER_PWM = 2;
+    public static final int GRIPPER_PWM = 9;
     
 
     // Arm elbow motors

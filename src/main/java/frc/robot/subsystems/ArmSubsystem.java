@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -26,9 +27,15 @@ public class ArmSubsystem extends SubsystemBase {
      */
     private static final double GRIPPER_MOVE_TIME_SEC = 0.85;
 
+    private static final int LINEAR_MAX = 1100;
+    private static final int LINEAR_MIN = 370;
+
+    //max 1189
+    //min 289
+
     // we are multiplying the difference between the left and right encoders
     // by this constant to apply a motor speed delta to each shoulder motor.
-    final static double MOTOR_ERROR_CONVERSION = .01;
+    final static double MOTOR_ERROR_CONVERSION = .2;
 
     // Gripper
     VictorSP gripperController;
@@ -46,11 +53,18 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ArmSubsystem() {
 
+        setName("ARM");
+
         gripperController = new VictorSP(Constants.GRIPPER_PWM);
+        gripperController.setInverted(true);
         elbowLinearController = new TalonSRX(Constants.LINEAR_CAN);
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
         leftShoulderController = new TalonSRX(Constants.LEFT_SHOULDER_CAN);
         rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_CAN);
+        leftShoulderController.setInverted(true);
+        rightShoulderController.setInverted(true);
+
+        SmartDashboard.putData(this);
     }
 
     // This variable creates a timer for the "auger" motor that turns on the gripper
@@ -105,13 +119,16 @@ public class ArmSubsystem extends SubsystemBase {
         //
 
         if (desiredElbowPosition == Constants.ElbowPosition.allOut
-                && elbowLinearController.getMotorOutputPercent() <= 0) {
+                && elbowExtension.getValue() < LINEAR_MAX) {
             elbowLinearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(1));
 
         } else if (desiredElbowPosition == Constants.ElbowPosition.allIn
-                && elbowLinearController.getMotorOutputPercent() >= 0) {
+                && elbowExtension.getValue() > LINEAR_MIN) {
             elbowLinearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(-1));
         }
+
+        SmartDashboard.putNumber("Left Shoulder", getLeftShoulderPosition());
+        SmartDashboard.putNumber("Right Shoulder", getRightShoulderPosition());
     }
 
     public void openGripper() {
@@ -146,6 +163,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void manualControl(double elbow, double shoulder, double gripper) {
 
+        // System.out.println(String.format("Brennan's awesome print statement; %f, %f, %f", elbow, shoulder, gripper)); 
         elbowLinearController.set(TalonSRXControlMode.PercentOutput, elbow);
 
         setShoulderLevels(shoulder);
@@ -199,13 +217,33 @@ public class ArmSubsystem extends SubsystemBase {
      * @return
      */
     public double getShoulderEncoderDelta() {
-        // TODO Get delta from integrated encoders
-        return 0.0;
+        return getRightShoulderPosition() - getLeftShoulderPosition();
+    }
+
+    public double getLeftShoulderPosition() {
+        if(leftShoulderController == null) {
+            return 0.0;
+        }
+        return (leftShoulderController.getSelectedSensorPosition()/500000);
+    }
+
+    public double getRightShoulderPosition() {
+        if(rightShoulderController == null) {
+            return 0.0;
+        }
+        return -(rightShoulderController.getSelectedSensorPosition()/500000);
+    }
+
+    public double getElbowPosition() {
+        return (double)this.elbowExtension.getValue();
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.addDoubleProperty("Shoulder Encoder Delta", this::getShoulderEncoderDelta, null);
+        builder.addDoubleProperty("Left Shoulder Position", this::getLeftShoulderPosition, null);
+        builder.addDoubleProperty("Right Shoulder Position", this::getRightShoulderPosition, null);
+        builder.addDoubleProperty("Elbow Extension", this::getElbowPosition, null);
     }
 }

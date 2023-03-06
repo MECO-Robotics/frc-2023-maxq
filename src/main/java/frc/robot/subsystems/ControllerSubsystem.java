@@ -14,7 +14,7 @@ public class ControllerSubsystem extends SubsystemBase {
     private final XboxController pilotController = new XboxController(0);
 
     // TODO Add back in once we have a copilot ...
-    private final XboxController copilotController = null; // new XboxController(1);
+    private final XboxController copilotController = new XboxController(1);
 
     // TODO Only use if joystick control is going to be used.
     private final Joystick joystick = null; // new Joystick(0);

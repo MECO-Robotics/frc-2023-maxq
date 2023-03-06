@@ -168,7 +168,7 @@ public class RobotContainer {
     };
 
     // --------------------------------------------------------------------
-    
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -189,17 +189,26 @@ public class RobotContainer {
     }
 
     public Command getTeleopCommand() {
-        ParallelCommandGroup command = new ParallelCommandGroup(
+        Command command;
+
+        // Arm and Drive
+        command = new ParallelCommandGroup(
                 new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
                 new TeleopArmControl(armSubsystem, controllerSubsystem));
+
+        // Drive only
+        // command = new TeleopDrive(driveSubsystem, controllerSubsystem,
+        // driveMode.getSelected());
 
         return command;
     }
 
     public void robotPeriodic() {
 
-        driveSubsystem.addVisionMeasurement(
-                visionSubsystem.getVisionMeasurement(),
-                visionSubsystem.getVisionMeasurementTimestamp());
+        if (visionSubsystem.hasValidPose()) {
+            driveSubsystem.addVisionMeasurement(
+                    visionSubsystem.getVisionMeasurement(),
+                    visionSubsystem.getVisionMeasurementTimestamp());
+        }
     }
 }
