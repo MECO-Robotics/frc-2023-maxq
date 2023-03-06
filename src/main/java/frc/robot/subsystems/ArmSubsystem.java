@@ -10,6 +10,8 @@ import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -19,19 +21,20 @@ import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ElbowPosition;
 
 public class ArmSubsystem extends SubsystemBase {
 
     /**
-     * Time to run the  gripper motor open or closed at 100%.
+     * Time to run the gripper motor open or closed at 100%.
      */
     private static final double GRIPPER_MOVE_TIME_SEC = 0.85;
 
     private static final int LINEAR_MAX = 1100;
     private static final int LINEAR_MIN = 370;
 
-    //max 1189
-    //min 289
+    // max 1189
+    // min 289
 
     // we are multiplying the difference between the left and right encoders
     // by this constant to apply a motor speed delta to each shoulder motor.
@@ -39,17 +42,25 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Gripper
     VictorSP gripperController;
-    Constants.GripperPosition desiredGripperPosition;
+    Constants.GripperPosition desiredGripperPosition = Constants.GripperPosition.NoChange;
+    double gripperStartTime;
 
     // Elbow
     TalonSRX elbowLinearController;
     AnalogInput elbowExtension;
-    Constants.ElbowPosition desiredElbowPosition;
+    Constants.ElbowPosition desiredElbowPosition = Constants.ElbowPosition.NoChange;
+    // ~80 encoder ticks per inch so within an inch, it should start proportional
+    // control. So d = 1/80 = 0.0125;
+    PIDController elbowPid = new PIDController(0.0125, 0, 0);
+    // 0.3 of a second to get to full power on linear actuator
+    SlewRateLimiter elbowRateLimiter = new SlewRateLimiter(3.3);
 
     // Shoulder
     TalonSRX leftShoulderController;
     TalonSRX rightShoulderController;
-    Constants.ShoulderPosition desiredShoulderPosition;
+    Constants.ShoulderPosition desiredShoulderPosition = Constants.ShoulderPosition.NoChange;
+    // 0.5 of a second to get to full power on sholder motors
+    SlewRateLimiter shoulderRateLimiter = new SlewRateLimiter(2);
 
     public ArmSubsystem() {
 
@@ -64,20 +75,10 @@ public class ArmSubsystem extends SubsystemBase {
         leftShoulderController.setInverted(true);
         rightShoulderController.setInverted(true);
 
+        addChild("Elbow Pos", elbowExtension);
+        addChild("Elbow PID", elbowPid);
         SmartDashboard.putData(this);
     }
-
-    // This variable creates a timer for the "auger" motor that turns on the gripper
-    // motor for a set amount of time (0.85 seconds allows the motor to fully open
-    // from a fully closed state & vice versa, with a bit of leniency just to make
-    // sure)
-
-    double gripperStartTime;
-
-    // 0.3 of a second to get to full power on linear actuator
-    SlewRateLimiter linearRateLimiter = new SlewRateLimiter(3.3);
-    // 0.5 of a second to get to full power on sholder motors
-    SlewRateLimiter shoulderRateLimiter = new SlewRateLimiter(2);
 
     @Override
     public void periodic() {
@@ -92,10 +93,10 @@ public class ArmSubsystem extends SubsystemBase {
             gripperController.set(0);
             gripperStartTime = 0;
 
-        } else if (desiredGripperPosition == Constants.GripperPosition.GripOpen && gripperController.get() <= 0) {
+        } else if (desiredGripperPosition == Constants.GripperPosition.GripOpen && gripperController.get() < 0.0001) {
             openGripper();
 
-        } else if (desiredGripperPosition == Constants.GripperPosition.GripClose && gripperController.get() >= 0) {
+        } else if (desiredGripperPosition == Constants.GripperPosition.GripClose && gripperController.get() > 0.0001) {
             closeGripper();
         }
 
@@ -103,87 +104,88 @@ public class ArmSubsystem extends SubsystemBase {
         // SHOULDER
         //
 
-        if (desiredShoulderPosition == Constants.ShoulderPosition.allForward
+        if (desiredShoulderPosition == Constants.ShoulderPosition.allForward_HighNode
                 && leftShoulderController.getMotorOutputPercent() <= 0) {
 
             setShoulderLevels(shoulderRateLimiter.calculate(0.5));
 
-        } else if (desiredShoulderPosition == Constants.ShoulderPosition.allBack
+        } else if (desiredShoulderPosition == Constants.ShoulderPosition.allBackStow
                 && leftShoulderController.getMotorOutputPercent() >= 0) {
-                    
+
             setShoulderLevels(shoulderRateLimiter.calculate(-0.5));
-        }
-
-        //
-        // ELBOW
-        //
-
-        if (desiredElbowPosition == Constants.ElbowPosition.allOut
-                && elbowExtension.getValue() < LINEAR_MAX) {
-            elbowLinearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(1));
-
-        } else if (desiredElbowPosition == Constants.ElbowPosition.allIn
-                && elbowExtension.getValue() > LINEAR_MIN) {
-            elbowLinearController.set(TalonSRXControlMode.PercentOutput, linearRateLimiter.calculate(-1));
         }
 
         SmartDashboard.putNumber("Left Shoulder", getLeftShoulderPosition());
         SmartDashboard.putNumber("Right Shoulder", getRightShoulderPosition());
     }
 
+    // -------------------------------------------------------------------
+    // GRIPPER
+    //
+
+    public void move(Constants.GripperPosition gripperPositionIn) {
+        // Real work is done in periodic. This just sets the goal state
+        desiredGripperPosition = gripperPositionIn;
+    }
+
+    /**
+     * IMPORTANT: Only call this once, not repeatedly!
+     */
     public void openGripper() {
         gripperStartTime = Timer.getFPGATimestamp();
         gripperController.set(1.0);
     }
 
+    /**
+     * IMPORTANT: Only call this once, not repeatedly!
+     */
     public void closeGripper() {
         gripperStartTime = Timer.getFPGATimestamp();
         gripperController.set(-1.0);
     }
 
-    // TODO Write functions to perform the following:
-    // 1. Stow arm - this would fully contract the linear actuators and probably
-    // position the shoulder back
-    // 2. Top grid - fully extend elbow and shoulder
-    // 3. middle grid - partially extend elbow & shoulder
-    // 4. low grid - floor placement
-    // 5. open / close gripper - DONE!
-    // 6. position to pick up from dual loading station
-    // 7. position to pick up from single loading station
-    // 8. position to pickup from floor
+    // -------------------------------------------------------------------
+    // ELBOW
+    //
 
-    /**
-     * Move the articulations of the arm. Parameters are the speed the motors should
-     * move.
-     * 
-     * @param elbow    -1 .. 1 - Contract .. Expand linear actuators (1.0 runs to
-     *                 extend the elbow)
-     * @param shoulder -1 .. 1 - backward .. forward
-     * @param gripper  -1 .. 1 - close .. open
-     */
-    public void manualControl(double elbow, double shoulder, double gripper) {
+    public void move(Constants.ElbowPosition elbowPositionIn) {
 
-        // System.out.println(String.format("Brennan's awesome print statement; %f, %f, %f", elbow, shoulder, gripper)); 
-        elbowLinearController.set(TalonSRXControlMode.PercentOutput, elbow);
+        desiredElbowPosition = elbowPositionIn;
 
-        setShoulderLevels(shoulder);
+        double desired = getElbowExtension(elbowPositionIn);
 
-        gripperController.set(gripper);
+        double motor = elbowPid.calculate(elbowExtension.getValue(), desired);
+
+        motor = elbowRateLimiter.calculate(motor);
+        elbowLinearController.set(TalonSRXControlMode.PercentOutput, motor);
     }
 
-    /**
-     * Uses automatic ramping to control arm segments
-     * 
-     * @param gripperPositionIn  Where we want the gripper to be
-     * @param shoulderPositionIn Where we want the shoulder to be
-     * @param elbowPositionIn    Where we want the elbow to be
-     */
-    public void armPositionControl(Constants.GripperPosition gripperPositionIn,
-            Constants.ShoulderPosition shoulderPositionIn, Constants.ElbowPosition elbowPositionIn) {
+    private double getElbowExtension(Constants.ElbowPosition elbowPos) {
+        // Roughly 80 encoder ticks per inch
+        switch (elbowPos) {
+            case NoChange:
+                return 0;
+            case allOut:
+                return LINEAR_MAX;
+            case allIn:
+                return LINEAR_MIN;
+            case middle_MiddleNode: // 2.3 in extended
+                return 2.3 * 80;
+            case middle_HighNode: // 3.1 in extended
+                return 3.1 * 80;
+            case middle_LowNode: // 8.0 in extended
+                return 3.1 * 80;
+        }
 
-        desiredGripperPosition = gripperPositionIn;
+        return 0;
+    }
+
+    // -------------------------------------------------------------------
+    // SHOULDER
+    //
+
+    public void move(Constants.ShoulderPosition shoulderPositionIn) {
         desiredShoulderPosition = shoulderPositionIn;
-        desiredElbowPosition = elbowPositionIn;
     }
 
     /**
@@ -214,6 +216,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     /**
      * Get the difference between the right and left motor
+     * 
      * @return
      */
     public double getShoulderEncoderDelta() {
@@ -221,22 +224,62 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getLeftShoulderPosition() {
-        if(leftShoulderController == null) {
+        if (leftShoulderController == null) {
             return 0.0;
         }
-        return (leftShoulderController.getSelectedSensorPosition()/500000);
+        return (leftShoulderController.getSelectedSensorPosition() / 500000);
     }
 
     public double getRightShoulderPosition() {
-        if(rightShoulderController == null) {
+        if (rightShoulderController == null) {
             return 0.0;
         }
-        return -(rightShoulderController.getSelectedSensorPosition()/500000);
+        return -(rightShoulderController.getSelectedSensorPosition() / 500000);
     }
 
-    public double getElbowPosition() {
-        return (double)this.elbowExtension.getValue();
+    // -------------------------------------------------------------------
+    // ALL CONTROL
+    //
+
+    /**
+     * Move the articulations of the arm. Parameters are the speed the motors should
+     * move.
+     * 
+     * @param elbow    -1 .. 1 - Contract .. Expand linear actuators (1.0 runs to
+     *                 extend the elbow)
+     * @param shoulder -1 .. 1 - backward .. forward
+     * @param gripper  -1 .. 1 - close .. open
+     */
+    public void manualControl(double elbow, double shoulder, double gripper) {
+
+        // System.out.println(String.format("Brennan's awesome print statement; %f, %f,
+        // %f", elbow, shoulder, gripper));
+
+        if (elbowExtension.getValue() < LINEAR_MAX && elbowExtension.getValue() > LINEAR_MIN) {
+            elbowLinearController.set(TalonSRXControlMode.PercentOutput, elbowRateLimiter.calculate(elbow));
+        }
+
+        setShoulderLevels(shoulder);
+
+        gripperController.set(gripper);
     }
+
+    /**
+     * Uses automatic ramping to control arm segments
+     * 
+     * @param gripperPositionIn  Where we want the gripper to be
+     * @param shoulderPositionIn Where we want the shoulder to be
+     * @param elbowPositionIn    Where we want the elbow to be
+     */
+    public void armPositionControl(Constants.GripperPosition gripperPositionIn,
+            Constants.ShoulderPosition shoulderPositionIn, Constants.ElbowPosition elbowPositionIn) {
+
+        desiredGripperPosition = gripperPositionIn;
+        desiredShoulderPosition = shoulderPositionIn;
+        desiredElbowPosition = elbowPositionIn;
+    }
+
+    // -------------------------------------------------------------------
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -244,6 +287,5 @@ public class ArmSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Shoulder Encoder Delta", this::getShoulderEncoderDelta, null);
         builder.addDoubleProperty("Left Shoulder Position", this::getLeftShoulderPosition, null);
         builder.addDoubleProperty("Right Shoulder Position", this::getRightShoulderPosition, null);
-        builder.addDoubleProperty("Elbow Extension", this::getElbowPosition, null);
     }
 }

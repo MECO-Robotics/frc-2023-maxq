@@ -25,21 +25,26 @@ public final class Constants {
     };
 
     public enum GripperPosition {
+        NoChange,
         GripOpen,
         GripClose
     };
 
     public enum ShoulderPosition {
-        allForward,
-        allBack,
-        middle
+        NoChange,
+        allBackStow,         // 0.0 in position
+        middle_MiddleNode,   // 3.0 in position
+        middle_LowNode,      // 4.5 in position
+        allForward_HighNode  // 7.0 in position
     };
 
     public enum ElbowPosition {
-        allOut,
+        NoChange,
+        allOut, 
         allIn,
-        middle
-
+        middle_MiddleNode,  // 2.3 in extended
+        middle_HighNode,    // 3.1 in extended
+        middle_LowNode      // 8.0 in extended
     };
 
     //
@@ -106,5 +111,10 @@ public final class Constants {
 
 
 
+    //
+    // Power
+    //
+
+    public static final int LINEAR_POWER_CHANNEL = 0;
 
 }

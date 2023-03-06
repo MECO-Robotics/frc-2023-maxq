@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
@@ -92,6 +93,8 @@ public class DriveSubsystem extends SubsystemBase {
     /* Creates a new Subsystem. */
     public DriveSubsystem() {
 
+        setName("DRIVE");
+
         configureUsingSparkMaxMotorControllers();
 
         // Set the initial position (0,0) and heading (whatever it is) of the robot on
@@ -104,6 +107,8 @@ public class DriveSubsystem extends SubsystemBase {
         addChild("Drive", drive);
         addChild("IMU", imu);
         addChild("Field", field2d);
+
+        SmartDashboard.putData(this);
     }
 
     private CANSparkMax setupMotorController(int canID, boolean inverted) {

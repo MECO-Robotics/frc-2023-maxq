@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,6 +19,8 @@ public class LightSubsystem extends SubsystemBase {
 
     public LightSubsystem() {
 
+        setName("LIGHTS");
+
         // The idea here is to set the max value (1.0) to be 100% duty cycle - all on,
         // and 0 to be 0% duty cycle - all off.
         // The timer runs every 5.005 ms, so 5.005 is the largest width possible.
@@ -25,6 +28,8 @@ public class LightSubsystem extends SubsystemBase {
         r.setBounds(5.005, 0, 0, 0, 0);
         g.setBounds(5.005, 0, 0, 0, 0);
         b.setBounds(5.005, 0, 0, 0, 0);
+
+        SmartDashboard.putData(this);
     }
 
     /**
