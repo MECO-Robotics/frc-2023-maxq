@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -25,6 +26,8 @@ public class VisionSubsystem extends SubsystemBase {
     private boolean validPose = false;
 
     public VisionSubsystem() {
+
+        setName("VISION");
 
         if (NetworkTableInstance.getDefault() != null) {
 
@@ -45,6 +48,8 @@ public class VisionSubsystem extends SubsystemBase {
                 System.out.println("Can't access limelight data - is it connected?");
             }
         }
+
+        SmartDashboard.putData(this);
     }
 
     @Override

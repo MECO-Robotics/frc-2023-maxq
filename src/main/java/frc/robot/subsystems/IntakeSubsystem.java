@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -18,6 +19,12 @@ import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
+    public IntakeSubsystem() {
+        setName("INTAKE");
+
+        SmartDashboard.putData(this);
+    }
+    
     DoubleSolenoid intakeSolenoid = new DoubleSolenoid(
             PneumaticsModuleType.CTREPCM,
             Constants.INTAKE_EXTEND_PCM,

@@ -27,7 +27,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
-import frc.robot.subsystems.PowerHub;
+import frc.robot.subsystems.PowerSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**
