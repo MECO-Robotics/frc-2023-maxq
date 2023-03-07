@@ -32,14 +32,15 @@ public class TeleopArmControl extends CommandBase {
 
             double shoulder = controllerSubsystem.getCopilotController().getLeftX();
             double elbow = controllerSubsystem.getCopilotController().getRightX();
-            double gripper = controllerSubsystem.getCopilotController().getRightY();
-
+            double gripper = (controllerSubsystem.getCopilotController().getRightTriggerAxis()
+             - controllerSubsystem.getCopilotController().getLeftTriggerAxis());
+            
             armSubsystem.manualControl(elbow, shoulder, gripper);
         }
     }
 
     @Override
     public boolean isFinished() {
-        return false; // this command never finishes (but can be interupted)
+        return false; // this command never finishes (but can be interrupted)
     }
 }
