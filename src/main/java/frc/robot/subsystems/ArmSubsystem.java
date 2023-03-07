@@ -150,7 +150,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void move(Constants.ElbowPosition elbowPositionIn) {
 
-        desiredElbowPosition = elbowPositionIn;
+        
 
         double desired = getElbowExtension(elbowPositionIn);
 
