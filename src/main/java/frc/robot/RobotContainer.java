@@ -18,16 +18,18 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.arm.TeleopArmControl;
+import frc.robot.commands.brakes.LowerBrakes;
+import frc.robot.commands.brakes.RaiseBrakes;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
 import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.lights.SetColor;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.BrakesSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
-import frc.robot.subsystems.PowerSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**
@@ -46,6 +48,7 @@ public class RobotContainer {
     private final ControllerSubsystem controllerSubsystem = new ControllerSubsystem();
     private final LightSubsystem lightSubsystem = new LightSubsystem();
     private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+    private final BrakesSubsystem brakesSubsystem = new BrakesSubsystem();
 
     // private final PowerHub powerHub = new PowerHub();
 
@@ -132,6 +135,10 @@ public class RobotContainer {
         JoystickButton yButton = new JoystickButton(pilot, XboxController.Button.kY.value);
         JoystickButton triggerJoystickButton = new JoystickButton(pilot, XboxController.Button.kY.value);
         POVButton dpadButton = new POVButton(pilot, 0);
+       
+
+        bButton.toggleOnTrue(new LowerBrakes(brakesSubsystem));
+        bButton.toggleOnFalse(new RaiseBrakes(brakesSubsystem));
 
         // Whenever holding X - run autolevel command.
         xButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));

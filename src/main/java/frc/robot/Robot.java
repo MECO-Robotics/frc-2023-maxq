@@ -29,8 +29,8 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer;
 
-    // private final Compressor compressor = new
-    // Compressor(PneumaticsModuleType.CTREPCM);
+     private final Compressor compressor = new
+     Compressor(PneumaticsModuleType.CTREPCM);
 
     /***************************************************************************/
     /* COMMON - Runs in all modes */
