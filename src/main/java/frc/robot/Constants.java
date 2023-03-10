@@ -61,8 +61,10 @@ public final class Constants {
     public static final int GRIPPER_PWM = 9;
     
 
+    
     // Arm elbow motors
-    public static final int LINEAR_CAN = 7;
+    public static final int LINEAR_CAN_LEFT = 7;
+    public static final int LINEAR_CAN_RIGHT =9;
 
     // Analog Inputs for Elbow Extension Linear Actuator Potentiometer
     public static final int LINEAR_ALG = 0;
@@ -74,6 +76,14 @@ public final class Constants {
     public static final int LEFT_SHOULDER_ENC_B_DIO = 1;
     public static final int RIGHT_SHOULDER_ENC_A_DIO = 2;
     public static final int RIGHT_SHOULDER_ENC_B_DIO = 3;
+
+    // shoulder limit switches
+    public static final int LEFT_SHOULDER_FRONT_LIMIT_DIO = 4;
+    public static final int RIGHT_SHOULDER_FRONT_LIMIT_DIO = 5;
+    public static final int LEFT_SHOULDER_BACK_LIMIT_DIO = 6;
+    public static final int RIGHT_SHOULDER_BACK_LIMIT_DIO = 7;
+
+
 
     // Common motor limits
     public static final double HIGH_CURRENT_THRESHOLD = 20.0;
@@ -116,5 +126,6 @@ public final class Constants {
     //
 
     public static final int LINEAR_POWER_CHANNEL = 0;
+    
 
 }

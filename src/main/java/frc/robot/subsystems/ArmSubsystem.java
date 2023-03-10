@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
@@ -46,7 +47,9 @@ public class ArmSubsystem extends SubsystemBase {
     double gripperStartTime;
 
     // Elbow
-    TalonSRX elbowLinearController;
+    TalonSRX elbowLinearControllerLeft;
+    TalonSRX elbowLinearControllerRight;
+
     AnalogInput elbowExtension;
     Constants.ElbowPosition desiredElbowPosition = Constants.ElbowPosition.NoChange;
     // ~80 encoder ticks per inch so within an inch, it should start proportional
@@ -68,7 +71,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         gripperController = new VictorSP(Constants.GRIPPER_PWM);
         gripperController.setInverted(true);
-        elbowLinearController = new TalonSRX(Constants.LINEAR_CAN);
+        elbowLinearControllerLeft = new TalonSRX(Constants.LINEAR_CAN_LEFT);
+        elbowLinearControllerRight = new TalonSRX(Constants.LINEAR_CAN_RIGHT);
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
         leftShoulderController = new TalonSRX(Constants.LEFT_SHOULDER_CAN);
         rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_CAN);
@@ -150,14 +154,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void move(Constants.ElbowPosition elbowPositionIn) {
 
-        
-
         double desired = getElbowExtension(elbowPositionIn);
 
         double motor = elbowPid.calculate(elbowExtension.getValue(), desired);
 
         motor = elbowRateLimiter.calculate(motor);
-        elbowLinearController.set(TalonSRXControlMode.PercentOutput, motor);
+        elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, motor);
+        elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, motor);
     }
 
     private double getElbowExtension(Constants.ElbowPosition elbowPos) {
@@ -198,22 +201,33 @@ public class ArmSubsystem extends SubsystemBase {
     private void setShoulderLevels(double level) {
 
         double deltaArmMotor = getShoulderEncoderDelta() * MOTOR_ERROR_CONVERSION;
+        double rightLevel = level - deltaArmMotor;
+        double leftLevel = level + deltaArmMotor;
 
-        rightShoulderController.set(ControlMode.PercentOutput, level - deltaArmMotor);
-        leftShoulderController.set(ControlMode.PercentOutput, level + deltaArmMotor);
+        boolean frontOK = shoulderLeftFrontLimit.get() && leftLevel < 0;
+        boolean backOK = shoulderLeftBackLimit.get() && leftLevel > 0;
+        boolean midOK = shoulderLeftBackLimit.get() == false && shoulderLeftFrontLimit.get() == false;
+        boolean frontOKR = shoulderRightFrontLimit.get() && rightLevel < 0;
+        boolean backOKR = shoulderRightBackLimit.get() && rightLevel > 0;
+        boolean midOKR = shoulderRightBackLimit.get() == false && shoulderRightFrontLimit.get() == false;
 
-        /*
-         * right encoder value subtracted from left to find disparity
-         * divided by constant (100) to turn into motor value
-         * subtracted from right motor value, added to left motor value
-         * if right is greater than left, delta is positive value
-         * right motor moves slower, left motor moves faster
-         * if left is greater than right, delta is negative value
-         * right motor moves faster, left motor moves slower
-         */
+        if(frontOK || backOK || midOK){
+            leftShoulderController.set(ControlMode.PercentOutput, leftLevel);
+        }
+
+        if(frontOKR || backOKR || midOKR){
+            rightShoulderController.set(ControlMode.PercentOutput, rightLevel);
+        }
+        
 
     }
 
+     DigitalInput shoulderLeftFrontLimit = new DigitalInput(Constants.LEFT_SHOULDER_FRONT_LIMIT_DIO);
+     DigitalInput shoulderLeftBackLimit = new DigitalInput(Constants.LEFT_SHOULDER_BACK_LIMIT_DIO);
+     DigitalInput shoulderRightFrontLimit = new DigitalInput(Constants.RIGHT_SHOULDER_FRONT_LIMIT_DIO);
+     DigitalInput shoulderRightBackLimit = new DigitalInput(Constants.RIGHT_SHOULDER_BACK_LIMIT_DIO);
+    
+    
     /**
      * Get the difference between the right and left motor
      * 
@@ -255,8 +269,13 @@ public class ArmSubsystem extends SubsystemBase {
         // System.out.println(String.format("Brennan's awesome print statement; %f, %f,
         // %f", elbow, shoulder, gripper));
 
+
+
         if (elbowExtension.getValue() < LINEAR_MAX && elbowExtension.getValue() > LINEAR_MIN) {
-            elbowLinearController.set(TalonSRXControlMode.PercentOutput, elbowRateLimiter.calculate(elbow));
+            double value = elbowRateLimiter.calculate(elbow);
+            
+            elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, value);
+            elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, value);
         }
 
         setShoulderLevels(shoulder);
