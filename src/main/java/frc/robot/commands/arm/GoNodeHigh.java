@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ElbowPosition;
+import frc.robot.Constants.ShoulderPosition;
 
 public class GoNodeHigh extends CommandBase {
 
@@ -20,8 +21,8 @@ public class GoNodeHigh extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.move(Constants.ElbowPosition.middle_HighNode);
-        armSubsystem.move(Constants.ShoulderPosition.middle_HighNode);
+        armSubsystem.move(ElbowPosition.middle_HighNode);
+        armSubsystem.move(ShoulderPosition.middle_HighNode);
     }
 
     @Override

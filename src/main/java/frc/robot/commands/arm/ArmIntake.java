@@ -5,8 +5,8 @@ package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.Constants;
 import frc.robot.Constants.ElbowPosition;
+import frc.robot.Constants.ShoulderPosition;
 
 public class ArmIntake extends CommandBase {
 
@@ -20,8 +20,8 @@ public class ArmIntake extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.move(Constants.ElbowPosition.middle_LowNode);
-        armSubsystem.move(Constants.ShoulderPosition.middle_LowNode);
+        armSubsystem.move(ElbowPosition.middle_LowNode);
+        armSubsystem.move(ShoulderPosition.middle_LowNode);
     }
 
     @Override

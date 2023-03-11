@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ElbowPosition;
+import frc.robot.Constants.ShoulderPosition;
 
 public class ArmLoadingStation extends CommandBase {
 
@@ -22,7 +23,7 @@ public class ArmLoadingStation extends CommandBase {
     public void execute() {
         //armSubsystem.move(Constants.ElbowPosition.middle_LowNode);
         //dont know value for elbow yet
-        armSubsystem.move(Constants.ShoulderPosition.allBackStow);
+        armSubsystem.move(ShoulderPosition.allBackStow);
     }
 
     @Override
