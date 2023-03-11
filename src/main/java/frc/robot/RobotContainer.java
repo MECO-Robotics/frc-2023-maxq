@@ -7,8 +7,10 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -29,7 +31,9 @@ import frc.robot.commands.drive.AutoLevelOnChargeStation;
 import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.Stop;
 import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.commands.lights.Blink;
 import frc.robot.commands.lights.SetColor;
+import frc.robot.commands.lights.SetColorToAlliance;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.BrakesSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
@@ -157,10 +161,14 @@ public class RobotContainer {
         pilotXButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
 
         //pilot controls
-        pilotYButton.onTrue(new SetColor(lightSubsystem, Color.kYellow));
+        pilotYButton.toggleOnTrue(new Blink(lightSubsystem, Color.kYellow));
+        pilotYButton.toggleOnFalse(new SetColorToAlliance(lightSubsystem));
+        pilotAButton.toggleOnTrue(new Blink(lightSubsystem, Color.kPurple));
+        pilotAButton.toggleOnFalse(new SetColorToAlliance(lightSubsystem));
 
-        pilotAButton.onTrue(new SetColor(lightSubsystem, Color.kPurple));
+        //:)
 
+    
 
         //coPilot controls
         coPilotAButton.onTrue(new ArmIntake(armSubsystem));
