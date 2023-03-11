@@ -36,6 +36,7 @@ public final class Constants {
         middle_MiddleNode,   // 3.0 in position
         middle_LowNode,      // 4.5 in position
         allForward_HighNode  // 7.0 in position
+, middle_HighNode
     };
 
     public enum ElbowPosition {
