@@ -17,6 +17,11 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.arm.ArmIntake;
+import frc.robot.commands.arm.ArmLoadingStation;
+import frc.robot.commands.arm.ArmStow;
+import frc.robot.commands.arm.GoNodeHigh;
+import frc.robot.commands.arm.GoNodeMid;
 import frc.robot.commands.arm.TeleopArmControl;
 import frc.robot.commands.brakes.LowerBrakes;
 import frc.robot.commands.brakes.RaiseBrakes;
@@ -129,22 +134,43 @@ public class RobotContainer {
     private void configureTeleopDriveButtonBindings() {
 
         XboxController pilot = controllerSubsystem.getPilotController();
-        JoystickButton aButton = new JoystickButton(pilot, XboxController.Button.kA.value);
-        JoystickButton bButton = new JoystickButton(pilot, XboxController.Button.kB.value);
-        JoystickButton xButton = new JoystickButton(pilot, XboxController.Button.kX.value);
-        JoystickButton yButton = new JoystickButton(pilot, XboxController.Button.kY.value);
+        JoystickButton pilotAButton = new JoystickButton(pilot, XboxController.Button.kA.value);
+        JoystickButton pilotBButton = new JoystickButton(pilot, XboxController.Button.kB.value);
+        JoystickButton pilotXButton = new JoystickButton(pilot, XboxController.Button.kX.value);
+        JoystickButton pilotYButton = new JoystickButton(pilot, XboxController.Button.kY.value);
+
+        XboxController coPilot = controllerSubsystem.getPilotController();
+        JoystickButton coPilotAButton = new JoystickButton(pilot, XboxController.Button.kA.value);
+        JoystickButton coPilotBButton = new JoystickButton(pilot, XboxController.Button.kB.value);
+        JoystickButton coPilotXButton = new JoystickButton(pilot, XboxController.Button.kX.value);
+        JoystickButton coPilotYButton = new JoystickButton(pilot, XboxController.Button.kY.value);
+        JoystickButton coPilotRightBumper = new JoystickButton(coPilot, XboxController.Button.kRightBumper.value);
+         
+        
         JoystickButton triggerJoystickButton = new JoystickButton(pilot, XboxController.Button.kY.value);
         POVButton dpadButton = new POVButton(pilot, 0);
 
-        bButton.toggleOnTrue(new LowerBrakes(brakesSubsystem));
-        bButton.toggleOnFalse(new RaiseBrakes(brakesSubsystem));
+        pilotBButton.toggleOnTrue(new LowerBrakes(brakesSubsystem));
+        pilotBButton.toggleOnFalse(new RaiseBrakes(brakesSubsystem));
 
         // Whenever holding X - run autolevel command.
-        xButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
+        pilotXButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
 
-        yButton.onTrue(new SetColor(lightSubsystem, Color.kYellow));
+        //pilot controls
+        pilotYButton.onTrue(new SetColor(lightSubsystem, Color.kYellow));
 
-        aButton.onTrue(new SetColor(lightSubsystem, Color.kPurple));
+        pilotAButton.onTrue(new SetColor(lightSubsystem, Color.kPurple));
+
+
+        //coPilot controls
+        coPilotAButton.onTrue(new ArmIntake(armSubsystem));
+        coPilotRightBumper.onTrue(new ArmStow(armSubsystem));
+        coPilotBButton.onTrue(new GoNodeMid(armSubsystem));
+        coPilotYButton.onTrue(new GoNodeHigh(armSubsystem));
+        coPilotXButton.onTrue(new ArmLoadingStation(armSubsystem));
+        
+
+
 
         // TODO: Brent recommands a "two man
         // rule" for engaging, requiring a button on the pilot and co-pilot to press a
