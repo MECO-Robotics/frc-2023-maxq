@@ -33,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     private static final int LINEAR_MAX = 1100;
     private static final int LINEAR_MIN = 370;
-    private static final int TPI = 80; //Ticks per inch of string pot
+    private static final int TPI = 80; // Ticks per inch of string pot
 
     // max 1189
     // min 289
@@ -63,8 +63,14 @@ public class ArmSubsystem extends SubsystemBase {
     TalonSRX leftShoulderController;
     TalonSRX rightShoulderController;
     Constants.ShoulderPosition desiredShoulderPosition = Constants.ShoulderPosition.NoChange;
+
     // 0.5 of a second to get to full power on sholder motors
     SlewRateLimiter shoulderRateLimiter = new SlewRateLimiter(2);
+
+    DigitalInput shoulderLeftFrontLimit = new DigitalInput(Constants.LEFT_SHOULDER_FRONT_LIMIT_DIO);
+    DigitalInput shoulderLeftBackLimit = new DigitalInput(Constants.LEFT_SHOULDER_BACK_LIMIT_DIO);
+    DigitalInput shoulderRightFrontLimit = new DigitalInput(Constants.RIGHT_SHOULDER_FRONT_LIMIT_DIO);
+    DigitalInput shoulderRightBackLimit = new DigitalInput(Constants.RIGHT_SHOULDER_BACK_LIMIT_DIO);
 
     public ArmSubsystem() {
 
@@ -82,6 +88,10 @@ public class ArmSubsystem extends SubsystemBase {
 
         addChild("Elbow Pos", elbowExtension);
         addChild("Elbow PID", elbowPid);
+        addChild("shoulderLFL", shoulderLeftFrontLimit);
+        addChild("shoulderLBL", shoulderLeftBackLimit);
+        addChild("shoulderRFL", shoulderRightFrontLimit);
+        addChild("shoulderRBL", shoulderRightBackLimit);
         SmartDashboard.putData(this);
     }
 
@@ -222,11 +232,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
 
-    DigitalInput shoulderLeftFrontLimit = new DigitalInput(Constants.LEFT_SHOULDER_FRONT_LIMIT_DIO);
-    DigitalInput shoulderLeftBackLimit = new DigitalInput(Constants.LEFT_SHOULDER_BACK_LIMIT_DIO);
-    DigitalInput shoulderRightFrontLimit = new DigitalInput(Constants.RIGHT_SHOULDER_FRONT_LIMIT_DIO);
-    DigitalInput shoulderRightBackLimit = new DigitalInput(Constants.RIGHT_SHOULDER_BACK_LIMIT_DIO);
-
+    
     /**
      * Get the difference between the right and left motor
      * 
