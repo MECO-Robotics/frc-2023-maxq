@@ -177,12 +177,14 @@ public class Robot extends TimedRobot {
         // default commands are not run and you can test the system.
         // Re-enable here because we're using it for testing.
         CommandScheduler.getInstance().enable();
+
+        robotContainer.testInit();
     }
 
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
-        robotContainer.testMode();
+        robotContainer.testPeriodic();
     }
 
     /***************************************************************************/

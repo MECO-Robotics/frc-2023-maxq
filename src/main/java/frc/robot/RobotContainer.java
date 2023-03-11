@@ -135,7 +135,6 @@ public class RobotContainer {
         JoystickButton yButton = new JoystickButton(pilot, XboxController.Button.kY.value);
         JoystickButton triggerJoystickButton = new JoystickButton(pilot, XboxController.Button.kY.value);
         POVButton dpadButton = new POVButton(pilot, 0);
-       
 
         bButton.toggleOnTrue(new LowerBrakes(brakesSubsystem));
         bButton.toggleOnFalse(new RaiseBrakes(brakesSubsystem));
@@ -155,9 +154,13 @@ public class RobotContainer {
 
     // --------------------------------------------------------------------
 
+    public void testInit() {
+
+    }
+
     private int testWheel = Constants.FRONT_LEFT_CAN;
 
-    public void testMode() {
+    public void testPeriodic() {
         XboxController pilot = controllerSubsystem.getPilotController();
         double testThrottle = pilot.getLeftY() * .25;
 
@@ -172,6 +175,13 @@ public class RobotContainer {
         }
 
         driveSubsystem.runWheel(testWheel, testThrottle);
+
+        double shoulder = controllerSubsystem.getCopilotController().getLeftX();
+        double elbow = controllerSubsystem.getCopilotController().getRightX();
+        double gripper = (controllerSubsystem.getCopilotController().getRightTriggerAxis()
+                - controllerSubsystem.getCopilotController().getLeftTriggerAxis());
+
+        armSubsystem.manualControl(elbow, shoulder, gripper);
     };
 
     // --------------------------------------------------------------------

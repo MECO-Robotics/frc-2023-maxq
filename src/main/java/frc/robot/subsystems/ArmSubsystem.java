@@ -33,6 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     private static final int LINEAR_MAX = 1100;
     private static final int LINEAR_MIN = 370;
+    private static final int TPI = 80; //Ticks per inch of string pot
 
     // max 1189
     // min 289
@@ -173,11 +174,11 @@ public class ArmSubsystem extends SubsystemBase {
             case allIn:
                 return LINEAR_MIN;
             case middle_MiddleNode: // 2.3 in extended
-                return 2.3 * 80;
+                return 2.3 * TPI;
             case middle_HighNode: // 3.1 in extended
-                return 3.1 * 80;
+                return 3.1 * TPI;
             case middle_LowNode: // 8.0 in extended
-                return 3.1 * 80;
+                return 3.1 * TPI;
         }
 
         return 0;
@@ -211,23 +212,21 @@ public class ArmSubsystem extends SubsystemBase {
         boolean backOKR = shoulderRightBackLimit.get() && rightLevel > 0;
         boolean midOKR = shoulderRightBackLimit.get() == false && shoulderRightFrontLimit.get() == false;
 
-        if(frontOK || backOK || midOK){
+        if (frontOK || backOK || midOK) {
             leftShoulderController.set(ControlMode.PercentOutput, leftLevel);
         }
 
-        if(frontOKR || backOKR || midOKR){
+        if (frontOKR || backOKR || midOKR) {
             rightShoulderController.set(ControlMode.PercentOutput, rightLevel);
         }
-        
 
     }
 
-     DigitalInput shoulderLeftFrontLimit = new DigitalInput(Constants.LEFT_SHOULDER_FRONT_LIMIT_DIO);
-     DigitalInput shoulderLeftBackLimit = new DigitalInput(Constants.LEFT_SHOULDER_BACK_LIMIT_DIO);
-     DigitalInput shoulderRightFrontLimit = new DigitalInput(Constants.RIGHT_SHOULDER_FRONT_LIMIT_DIO);
-     DigitalInput shoulderRightBackLimit = new DigitalInput(Constants.RIGHT_SHOULDER_BACK_LIMIT_DIO);
-    
-    
+    DigitalInput shoulderLeftFrontLimit = new DigitalInput(Constants.LEFT_SHOULDER_FRONT_LIMIT_DIO);
+    DigitalInput shoulderLeftBackLimit = new DigitalInput(Constants.LEFT_SHOULDER_BACK_LIMIT_DIO);
+    DigitalInput shoulderRightFrontLimit = new DigitalInput(Constants.RIGHT_SHOULDER_FRONT_LIMIT_DIO);
+    DigitalInput shoulderRightBackLimit = new DigitalInput(Constants.RIGHT_SHOULDER_BACK_LIMIT_DIO);
+
     /**
      * Get the difference between the right and left motor
      * 
@@ -269,14 +268,8 @@ public class ArmSubsystem extends SubsystemBase {
         // System.out.println(String.format("Brennan's awesome print statement; %f, %f,
         // %f", elbow, shoulder, gripper));
 
-
-
-        if (elbowExtension.getValue() < LINEAR_MAX && elbowExtension.getValue() > LINEAR_MIN) {
-            double value = elbowRateLimiter.calculate(elbow);
-            
-            elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, value);
-            elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, value);
-        }
+        elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
+        elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
 
         setShoulderLevels(shoulder);
 
@@ -300,11 +293,16 @@ public class ArmSubsystem extends SubsystemBase {
 
     // -------------------------------------------------------------------
 
+    private int getStringPot() {
+        return elbowExtension.getValue();
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.addDoubleProperty("Shoulder Encoder Delta", this::getShoulderEncoderDelta, null);
         builder.addDoubleProperty("Left Shoulder Position", this::getLeftShoulderPosition, null);
         builder.addDoubleProperty("Right Shoulder Position", this::getRightShoulderPosition, null);
+        builder.addIntegerProperty("String Pot", this::getStringPot, null);
     }
 }
