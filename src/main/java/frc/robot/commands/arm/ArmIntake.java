@@ -5,11 +5,11 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ElbowPosition;
 
-public class GoNodeLow extends CommandBase {
+public class ArmIntake extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
 
-    public GoNodeLow(ArmSubsystem arm) {
+    public ArmIntake(ArmSubsystem arm) {
         armSubsystem = arm;
 
         addRequirements(arm);
