@@ -215,12 +215,12 @@ public class ArmSubsystem extends SubsystemBase {
         double rightLevel = level - deltaArmMotor;
         double leftLevel = level + deltaArmMotor;
 
-        boolean frontOK = shoulderLeftFrontLimit.get() && leftLevel < 0;
-        boolean backOK = shoulderLeftBackLimit.get() && leftLevel > 0;
-        boolean midOK = shoulderLeftBackLimit.get() == false && shoulderLeftFrontLimit.get() == false;
-        boolean frontOKR = shoulderRightFrontLimit.get() && rightLevel < 0;
-        boolean backOKR = shoulderRightBackLimit.get() && rightLevel > 0;
-        boolean midOKR = shoulderRightBackLimit.get() == false && shoulderRightFrontLimit.get() == false;
+        boolean frontOK = !shoulderLeftFrontLimit.get() && leftLevel < 0;
+        boolean backOK = !shoulderLeftBackLimit.get() && leftLevel > 0;
+        boolean midOK = shoulderLeftBackLimit.get() && shoulderLeftFrontLimit.get();
+        boolean frontOKR = !shoulderRightFrontLimit.get() && rightLevel < 0;
+        boolean backOKR = !shoulderRightBackLimit.get() && rightLevel > 0;
+        boolean midOKR = shoulderRightBackLimit.get() && shoulderRightFrontLimit.get();
 
         if (frontOK || backOK || midOK) {
             leftShoulderController.set(ControlMode.PercentOutput, leftLevel);
