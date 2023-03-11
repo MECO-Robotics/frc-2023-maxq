@@ -4,22 +4,17 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.Constants.ElbowPosition;
 import frc.robot.Constants.GripperPosition;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ControllerSubsystem;
 
 public class SetGripperPosition extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
-    private final GripperPosition GripperPositionVar;
-    
+    private final GripperPosition gripperPos;
 
-    
-    public SetGripperPosition(ArmSubsystem arm, Constants.GripperPosition GripperPosition) {
+    public SetGripperPosition(ArmSubsystem arm, GripperPosition position) {
         armSubsystem = arm;
-        GripperPositionVar = GripperPosition;
+        gripperPos = position;
         // Only add the arm. Don't want usage of the controller to be exclusive
         // NOTE: Remove this if we want to support concurrent manual control while also
         // providing other commands
@@ -28,10 +23,7 @@ public class SetGripperPosition extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.move(GripperPositionVar);
-        
-
-       
+        armSubsystem.move(gripperPos);
     }
 
     @Override

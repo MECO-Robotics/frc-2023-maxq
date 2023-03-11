@@ -4,38 +4,32 @@
 
 package frc.robot.commands.lights;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.LightSubsystem;
 
-public class Strobe extends CommandBase {
-    private final LightSubsystem lights;
-    int i = 0;
-    Color c = Color.kBlack;
+public class SetColorToAlliance extends CommandBase {
 
-    public Strobe(LightSubsystem lightSubsystem) {
+    private final LightSubsystem lights;
+
+    public SetColorToAlliance(LightSubsystem lightSubsystem) {
         lights = lightSubsystem;
     }
-    
-    //This line of code makes it so that the LEDs on the robot slowly blink between white & black when called.
+
     @Override
     public void execute() {
+        Alliance alliance = DriverStation.getAlliance();
+        Color allianceColor = Color.kBlack;
 
-        i = i + 1;
+        if (alliance == Alliance.Red) {
+            allianceColor = Color.kRed;
+        } else if (alliance == Alliance.Blue) {
+            allianceColor = Color.kBlue;
+        } 
 
-        if (i == 50) {
-
-            i = 0;
-
-            if (c == Color.kWhite) {
-                c = Color.kBlack;
-            } else {
-                c = Color.kWhite;
-            }
-            
-        }
-
-        lights.set(c);
+        lights.set(allianceColor);
     }
 
     @Override
