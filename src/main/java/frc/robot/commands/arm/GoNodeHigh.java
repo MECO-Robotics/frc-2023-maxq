@@ -5,11 +5,11 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ElbowPosition;
 
-public class GoNodeLow extends CommandBase {
+public class GoNodeHigh extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
 
-    public GoNodeLow(ArmSubsystem arm) {
+    public GoNodeHigh(ArmSubsystem arm) {
         armSubsystem = arm;
 
         addRequirements(arm);
@@ -17,8 +17,8 @@ public class GoNodeLow extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.move(Constants.ElbowPosition.middle_LowNode);
-        armSubsystem.move(Constants.ShoulderPosition.middle_LowNode);
+        armSubsystem.move(Constants.ElbowPosition.middle_HighNode);
+        armSubsystem.move(Constants.ShoulderPosition.middle_HighNode);
     }
 
     @Override
