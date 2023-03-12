@@ -300,34 +300,34 @@ public class ArmSubsystem extends SubsystemBase {
     public void manualControl(double elbow, double shoulder) {
         if (allowManualControl) {
 
-            int positionDrift = 0;
+            // int positionDrift = 0;
 
-            if (Math.abs(elbow) < 0.05) {
+            // if (Math.abs(elbow) < 0.05) {
 
-                if (useHoldPosition) {
-                    positionDrift = holdElbowPosition - elbowExtension.getValue();
+            //     if (useHoldPosition) {
+            //         positionDrift = holdElbowPosition - elbowExtension.getValue();
 
-                    if (Math.abs(positionDrift) > 40) {
-                        double elbowLevel = Math.signum(positionDrift) * 0.2;
-                        elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbowLevel);
-                        elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbowLevel);
-                    }
+            //         if (Math.abs(positionDrift) > 40) {
+            //             double elbowLevel = Math.signum(positionDrift) * 0.2;
+            //             elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbowLevel);
+            //             elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbowLevel);
+            //         }
 
-                } else {
-                    useHoldPosition = true;
-                    holdElbowPosition = elbowExtension.getValue();
-                }
+            //     } else {
+            //         useHoldPosition = true;
+            //         holdElbowPosition = elbowExtension.getValue();
+            //     }
 
-            } else {
-                useHoldPosition = false;
+            // } else {
+            //     useHoldPosition = false;
                 elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
                 elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
-            }
+            // }
 
-            if (logger % 10 == 0){
-                System.out
-                        .println((useHoldPosition ? "HOLDING" : "MOVING") + String.format("; DRIFT: %d", positionDrift));
-            }
+            // if (logger % 10 == 0){
+            //     System.out
+            //             .println((useHoldPosition ? "HOLDING" : "MOVING") + String.format("; DRIFT: %d", positionDrift));
+            // }
 
             setShoulderLevels(shoulder);
         }
