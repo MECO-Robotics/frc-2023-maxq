@@ -16,17 +16,15 @@ public class ArmIntake extends CommandBase {
 
     public ArmIntake(ArmSubsystem arm) {
         armSubsystem = arm;
-
-        addRequirements(arm);
     }
 
     int logger = 0;
     @Override
     public void execute() {
-        if(logger++ % 10 == 0) System.out.println("ArmIntake");
+        if(logger++ % 1 == 0) System.out.println("ArmIntake");
 
         if (!doneElbow) {
-            doneElbow = armSubsystem.move(ElbowPosition.middle_LowNode);
+            doneElbow = armSubsystem.move(ElbowPosition.middle_PickUp);
         }
 
         if (!doneShoulder) {

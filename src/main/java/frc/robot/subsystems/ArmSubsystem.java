@@ -204,7 +204,7 @@ public class ArmSubsystem extends SubsystemBase {
                 return 632;
             case middle_HighNode:
                 return 750;
-            case middle_LowNode: // also pick up
+            case middle_PickUp:
                 return 1480;
             case stow:
                 return 1138;

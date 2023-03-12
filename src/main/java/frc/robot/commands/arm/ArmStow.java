@@ -17,8 +17,6 @@ public class ArmStow extends CommandBase {
 
     public ArmStow(ArmSubsystem arm) {
         armSubsystem = arm;
-
-        addRequirements(arm);
     }
 
     @Override

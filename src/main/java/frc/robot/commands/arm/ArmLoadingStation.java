@@ -17,8 +17,6 @@ public class ArmLoadingStation extends CommandBase {
 
     public ArmLoadingStation(ArmSubsystem arm) {
         armSubsystem = arm;
-
-        addRequirements(arm);
     }
 
     @Override
