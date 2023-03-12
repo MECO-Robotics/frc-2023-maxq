@@ -129,7 +129,7 @@ public class RobotContainer {
         // This is an example of button bindings using the new approach. The rest
         // of the button bindings are actually done in the ControllerSubsystem class.
 
-        configureTeleopDriveButtonBindings();
+        // configureTeleopDriveButtonBindings();
     }
 
     /**
@@ -178,11 +178,6 @@ public class RobotContainer {
 
         // reset sensors - copilot and pilot
         pilotStartButton.and(coPilotStartButton).onTrue(new ResetSensors(driveSubsystem));
-
-        // TODO: Brent recommands a "two man
-        // rule" for engaging, requiring a button on the pilot and co-pilot to press a
-        // button at the same time in order to reset
-        // aButton.whileTrue(new ResetSensors(driveSubsystem));
     }
 
     // --------------------------------------------------------------------
@@ -214,8 +209,15 @@ public class RobotContainer {
         double gripper = (controllerSubsystem.getCopilotController().getRightTriggerAxis()
                 - controllerSubsystem.getCopilotController().getLeftTriggerAxis());
 
+        if (logger++ % 100 == 0)
+            System.out.println(String.format("TEST Gripper: R:%f, L:%f G:%f",
+                    controllerSubsystem.getCopilotController().getRightTriggerAxis(),
+                    controllerSubsystem.getCopilotController().getLeftTriggerAxis(),
+                    gripper));
         armSubsystem.manualControl(elbow, shoulder, gripper);
     };
+
+    static int logger = 0;
 
     // --------------------------------------------------------------------
 
@@ -242,13 +244,14 @@ public class RobotContainer {
         Command command;
 
         // Arm and Drive
-        command = new ParallelCommandGroup(
-                new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
-                new TeleopArmControl(armSubsystem, controllerSubsystem));
+        // command = new ParallelCommandGroup(
+        // new TeleopDrive(driveSubsystem, controllerSubsystem,
+        // driveMode.getSelected()),
+        // new TeleopArmControl(armSubsystem, controllerSubsystem));
 
         // Drive only
-        // command = new TeleopDrive(driveSubsystem, controllerSubsystem,
-        // driveMode.getSelected());
+        command = new TeleopDrive(driveSubsystem, controllerSubsystem,
+                driveMode.getSelected());
 
         return command;
     }

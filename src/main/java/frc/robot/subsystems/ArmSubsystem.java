@@ -165,6 +165,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void move(Constants.ElbowPosition elbowPositionIn) {
 
+        System.out.println("moving elbow");
         double desired = getElbowExtension(elbowPositionIn);
 
         double motor = elbowPid.calculate(elbowExtension.getValue(), desired);
@@ -199,6 +200,7 @@ public class ArmSubsystem extends SubsystemBase {
     //
 
     public void move(Constants.ShoulderPosition shoulderPositionIn) {
+        System.out.println("moving shoulder");
         desiredShoulderPosition = shoulderPositionIn;
     }
 
@@ -215,14 +217,22 @@ public class ArmSubsystem extends SubsystemBase {
         double rightLevel = level - deltaArmMotor;
         double leftLevel = level + deltaArmMotor;
 
-        boolean frontOK = !shoulderLeftFrontLimit.get() && leftLevel < 0;
-        boolean backOK = !shoulderLeftBackLimit.get() && leftLevel > 0;
-        boolean midOK = shoulderLeftBackLimit.get() && shoulderLeftFrontLimit.get();
+        boolean frontOKL = !shoulderLeftFrontLimit.get() && leftLevel < 0;
+        boolean backOKL = !shoulderLeftBackLimit.get() && leftLevel > 0;
+        boolean midOKL = shoulderLeftBackLimit.get() && shoulderLeftFrontLimit.get();
         boolean frontOKR = !shoulderRightFrontLimit.get() && rightLevel < 0;
         boolean backOKR = !shoulderRightBackLimit.get() && rightLevel > 0;
         boolean midOKR = shoulderRightBackLimit.get() && shoulderRightFrontLimit.get();
 
-        if (frontOK || backOK || midOK) {
+        if (!shoulderLeftFrontLimit.get() || !shoulderRightFrontLimit.get()) {
+            return;
+        }
+
+        if (!shoulderLeftBackLimit.get() || !shoulderRightBackLimit.get()) {
+            return;
+        }
+
+        if (frontOKL || backOKL || midOKL) {
             leftShoulderController.set(ControlMode.PercentOutput, leftLevel);
         }
 
@@ -232,7 +242,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
 
-    
     /**
      * Get the difference between the right and left motor
      * 
