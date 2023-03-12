@@ -300,11 +300,12 @@ public class ArmSubsystem extends SubsystemBase {
     public void manualControl(double elbow, double shoulder) {
         if (allowManualControl) {
 
+            int positionDrift = 0;
+
             if (Math.abs(elbow) < 0.05) {
 
                 if (useHoldPosition) {
-                    if(logger % 10 == 0) System.out.println("HOLDING");
-                    int positionDrift = holdElbowPosition - elbowExtension.getValue();
+                    positionDrift = holdElbowPosition - elbowExtension.getValue();
 
                     if (Math.abs(positionDrift) > 40) {
                         double elbowLevel = Math.signum(positionDrift) * 0.2;
@@ -318,11 +319,14 @@ public class ArmSubsystem extends SubsystemBase {
                 }
 
             } else {
-                if(logger % 10 == 0) System.out.println("MOVING");
                 useHoldPosition = false;
                 elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
                 elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
             }
+
+            if (logger % 10 == 0)
+                System.out
+                        .println(useHoldPosition ? "HOLDING" : "MOVING" + String.format("; DRIFT: %d", positionDrift));
 
             setShoulderLevels(shoulder);
         }
