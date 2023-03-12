@@ -213,6 +213,20 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /**
+     * Move the shoulder, ignoring the limit switches
+     * @param level
+     */
+    private void setShoulderLevelsIgnoreLimits(double level){
+        
+        double deltaArmMotor = getShoulderEncoderDelta() * MOTOR_ERROR_CONVERSION;
+        double rightLevel = level - deltaArmMotor;
+        double leftLevel = level + deltaArmMotor;
+
+        leftShoulderController.set(ControlMode.PercentOutput, leftLevel);
+        rightShoulderController.set(ControlMode.PercentOutput, rightLevel);
+    }
+
+    /**
      * Set the percent output on each shoulder using a single input level. Account
      * for differences in motor efficiency, friction, etc.. By verifying the
      * position of each shoulder are the same.
@@ -294,7 +308,7 @@ public class ArmSubsystem extends SubsystemBase {
         elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
         elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
 
-        setShoulderLevels(shoulder);
+        setShoulderLevelsIgnoreLimits(shoulder);
 
         gripperButtonControl = false;
         gripperController.set(gripper);
