@@ -6,25 +6,23 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ElbowPosition;
 
 public class ArmSubsystem extends SubsystemBase {
+
+    // Simple counter that reduces the number of times something is printe to the
+    // console
+    long logger = 0;
 
     /**
      * Time to run the gripper motor open or closed at 100%.
@@ -280,8 +278,8 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void manualControl(double elbow, double shoulder, double gripper) {
 
-        // System.out.println(String.format("Brennan's awesome print statement; %f, %f,
-        // %f", elbow, shoulder, gripper));
+        if (logger++ % 50 == 0)
+            System.out.println(String.format("ArmSubsystem.manualControl: %f, %f, %f", elbow, shoulder, gripper));
 
         elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
         elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);

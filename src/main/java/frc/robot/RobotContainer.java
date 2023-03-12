@@ -78,8 +78,6 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, I/O devices, and commands.
      */
     public RobotContainer() {
-        // Configure the button bindings
-        configureButtonBindings();
 
         // ------------------------------------------------------------------------
         //
@@ -109,11 +107,6 @@ public class RobotContainer {
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
-
-        // In WPILib 2023, subsystems are no longer automatically added to the smart
-        // dashboard. you have to add them yourself.
-        // however, in test mode, they are added so it might appear twice in test mode.
-        SmartDashboard.putData("Mecanum Drive", driveSubsystem);
     }
 
     /**
@@ -124,18 +117,7 @@ public class RobotContainer {
      * it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() {
-
-        // This is an example of button bindings using the new approach. The rest
-        // of the button bindings are actually done in the ControllerSubsystem class.
-
-        // configureTeleopDriveButtonBindings();
-    }
-
-    /**
-     * Setup the buttons for teleop drive.
-     */
-    private void configureTeleopDriveButtonBindings() {
+    public void configureButtonBindings() {
 
         XboxController pilot = controllerSubsystem.getPilotController();
         JoystickButton pilotAButton = new JoystickButton(pilot, XboxController.Button.kA.value);
@@ -209,7 +191,7 @@ public class RobotContainer {
         double gripper = (controllerSubsystem.getCopilotController().getRightTriggerAxis()
                 - controllerSubsystem.getCopilotController().getLeftTriggerAxis());
 
-        if (logger++ % 100 == 0)
+        if (logger++ % 50 == 0)
             System.out.println(String.format("TEST Gripper: R:%f, L:%f G:%f",
                     controllerSubsystem.getCopilotController().getRightTriggerAxis(),
                     controllerSubsystem.getCopilotController().getLeftTriggerAxis(),
