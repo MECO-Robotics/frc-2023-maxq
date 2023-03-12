@@ -15,8 +15,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.arm.ArmIntake;
@@ -158,10 +162,29 @@ public class RobotContainer {
         coPilotYButton.onTrue(new GoNodeHigh(armSubsystem));
         coPilotXButton.onTrue(new ArmLoadingStation(armSubsystem));
 
+        // TODO: Redo commands
+        // 1. Change all arm commands to work like the following:
+        // coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
+        //
+        // 2. Change all commands to add the addRequirements(armSubsystem); to their
+        // constructors.
+        //
+        // 3. Change the TeleopArmControl to use the addRequirements(armSubsystem); in
+        // it's constructor
+
+
         // reset sensors - copilot and pilot
         pilotStartButton.and(coPilotStartButton).onTrue(new ResetSensors(driveSubsystem));
     }
 
+
+    Command makeArmCommand(Command armCmd) {
+        return new SequentialCommandGroup(
+                new ParallelRaceGroup(
+                    armCmd, 
+                    new WaitCommand(5.0)),
+                new TeleopArmControl(armSubsystem, controllerSubsystem));
+    }
     // --------------------------------------------------------------------
 
     public void testInit() {

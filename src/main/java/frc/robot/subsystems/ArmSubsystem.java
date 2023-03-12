@@ -218,6 +218,7 @@ public class ArmSubsystem extends SubsystemBase {
     //
 
     public boolean move(Constants.ShoulderPosition shoulderPositionIn) {
+        // TODO: remove allowManualControl once commands are set to interupt each other
         allowManualControl = false;
         double setPoint = getShoulderPos(shoulderPositionIn);
         double measurement = (getLeftShoulderPosition() + getRightShoulderPosition()) / 2.0; // average position
