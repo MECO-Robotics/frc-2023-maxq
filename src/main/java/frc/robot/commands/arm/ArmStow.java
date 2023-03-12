@@ -12,6 +12,8 @@ import frc.robot.Constants.ShoulderPosition;
 public class ArmStow extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
+    boolean doneElbow = false;
+    boolean doneShoulder = false;
 
     public ArmStow(ArmSubsystem arm) {
         armSubsystem = arm;
@@ -21,13 +23,18 @@ public class ArmStow extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.move(ElbowPosition.stow);
-        armSubsystem.move(ShoulderPosition.allBackStow);
+        if (!doneElbow) {
+            doneElbow = armSubsystem.move(ElbowPosition.stow);
+        }
+
+        if (!doneShoulder) {
+            doneShoulder = armSubsystem.move(ShoulderPosition.allBackStow);
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return doneElbow && doneShoulder;
 
     }
 

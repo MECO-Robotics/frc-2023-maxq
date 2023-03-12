@@ -85,13 +85,17 @@ public class ArmSubsystem extends SubsystemBase {
 
         gripperController = new VictorSP(Constants.GRIPPER_PWM);
         gripperController.setInverted(true);
+        
         elbowLinearControllerLeft = new TalonSRX(Constants.LINEAR_CAN_LEFT);
         elbowLinearControllerRight = new TalonSRX(Constants.LINEAR_CAN_RIGHT);
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
+        elbowPid.setTolerance(10);  // Ticks
+
         leftShoulderController = new TalonSRX(Constants.LEFT_SHOULDER_CAN);
         rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_CAN);
         leftShoulderController.setInverted(true);
         rightShoulderController.setInverted(true);
+        shoulderPid.setTolerance(0.3);  // Revolutions
 
         addChild("Elbow Pos", elbowExtension);
         addChild("Elbow PID", elbowPid);
@@ -165,16 +169,18 @@ public class ArmSubsystem extends SubsystemBase {
     // ELBOW
     //
 
-    public void move(Constants.ElbowPosition elbowPositionIn) {
+    public boolean move(Constants.ElbowPosition elbowPositionIn) {
 
         System.out.println("moving elbow");
-        double desired = getElbowExtension(elbowPositionIn);
+        double setPoint = getElbowExtension(elbowPositionIn);
 
-        double motor = elbowPid.calculate(elbowExtension.getValue(), desired);
+        double motor = elbowPid.calculate(elbowExtension.getValue(), setPoint);
 
         motor = elbowRateLimiter.calculate(motor);
         elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, motor);
         elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, motor);
+
+        return elbowPid.atSetpoint();
     }
 
     private double getElbowExtension(Constants.ElbowPosition elbowPos) {
@@ -203,13 +209,14 @@ public class ArmSubsystem extends SubsystemBase {
     // SHOULDER
     //
 
-    public void move(Constants.ShoulderPosition shoulderPositionIn) {
+    public boolean move(Constants.ShoulderPosition shoulderPositionIn) {
         allowManualControl = false;
         double setPoint = getShoulderPos(shoulderPositionIn);
         double measurement = (getLeftShoulderPosition() + getRightShoulderPosition()) / 2.0;    // average position
         double level = shoulderPid.calculate(measurement, setPoint);
         level = shoulderRateLimiter.calculate(level);
         setShoulderLevels(level);
+        return shoulderPid.atSetpoint();
     }
 
     private double getShoulderPos(ShoulderPosition pos) {

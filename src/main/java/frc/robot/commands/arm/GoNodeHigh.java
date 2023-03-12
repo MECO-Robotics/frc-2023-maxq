@@ -12,6 +12,8 @@ import frc.robot.Constants.ShoulderPosition;
 public class GoNodeHigh extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
+    boolean doneElbow = false;
+    boolean doneShoulder = false;
 
     public GoNodeHigh(ArmSubsystem arm) {
         armSubsystem = arm;
@@ -21,13 +23,18 @@ public class GoNodeHigh extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.move(ElbowPosition.middle_HighNode);
-        armSubsystem.move(ShoulderPosition.middle_HighNode);
+        if (!doneElbow) {
+            doneElbow = armSubsystem.move(ElbowPosition.middle_HighNode);
+        }
+
+        if (!doneShoulder) {
+            doneShoulder = armSubsystem.move(ShoulderPosition.middle_HighNode);
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return doneElbow && doneShoulder;
 
     }
 
