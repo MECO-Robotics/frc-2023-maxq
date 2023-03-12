@@ -63,7 +63,8 @@ public class ArmSubsystem extends SubsystemBase {
     // Shoulder
     TalonSRX leftShoulderController;
     TalonSRX rightShoulderController;
-    Constants.ShoulderPosition desiredShoulderPosition = Constants.ShoulderPosition.NoChange;
+    ShoulderPosition desiredShoulderPosition = ShoulderPosition.NoChange;
+    PIDController shoulderPid = new PIDController(.1, 0, 0);
     // 0.5 of a second to get to full power on sholder motors
     SlewRateLimiter shoulderRateLimiter = new SlewRateLimiter(2);
 
@@ -98,6 +99,7 @@ public class ArmSubsystem extends SubsystemBase {
         addChild("shoulderLBL", shoulderLeftBackLimit);
         addChild("shoulderRFL", shoulderRightFrontLimit);
         addChild("shoulderRBL", shoulderRightBackLimit);
+        addChild("Shoulder PID", shoulderPid);
         SmartDashboard.putData(this);
     }
 
@@ -203,7 +205,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void move(Constants.ShoulderPosition shoulderPositionIn) {
         allowManualControl = false;
-        double level = shoulderRateLimiter.calculate(getShoulderPos(shoulderPositionIn));
+        double setPoint = getShoulderPos(shoulderPositionIn);
+        double measurement = (getLeftShoulderPosition() + getRightShoulderPosition()) / 2.0;    // average position
+        double level = shoulderPid.calculate(measurement, setPoint);
+        level = shoulderRateLimiter.calculate(level);
         setShoulderLevels(level);
     }
 
