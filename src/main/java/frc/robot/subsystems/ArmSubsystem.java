@@ -44,6 +44,9 @@ public class ArmSubsystem extends SubsystemBase {
     VictorSP gripperController;
     Constants.GripperPosition desiredGripperPosition = Constants.GripperPosition.NoChange;
     double gripperStartTime;
+    // true when we're using openGripper and closeGripper, false when using manualControl()
+    private boolean gripperButtonControl;
+
 
     // Elbow
     TalonSRX elbowLinearControllerLeft;
@@ -69,6 +72,7 @@ public class ArmSubsystem extends SubsystemBase {
     DigitalInput shoulderLeftBackLimit = new DigitalInput(Constants.LEFT_SHOULDER_BACK_LIMIT_DIO);
     DigitalInput shoulderRightFrontLimit = new DigitalInput(Constants.RIGHT_SHOULDER_FRONT_LIMIT_DIO);
     DigitalInput shoulderRightBackLimit = new DigitalInput(Constants.RIGHT_SHOULDER_BACK_LIMIT_DIO);
+
 
     public ArmSubsystem() {
 
@@ -102,15 +106,19 @@ public class ArmSubsystem extends SubsystemBase {
 
         // No matter what, if the motor has been running more than the max amount of
         // time, then stop the motor.
-        if ((Timer.getFPGATimestamp() - gripperStartTime) > GRIPPER_MOVE_TIME_SEC) {
-            gripperController.set(0);
-            gripperStartTime = 0;
+        if (gripperButtonControl) {
+            if ((Timer.getFPGATimestamp() - gripperStartTime) > GRIPPER_MOVE_TIME_SEC) {
+                gripperController.set(0);
+                gripperStartTime = 0;
 
-        } else if (desiredGripperPosition == Constants.GripperPosition.GripOpen && gripperController.get() < 0.0001) {
-            openGripper();
+            } else if (desiredGripperPosition == Constants.GripperPosition.GripOpen
+                    && gripperController.get() < 0.0001) {
+                openGripper();
 
-        } else if (desiredGripperPosition == Constants.GripperPosition.GripClose && gripperController.get() > 0.0001) {
-            closeGripper();
+            } else if (desiredGripperPosition == Constants.GripperPosition.GripClose
+                    && gripperController.get() > 0.0001) {
+                closeGripper();
+            }
         }
 
         //
@@ -145,6 +153,7 @@ public class ArmSubsystem extends SubsystemBase {
      * IMPORTANT: Only call this once, not repeatedly!
      */
     public void openGripper() {
+        gripperButtonControl = true;
         gripperStartTime = Timer.getFPGATimestamp();
         gripperController.set(1.0);
     }
@@ -153,6 +162,7 @@ public class ArmSubsystem extends SubsystemBase {
      * IMPORTANT: Only call this once, not repeatedly!
      */
     public void closeGripper() {
+        gripperButtonControl = true;
         gripperStartTime = Timer.getFPGATimestamp();
         gripperController.set(-1.0);
     }
@@ -286,6 +296,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         setShoulderLevels(shoulder);
 
+        gripperButtonControl = false;
         gripperController.set(gripper);
     }
 
