@@ -104,6 +104,7 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
+        logger++;
         //
         // GRIPPER
         //
@@ -302,6 +303,7 @@ public class ArmSubsystem extends SubsystemBase {
             if (Math.abs(elbow) < 0.05) {
 
                 if (useHoldPosition) {
+                    if(logger % 10 == 0) System.out.println("HOLDING");
                     int positionDrift = holdElbowPosition - elbowExtension.getValue();
 
                     if (Math.abs(positionDrift) > 40) {
@@ -316,6 +318,7 @@ public class ArmSubsystem extends SubsystemBase {
                 }
 
             } else {
+                if(logger % 10 == 0) System.out.println("MOVING");
                 useHoldPosition = false;
                 elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
                 elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
@@ -336,7 +339,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void manualControlNoLimits(double elbow, double shoulder, double gripper) {
 
-        // if (logger++ % 50 == 0)
+        // if (logger % 50 == 0)
         // System.out.println(String.format("ArmSubsystem.manualControl: %f, %f, %f",
         // elbow, shoulder, gripper));
 
