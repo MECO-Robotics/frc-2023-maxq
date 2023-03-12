@@ -302,10 +302,10 @@ public class ArmSubsystem extends SubsystemBase {
             if (Math.abs(elbow) < 0.05) {
 
                 if (useHoldPosition) {
-                    int positionDrift = elbowExtension.getValue() - holdElbowPosition;
+                    int positionDrift = holdElbowPosition - elbowExtension.getValue();
 
                     if (Math.abs(positionDrift) > 40) {
-                        double elbowLevel = Math.signum(positionDrift) * 0.5;
+                        double elbowLevel = Math.signum(positionDrift) * 0.2;
                         elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbowLevel);
                         elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbowLevel);
                     }
