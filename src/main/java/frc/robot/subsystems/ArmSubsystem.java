@@ -85,17 +85,17 @@ public class ArmSubsystem extends SubsystemBase {
 
         gripperController = new VictorSP(Constants.GRIPPER_PWM);
         gripperController.setInverted(true);
-        
+
         elbowLinearControllerLeft = new TalonSRX(Constants.LINEAR_CAN_LEFT);
         elbowLinearControllerRight = new TalonSRX(Constants.LINEAR_CAN_RIGHT);
         elbowExtension = new AnalogInput(Constants.LINEAR_ALG);
-        elbowPid.setTolerance(10);  // Ticks
+        elbowPid.setTolerance(10); // Ticks
 
         leftShoulderController = new TalonSRX(Constants.LEFT_SHOULDER_CAN);
         rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_CAN);
         leftShoulderController.setInverted(true);
         rightShoulderController.setInverted(true);
-        shoulderPid.setTolerance(0.3);  // Revolutions
+        shoulderPid.setTolerance(0.3); // Revolutions
 
         addChild("Elbow Pos", elbowExtension);
         addChild("Elbow PID", elbowPid);
@@ -171,16 +171,24 @@ public class ArmSubsystem extends SubsystemBase {
 
     public boolean move(Constants.ElbowPosition elbowPositionIn) {
 
-        System.out.println("moving elbow");
+        // System.out.println("moving elbow");
         double setPoint = getElbowExtension(elbowPositionIn);
 
-        double motor = elbowPid.calculate(elbowExtension.getValue(), setPoint);
+        // double motor = elbowPid.calculate(elbowExtension.getValue(), setPoint);
 
-        motor = elbowRateLimiter.calculate(motor);
+        // motor = elbowRateLimiter.calculate(motor);
+
+        // return elbowPid.atSetpoint();
+
+        double error = elbowExtension.getValue() - setPoint;
+        double motor = error * 0.1;
+
         elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, motor);
         elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, motor);
 
-        return elbowPid.atSetpoint();
+        System.out.println(String.format("ELBOW PID: ERROR:%f; MOTOR:%f", error, motor));
+
+        return Math.abs(error) < 10;
     }
 
     private double getElbowExtension(Constants.ElbowPosition elbowPos) {
@@ -212,7 +220,7 @@ public class ArmSubsystem extends SubsystemBase {
     public boolean move(Constants.ShoulderPosition shoulderPositionIn) {
         allowManualControl = false;
         double setPoint = getShoulderPos(shoulderPositionIn);
-        double measurement = (getLeftShoulderPosition() + getRightShoulderPosition()) / 2.0;    // average position
+        double measurement = (getLeftShoulderPosition() + getRightShoulderPosition()) / 2.0; // average position
         double level = shoulderPid.calculate(measurement, setPoint);
         level = shoulderRateLimiter.calculate(level);
         setShoulderLevels(level);
@@ -316,29 +324,31 @@ public class ArmSubsystem extends SubsystemBase {
 
             // if (Math.abs(elbow) < 0.05) {
 
-            //     if (useHoldPosition) {
-            //         positionDrift = holdElbowPosition - elbowExtension.getValue();
+            // if (useHoldPosition) {
+            // positionDrift = holdElbowPosition - elbowExtension.getValue();
 
-            //         if (Math.abs(positionDrift) > 40) {
-            //             double elbowLevel = Math.signum(positionDrift) * 0.2;
-            //             elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbowLevel);
-            //             elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbowLevel);
-            //         }
-
-            //     } else {
-            //         useHoldPosition = true;
-            //         holdElbowPosition = elbowExtension.getValue();
-            //     }
+            // if (Math.abs(positionDrift) > 40) {
+            // double elbowLevel = Math.signum(positionDrift) * 0.2;
+            // elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbowLevel);
+            // elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput,
+            // elbowLevel);
+            // }
 
             // } else {
-            //     useHoldPosition = false;
-                elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
-                elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
+            // useHoldPosition = true;
+            // holdElbowPosition = elbowExtension.getValue();
+            // }
+
+            // } else {
+            // useHoldPosition = false;
+            elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
+            elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
             // }
 
             // if (logger % 10 == 0){
-            //     System.out
-            //             .println((useHoldPosition ? "HOLDING" : "MOVING") + String.format("; DRIFT: %d", positionDrift));
+            // System.out
+            // .println((useHoldPosition ? "HOLDING" : "MOVING") + String.format("; DRIFT:
+            // %d", positionDrift));
             // }
 
             setShoulderLevels(shoulder);
