@@ -15,20 +15,12 @@ public class TeleopArmControl extends CommandBase {
     public TeleopArmControl(ArmSubsystem arm, ControllerSubsystem controller) {
         armSubsystem = arm;
         controllerSubsystem = controller;
-
-        // Only add the arm. Don't want usage of the controller to be exclusive
-        // NOTE: Remove this if we want to support concurrent manual control while also
-        // providing other commands
-        addRequirements(arm);
     }
 
     @Override
     public void execute() {
 
         boolean copilotConnected = controllerSubsystem.getCopilotController() != null;
-
-        // System.out.println(String.format("Brennan's awesome print statement 2: COPILOT Connected: %s",
-        //         copilotConnected ? "YES" : "NO"));
 
         // Only run the arm if we have a copilot controller connected.
         if (copilotConnected) {
@@ -38,7 +30,8 @@ public class TeleopArmControl extends CommandBase {
             double gripper = (controllerSubsystem.getCopilotController().getRightTriggerAxis()
              - controllerSubsystem.getCopilotController().getLeftTriggerAxis());
             
-            armSubsystem.manualControl(elbow, shoulder, gripper);
+            armSubsystem.manualControl(elbow, shoulder);
+            armSubsystem.moveGripper(gripper);
         }
     }
 

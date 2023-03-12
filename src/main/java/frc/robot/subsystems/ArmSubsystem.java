@@ -30,9 +30,8 @@ public class ArmSubsystem extends SubsystemBase {
      */
     private static final double GRIPPER_MOVE_TIME_SEC = 0.85;
 
-    private static final int LINEAR_MAX = 1100;
-    private static final int LINEAR_MIN = 370;
-    private static final int TPI = 80; // Ticks per inch of string pot
+    private static final int LINEAR_MAX = 2000;
+    private static final int LINEAR_MIN = 0;
 
     // max 1189
     // min 289
@@ -72,6 +71,8 @@ public class ArmSubsystem extends SubsystemBase {
     DigitalInput shoulderLeftBackLimit = new DigitalInput(Constants.LEFT_SHOULDER_BACK_LIMIT_DIO);
     DigitalInput shoulderRightFrontLimit = new DigitalInput(Constants.RIGHT_SHOULDER_FRONT_LIMIT_DIO);
     DigitalInput shoulderRightBackLimit = new DigitalInput(Constants.RIGHT_SHOULDER_BACK_LIMIT_DIO);
+
+    private boolean allowManualControl = true;
 
     public ArmSubsystem() {
 
@@ -125,6 +126,11 @@ public class ArmSubsystem extends SubsystemBase {
     // GRIPPER
     //
 
+    public void moveGripper(double level) {
+        gripperButtonControl = false;
+        gripperController.set(level);
+    }
+
     public void move(Constants.GripperPosition gripperPositionIn) {
         // Real work is done in periodic. This just sets the goal state
         desiredGripperPosition = gripperPositionIn;
@@ -173,12 +179,14 @@ public class ArmSubsystem extends SubsystemBase {
                 return LINEAR_MAX;
             case allIn:
                 return LINEAR_MIN;
-            case middle_MiddleNode: // 2.3 in extended
-                return 2.3 * TPI;
-            case middle_HighNode: // 3.1 in extended
-                return 3.1 * TPI;
-            case middle_LowNode: // 8.0 in extended
-                return 3.1 * TPI;
+            case middle_MiddleNode:
+                return 632;
+            case middle_HighNode:
+                return 750;
+            case middle_LowNode: // also pick up
+                return 1480;
+            case stow:
+                return 1138;
         }
 
         return 0;
@@ -189,7 +197,7 @@ public class ArmSubsystem extends SubsystemBase {
     //
 
     public void move(Constants.ShoulderPosition shoulderPositionIn) {
-        System.out.println("moving shoulder");
+        allowManualControl = false;
         double level = shoulderRateLimiter.calculate(getShoulderPos(shoulderPositionIn));
         setShoulderLevels(level);
     }
@@ -200,13 +208,13 @@ public class ArmSubsystem extends SubsystemBase {
             case NoChange:
                 return 0;
             case allBackStow:
-                return 0;
+                return 0; // L: -0.804, R: -0.818
             case middle_MiddleNode:
-                return 0;
-            case middle_LowNode: // 2.3 in extended
-                return 0;
+                return -0.48; // L: -0.466, R: -0.498
+            case middle_LowNode: // L: -0.379, R: -0.367
+                return -0.375;
             case middle_HighNode: // 3.1 in extended
-                return 0;
+                return 0.2; // all forward (L: 0.131, R: 0.136)
         }
 
         return 0;
@@ -214,10 +222,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     /**
      * Move the shoulder, ignoring the limit switches
+     * 
      * @param level
      */
-    private void setShoulderLevelsIgnoreLimits(double level){
-        
+    private void setShoulderLevelsIgnoreLimits(double level) {
+
         double deltaArmMotor = getShoulderEncoderDelta() * MOTOR_ERROR_CONVERSION;
         double rightLevel = level - deltaArmMotor;
         double leftLevel = level + deltaArmMotor;
@@ -291,6 +300,15 @@ public class ArmSubsystem extends SubsystemBase {
     // ALL CONTROL
     //
 
+    public void manualControl(double elbow, double shoulder) {
+        if (allowManualControl) {
+            elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
+            elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
+
+            setShoulderLevels(shoulder);
+        }
+    }
+
     /**
      * Move the articulations of the arm. Parameters are the speed the motors should
      * move.
@@ -300,10 +318,11 @@ public class ArmSubsystem extends SubsystemBase {
      * @param shoulder -1 .. 1 - backward .. forward
      * @param gripper  -1 .. 1 - close .. open
      */
-    public void manualControl(double elbow, double shoulder, double gripper) {
+    public void manualControlNoLimits(double elbow, double shoulder, double gripper) {
 
-        if (logger++ % 50 == 0)
-            System.out.println(String.format("ArmSubsystem.manualControl: %f, %f, %f", elbow, shoulder, gripper));
+        // if (logger++ % 50 == 0)
+        // System.out.println(String.format("ArmSubsystem.manualControl: %f, %f, %f",
+        // elbow, shoulder, gripper));
 
         elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, elbow);
         elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);

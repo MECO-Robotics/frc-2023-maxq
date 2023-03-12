@@ -21,7 +21,7 @@ public class ArmStow extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.move(ElbowPosition.allIn);
+        armSubsystem.move(ElbowPosition.stow);
         armSubsystem.move(ShoulderPosition.allBackStow);
     }
 

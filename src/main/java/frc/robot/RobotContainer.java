@@ -196,7 +196,7 @@ public class RobotContainer {
                     controllerSubsystem.getCopilotController().getRightTriggerAxis(),
                     controllerSubsystem.getCopilotController().getLeftTriggerAxis(),
                     gripper));
-        armSubsystem.manualControl(elbow, shoulder, gripper);
+        armSubsystem.manualControlNoLimits(elbow, shoulder, gripper);
     };
 
     static int logger = 0;
@@ -226,14 +226,13 @@ public class RobotContainer {
         Command command;
 
         // Arm and Drive
-        // command = new ParallelCommandGroup(
-        // new TeleopDrive(driveSubsystem, controllerSubsystem,
-        // driveMode.getSelected()),
-        // new TeleopArmControl(armSubsystem, controllerSubsystem));
+        command = new ParallelCommandGroup(
+                new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
+                new TeleopArmControl(armSubsystem, controllerSubsystem));
 
         // Drive only
-        command = new TeleopDrive(driveSubsystem, controllerSubsystem,
-                driveMode.getSelected());
+        // command = new TeleopDrive(driveSubsystem, controllerSubsystem,
+        // driveMode.getSelected());
 
         return command;
     }
