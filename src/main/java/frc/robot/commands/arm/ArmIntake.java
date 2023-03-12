@@ -20,8 +20,11 @@ public class ArmIntake extends CommandBase {
         addRequirements(arm);
     }
 
+    int logger = 0;
     @Override
     public void execute() {
+        if(logger++ % 10 == 0) System.out.println("ArmIntake");
+
         if (!doneElbow) {
             doneElbow = armSubsystem.move(ElbowPosition.middle_LowNode);
         }
