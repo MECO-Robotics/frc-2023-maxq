@@ -324,9 +324,10 @@ public class ArmSubsystem extends SubsystemBase {
                 elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, elbow);
             }
 
-            if (logger % 10 == 0)
+            if (logger % 10 == 0){
                 System.out
-                        .println(useHoldPosition ? "HOLDING" : "MOVING" + String.format("; DRIFT: %d", positionDrift));
+                        .println((useHoldPosition ? "HOLDING" : "MOVING") + String.format("; DRIFT: %d", positionDrift));
+            }
 
             setShoulderLevels(shoulder);
         }
