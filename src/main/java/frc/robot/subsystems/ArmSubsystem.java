@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShoulderPosition;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -44,9 +45,9 @@ public class ArmSubsystem extends SubsystemBase {
     VictorSP gripperController;
     Constants.GripperPosition desiredGripperPosition = Constants.GripperPosition.NoChange;
     double gripperStartTime;
-    // true when we're using openGripper and closeGripper, false when using manualControl()
+    // true when we're using openGripper and closeGripper, false when using
+    // manualControl()
     private boolean gripperButtonControl;
-
 
     // Elbow
     TalonSRX elbowLinearControllerLeft;
@@ -64,7 +65,6 @@ public class ArmSubsystem extends SubsystemBase {
     TalonSRX leftShoulderController;
     TalonSRX rightShoulderController;
     Constants.ShoulderPosition desiredShoulderPosition = Constants.ShoulderPosition.NoChange;
-
     // 0.5 of a second to get to full power on sholder motors
     SlewRateLimiter shoulderRateLimiter = new SlewRateLimiter(2);
 
@@ -72,7 +72,6 @@ public class ArmSubsystem extends SubsystemBase {
     DigitalInput shoulderLeftBackLimit = new DigitalInput(Constants.LEFT_SHOULDER_BACK_LIMIT_DIO);
     DigitalInput shoulderRightFrontLimit = new DigitalInput(Constants.RIGHT_SHOULDER_FRONT_LIMIT_DIO);
     DigitalInput shoulderRightBackLimit = new DigitalInput(Constants.RIGHT_SHOULDER_BACK_LIMIT_DIO);
-
 
     public ArmSubsystem() {
 
@@ -120,24 +119,6 @@ public class ArmSubsystem extends SubsystemBase {
                 closeGripper();
             }
         }
-
-        //
-        // SHOULDER
-        //
-
-        if (desiredShoulderPosition == Constants.ShoulderPosition.allForward_HighNode
-                && leftShoulderController.getMotorOutputPercent() <= 0) {
-
-            setShoulderLevels(shoulderRateLimiter.calculate(0.5));
-
-        } else if (desiredShoulderPosition == Constants.ShoulderPosition.allBackStow
-                && leftShoulderController.getMotorOutputPercent() >= 0) {
-
-            setShoulderLevels(shoulderRateLimiter.calculate(-0.5));
-        }
-
-        SmartDashboard.putNumber("Left Shoulder", getLeftShoulderPosition());
-        SmartDashboard.putNumber("Right Shoulder", getRightShoulderPosition());
     }
 
     // -------------------------------------------------------------------
@@ -209,7 +190,26 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void move(Constants.ShoulderPosition shoulderPositionIn) {
         System.out.println("moving shoulder");
-        desiredShoulderPosition = shoulderPositionIn;
+        double level = shoulderRateLimiter.calculate(getShoulderPos(shoulderPositionIn));
+        setShoulderLevels(level);
+    }
+
+    private double getShoulderPos(ShoulderPosition pos) {
+
+        switch (pos) {
+            case NoChange:
+                return 0;
+            case allBackStow:
+                return 0;
+            case middle_MiddleNode:
+                return 0;
+            case middle_LowNode: // 2.3 in extended
+                return 0;
+            case middle_HighNode: // 3.1 in extended
+                return 0;
+        }
+
+        return 0;
     }
 
     /**
