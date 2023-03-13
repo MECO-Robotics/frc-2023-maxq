@@ -48,7 +48,7 @@ public class DriveStraight extends CommandBase {
   @Override
   public void initialize() {
     // TODO: Setup distance (or use path planning)
-    // distanceDesired = driveTrain.getLeftDistance() + distanceDesired;
+    // distanceDesired = driveTrain. + distanceDesired;
     initialHeading = driveTrain.getHeadingDegrees();
   }
 

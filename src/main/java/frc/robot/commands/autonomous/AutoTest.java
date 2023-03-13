@@ -18,8 +18,8 @@ public class AutoTest extends SequentialCommandGroup {
     public AutoTest(DriveSubsystem drive) {
 
        addCommands(
-        new DriveStraight(drive, 24)
-       
+        new DriveStraight(drive, 12, .5)
+    
 
        );
 
