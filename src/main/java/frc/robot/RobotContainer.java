@@ -15,8 +15,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.arm.ArmIntake;
@@ -126,11 +130,11 @@ public class RobotContainer {
         JoystickButton pilotYButton = new JoystickButton(pilot, XboxController.Button.kY.value);
         JoystickButton pilotStartButton = new JoystickButton(pilot, XboxController.Button.kStart.value);
 
-        XboxController coPilot = controllerSubsystem.getPilotController();
-        JoystickButton coPilotAButton = new JoystickButton(pilot, XboxController.Button.kA.value);
-        JoystickButton coPilotBButton = new JoystickButton(pilot, XboxController.Button.kB.value);
-        JoystickButton coPilotXButton = new JoystickButton(pilot, XboxController.Button.kX.value);
-        JoystickButton coPilotYButton = new JoystickButton(pilot, XboxController.Button.kY.value);
+        XboxController coPilot = controllerSubsystem.getCopilotController();
+        JoystickButton coPilotAButton = new JoystickButton(coPilot, XboxController.Button.kA.value);
+        JoystickButton coPilotBButton = new JoystickButton(coPilot, XboxController.Button.kB.value);
+        JoystickButton coPilotXButton = new JoystickButton(coPilot, XboxController.Button.kX.value);
+        JoystickButton coPilotYButton = new JoystickButton(coPilot, XboxController.Button.kY.value);
         JoystickButton coPilotRightBumper = new JoystickButton(coPilot, XboxController.Button.kRightBumper.value);
         JoystickButton coPilotStartButton = new JoystickButton(coPilot, XboxController.Button.kStart.value);
 
@@ -158,10 +162,29 @@ public class RobotContainer {
         coPilotYButton.onTrue(new GoNodeHigh(armSubsystem));
         coPilotXButton.onTrue(new ArmLoadingStation(armSubsystem));
 
+        // TODO: Redo commands
+        // 1. Change all arm commands to work like the following:
+        // coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
+        //
+        // 2. Change all commands to add the addRequirements(armSubsystem); to their
+        // constructors.
+        //
+        // 3. Change the TeleopArmControl to use the addRequirements(armSubsystem); in
+        // it's constructor
+
+
         // reset sensors - copilot and pilot
         pilotStartButton.and(coPilotStartButton).onTrue(new ResetSensors(driveSubsystem));
     }
 
+
+    Command makeArmCommand(Command armCmd) {
+        return new SequentialCommandGroup(
+                new ParallelRaceGroup(
+                    armCmd, 
+                    new WaitCommand(5.0)),
+                new TeleopArmControl(armSubsystem, controllerSubsystem));
+    }
     // --------------------------------------------------------------------
 
     public void testInit() {
@@ -196,7 +219,7 @@ public class RobotContainer {
                     controllerSubsystem.getCopilotController().getRightTriggerAxis(),
                     controllerSubsystem.getCopilotController().getLeftTriggerAxis(),
                     gripper));
-        armSubsystem.manualControl(elbow, shoulder, gripper);
+        armSubsystem.manualControlNoLimits(elbow, shoulder, gripper);
     };
 
     static int logger = 0;
@@ -226,14 +249,13 @@ public class RobotContainer {
         Command command;
 
         // Arm and Drive
-        // command = new ParallelCommandGroup(
-        // new TeleopDrive(driveSubsystem, controllerSubsystem,
-        // driveMode.getSelected()),
-        // new TeleopArmControl(armSubsystem, controllerSubsystem));
+        command = new ParallelCommandGroup(
+                new TeleopDrive(driveSubsystem, controllerSubsystem, driveMode.getSelected()),
+                new TeleopArmControl(armSubsystem, controllerSubsystem));
 
         // Drive only
-        command = new TeleopDrive(driveSubsystem, controllerSubsystem,
-                driveMode.getSelected());
+        // command = new TeleopDrive(driveSubsystem, controllerSubsystem,
+        // driveMode.getSelected());
 
         return command;
     }
