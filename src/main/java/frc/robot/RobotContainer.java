@@ -29,6 +29,7 @@ import frc.robot.commands.arm.ArmStow;
 import frc.robot.commands.arm.GoNodeHigh;
 import frc.robot.commands.arm.GoNodeMid;
 import frc.robot.commands.arm.TeleopArmControl;
+import frc.robot.commands.autonomous.AutoTest;
 import frc.robot.commands.brakes.LowerBrakes;
 import frc.robot.commands.brakes.RaiseBrakes;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
@@ -108,6 +109,7 @@ public class RobotContainer {
         driveMode.addOption("Split Arcade", DriveMode.SplitArcade);
         driveMode.addOption("Tank", DriveMode.Tank);
         SmartDashboard.putData("Drive mode", driveMode);
+        SmartDashboard.putData(new AutoTest(driveSubsystem));
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));

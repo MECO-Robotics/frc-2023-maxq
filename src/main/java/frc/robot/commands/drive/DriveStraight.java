@@ -6,6 +6,7 @@ package frc.robot.commands.drive;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -83,12 +84,14 @@ public class DriveStraight extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    
+    MecanumDriveWheelPositions positions = driveTrain.getWheelPositions();
+    
     //TODO
-    // if(forward) {
-    //   return driveTrain.getLeftDistance() >= distanceDesired;
-    // } else {
-    //   return driveTrain.getLeftDistance() <= distanceDesired;
-    // }
+     if(forward) {
+       return positions.frontRightMeters  >= distanceDesired;
+     } else {
+       return positions.frontRightMeters <= distanceDesired;
+     }
   }
 }

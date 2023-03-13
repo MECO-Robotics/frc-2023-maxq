@@ -162,7 +162,7 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * @return
      */
-    private MecanumDriveWheelPositions getWheelPositions() {
+    public MecanumDriveWheelPositions getWheelPositions() {
         return new MecanumDriveWheelPositions(
                 frontLeftEncoderRev.getPosition(),
                 frontRightEncoderRev.getPosition(),
