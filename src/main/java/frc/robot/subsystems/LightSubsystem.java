@@ -4,14 +4,19 @@
 
 package frc.robot.subsystems;
 
+import com.mindsensors.CANLight;
+
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class LightSubsystem extends SubsystemBase {
+
+    CANLight canLight = new CANLight(0);
 
     PWM r = new PWM(Constants.LIGHTS_R_PWM);
     PWM g = new PWM(Constants.LIGHTS_G_PWM);
@@ -40,10 +45,17 @@ public class LightSubsystem extends SubsystemBase {
      * @param blue
      */
     public void set(Color color) {
-        r.setSpeed(color.red);
-        g.setSpeed(color.green);
-        b.setSpeed(color.blue);
+
+        Color8Bit c = new Color8Bit(color);
+        canLight.showRGB(c.red, c.green, c.blue);
+
+        // r.setSpeed(color.red);
+        // g.setSpeed(color.green);
+        // b.setSpeed(color.blue);
     }
+
+
+
 
     // THE CODE BELOW THIS LINE IS AN ALTERNATE APPROACH IF WE HAVE TO USE DIGITAL
     // I/O
