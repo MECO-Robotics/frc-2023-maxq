@@ -18,7 +18,7 @@ public class SetGripperPosition extends CommandBase {
         // Only add the arm. Don't want usage of the controller to be exclusive
         // NOTE: Remove this if we want to support concurrent manual control while also
         // providing other commands
-        addRequirements(arm);
+//        addRequirements(arm);
     }
 
     @Override
@@ -28,6 +28,6 @@ public class SetGripperPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false; // this command never finishes (but can be interupted)
+        return true; // this command never finishes (but can be interupted)
     }
 }

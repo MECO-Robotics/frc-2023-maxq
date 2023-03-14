@@ -111,8 +111,8 @@ public class RobotContainer {
         SmartDashboard.putData("Drive mode", driveMode);
         SmartDashboard.putData(new AutoTest(driveSubsystem));
         SmartDashboard.putData("red", new SetColor(lightSubsystem, Color.kRed));
-        SmartDashboard.putData("green",new SetColor(lightSubsystem, Color.kGreen));
-        SmartDashboard.putData("blue",new SetColor(lightSubsystem, Color.kBlue));
+        SmartDashboard.putData("green", new SetColor(lightSubsystem, Color.kGreen));
+        SmartDashboard.putData("blue", new SetColor(lightSubsystem, Color.kBlue));
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
@@ -163,10 +163,9 @@ public class RobotContainer {
         // coPilot controls
         coPilotAButton.onTrue(new ArmIntake(armSubsystem));
         coPilotRightBumper.onTrue(new ArmStow(armSubsystem));
-        coPilotBButton.onTrue(new GoNodeMid(armSubsystem));
+        coPilotBButton.onTrue(makeArmCommand(new GoNodeMid(armSubsystem)));
         coPilotYButton.onTrue(new GoNodeHigh(armSubsystem));
         coPilotXButton.onTrue(new ArmLoadingStation(armSubsystem));
-
         // TODO: Redo commands
         // 1. Change all arm commands to work like the following:
         // coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
@@ -177,17 +176,15 @@ public class RobotContainer {
         // 3. Change the TeleopArmControl to use the addRequirements(armSubsystem); in
         // it's constructor
 
-
         // reset sensors - copilot and pilot
         pilotStartButton.and(coPilotStartButton).onTrue(new ResetSensors(driveSubsystem));
     }
 
-
     Command makeArmCommand(Command armCmd) {
         return new SequentialCommandGroup(
                 new ParallelRaceGroup(
-                    armCmd, 
-                    new WaitCommand(5.0)),
+                        armCmd,
+                        new WaitCommand(5.0)),
                 new TeleopArmControl(armSubsystem, controllerSubsystem));
     }
     // --------------------------------------------------------------------

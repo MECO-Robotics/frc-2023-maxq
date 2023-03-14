@@ -15,15 +15,23 @@ import frc.robot.subsystems.DriveSubsystem;
 /**
  * Travel in a square pattern
  */
-public class AutoTest extends SequentialCommandGroup {
+public class PlaceBackOutFar extends SequentialCommandGroup {
 
-    public AutoTest(DriveSubsystem drive) {
+    public PlaceBackOutFar(DriveSubsystem drive) {
 
-       addCommands(
-        new DriveStraightByTime(drive, 3, .25),
-       new Stop(drive)
+        addCommands(
+        // start up against cone node farthest to substation side
+        // back up
+        new DriveStraightByTime(drive, 3, .25)
+        // pull up arm
+        //new GoNodeHigh(),
+        // move forward
 
-       );
+        // drop cone
+
+        // move back and pull arm down
+
+        );
 
         
 

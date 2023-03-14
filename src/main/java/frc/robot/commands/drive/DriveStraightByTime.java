@@ -12,33 +12,23 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Drive a requested distance, forward. */
-public class DriveStraight extends CommandBase {
+public class DriveStraightByTime extends CommandBase {
   
   private final DriveSubsystem driveTrain;
-  private double distanceDesired;
-  private final boolean forward;
   private double initialHeading;
   private double speed;
+  private double drivingTime;
   /**
    * Creates a new DriveStraight command.
    *
    * @param driveSubsystem The subsystem used by this command.
    * @param distanceInches How far to go forward (negative backwards), in inches.
    */
-  public DriveStraight(DriveSubsystem driveSubsystem, double distanceInches) {
-    driveTrain = driveSubsystem;
-    distanceDesired = Units.inchesToMeters(distanceInches);
-    forward = distanceDesired > 0;
-    speed =  Constants.AUTO_SPEED;
-    // If this command is called, we want to interupt any other commands running
-    // on the driving subystem
-    addRequirements(driveSubsystem);
-  }
+  
 
-  public DriveStraight(DriveSubsystem driveSubsystem, double distanceInches, double desiredSpeed) {
+  public DriveStraightByTime(DriveSubsystem driveSubsystem, double desiredTime, double desiredSpeed) {
     driveTrain = driveSubsystem;
-    distanceDesired = Units.inchesToMeters(distanceInches);
-    forward = distanceDesired > 0;
+    drivingTime = desiredTime;
     speed = desiredSpeed;
     // If this command is called, we want to interupt any other commands running
     // on the driving subystem
@@ -59,12 +49,12 @@ public class DriveStraight extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double throttle;
-    if(forward) {
-      throttle = speed;
-    } else {
-      throttle = -speed;
-    }
+    // double throttle;
+    // if(forward) {
+    //   throttle = speed;
+    // } else {
+    //   throttle = -speed;
+    // }
 
     
 
@@ -75,7 +65,7 @@ public class DriveStraight extends CommandBase {
     // If our current heading matches the initial heading, then the turn comes out to zero.
     //double turn = -(driveTrain.getHeadingDegrees() - initialHeading)/10f;
 
-    driveTrain.arcadeDrive(throttle, 0);
+    driveTrain.arcadeDrive(speed, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -92,7 +82,7 @@ public class DriveStraight extends CommandBase {
   @Override
   public boolean isFinished() {
     double currentTime = Timer.getFPGATimestamp();
-    if((currentTime - startTime) > 1.5) {
+    if((currentTime - startTime) > drivingTime) {
       return true;
     } else {
       return false;

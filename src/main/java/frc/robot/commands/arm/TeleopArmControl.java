@@ -15,6 +15,7 @@ public class TeleopArmControl extends CommandBase {
     public TeleopArmControl(ArmSubsystem arm, ControllerSubsystem controller) {
         armSubsystem = arm;
         controllerSubsystem = controller;
+        addRequirements(arm);
     }
 
     @Override

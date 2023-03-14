@@ -144,7 +144,16 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void move(Constants.GripperPosition gripperPositionIn) {
         // Real work is done in periodic. This just sets the goal state
-        desiredGripperPosition = gripperPositionIn;
+        switch (gripperPositionIn) {
+            case GripOpen:
+                openGripper();
+                break;
+            case GripClose:
+                closeGripper();
+                break;
+            case NoChange:
+                break;
+        }
     }
 
     /**
@@ -202,16 +211,16 @@ public class ArmSubsystem extends SubsystemBase {
                 return LINEAR_MIN;
             case middle_MiddleNode:
                 return 670;
-                //632
+            // 632
             case middle_HighNode:
                 return 735;
-                //750
+            // 750
             case middle_PickUp:
                 return 1493;
-                //1480
+            // 1480
             case stow:
                 return 1186;
-                //1138
+            // 1138
         }
 
         return 0;
@@ -239,16 +248,16 @@ public class ArmSubsystem extends SubsystemBase {
                 return 0;
             case allBackStow:
                 return -0.789; // L: -0.806, R: -0.772
-                //OLD: 0;  L: -0.804, R: -0.818
+            // OLD: 0; L: -0.804, R: -0.818
             case middle_MiddleNode:
                 return 0.682; // L: 0.453, R: 0.458
-                //OLD: -0.48;  L: -0.466, R: -0.498
-            case middle_LowNode: 
+            // OLD: -0.48; L: -0.466, R: -0.498
+            case middle_LowNode:
                 return -0.3945; // L: -0.407, R: -0.382
-                //OLD: -0.375; L: -0.379, R: -0.367
+            // OLD: -0.375; L: -0.379, R: -0.367
             case middle_HighNode: // 3.1 in extended
                 return 0.1735; // all forward (L: 0.150, R: 0.197)
-                // OLD: 0.2; all forward (L: 0.131, R: 0.136)
+            // OLD: 0.2; all forward (L: 0.131, R: 0.136)
         }
 
         return 0;
@@ -416,5 +425,17 @@ public class ArmSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Left Shoulder Position", this::getLeftShoulderPosition, null);
         builder.addDoubleProperty("Right Shoulder Position", this::getRightShoulderPosition, null);
         builder.addIntegerProperty("String Pot", this::getStringPot, null);
+        builder.addBooleanProperty("RFL", () -> {
+            return shoulderRightFrontLimit.get();
+        }, null);
+        builder.addBooleanProperty("LFL", () -> {
+            return shoulderLeftFrontLimit.get();
+        }, null);
+        builder.addBooleanProperty("RBL", () -> {
+            return shoulderRightBackLimit.get();
+        }, null);
+        builder.addBooleanProperty("LBL", () -> {
+            return shoulderLeftBackLimit.get();
+        }, null);
     }
 }
