@@ -25,8 +25,8 @@ public class TeleopArmControl extends CommandBase {
         // Only run the arm if we have a copilot controller connected.
         if (copilotConnected) {
 
-            double shoulder = controllerSubsystem.getCopilotController().getLeftX();
-            double elbow = controllerSubsystem.getCopilotController().getRightX();
+            double shoulder = -controllerSubsystem.getCopilotController().getLeftY();
+            double elbow = -controllerSubsystem.getCopilotController().getRightY();
             double gripper = (controllerSubsystem.getCopilotController().getRightTriggerAxis()
              - controllerSubsystem.getCopilotController().getLeftTriggerAxis());
             
