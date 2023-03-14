@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 
-import com.mindsensors.CANLight;
+// import com.mindsensors.CANLight;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PWM;
@@ -16,7 +16,7 @@ import frc.robot.Constants;
 
 public class LightSubsystem extends SubsystemBase {
 
-    CANLight canLight = new CANLight(0);
+//    CANLight canLight = new CANLight(0);
 
     PWM r = new PWM(Constants.LIGHTS_R_PWM);
     PWM g = new PWM(Constants.LIGHTS_G_PWM);
@@ -46,12 +46,12 @@ public class LightSubsystem extends SubsystemBase {
      */
     public void set(Color color) {
 
-        Color8Bit c = new Color8Bit(color);
-        canLight.showRGB(c.red, c.green, c.blue);
+        // Color8Bit c = new Color8Bit(color);
+        // canLight.showRGB(c.red, c.green, c.blue);
 
-        // r.setSpeed(color.red);
-        // g.setSpeed(color.green);
-        // b.setSpeed(color.blue);
+        r.setSpeed(color.red);
+        g.setSpeed(color.green);
+        b.setSpeed(color.blue);
     }
 
 
