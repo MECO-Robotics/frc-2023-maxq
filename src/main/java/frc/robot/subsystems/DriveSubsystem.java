@@ -21,13 +21,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.math.util.Units;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import frc.robot.Constants;
 
@@ -85,10 +87,10 @@ public class DriveSubsystem extends SubsystemBase {
     CANSparkMax backLeftController;
     CANSparkMax backRightController;
 
-    RelativeEncoder frontLeftEncoderRev;
-    RelativeEncoder backRightEncoderRev;
-    RelativeEncoder frontRightEncoderRev;
-    RelativeEncoder backLeftEncoderRev;
+    AbsoluteEncoder frontLeftEncoderRev;
+    AbsoluteEncoder backRightEncoderRev;
+    AbsoluteEncoder frontRightEncoderRev;
+    AbsoluteEncoder backLeftEncoderRev;
 
     /* Creates a new Subsystem. */
     public DriveSubsystem() {
@@ -135,8 +137,9 @@ public class DriveSubsystem extends SubsystemBase {
         return controller;
     }
 
-    private RelativeEncoder setupRelativeEncoder(CANSparkMax controller) {
-        RelativeEncoder encoder = controller.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+    private AbsoluteEncoder setupAbsoluteEncoder(CANSparkMax controller) {
+        //RelativeEncoder encoder = controller.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
+        SparkMaxAbsoluteEncoder encoder = controller.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
         encoder.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
         encoder.setInverted(controller.getInverted());
         return encoder;
@@ -149,10 +152,10 @@ public class DriveSubsystem extends SubsystemBase {
         frontRightController = setupMotorController(Constants.FRONT_RIGHT_CAN, false);
         backRightController = setupMotorController(Constants.BACK_RIGHT_CAN, false);
 
-        frontLeftEncoderRev = setupRelativeEncoder(frontLeftController);
-        backLeftEncoderRev = setupRelativeEncoder(backLeftController);
-        frontRightEncoderRev = setupRelativeEncoder(frontRightController);
-        backRightEncoderRev = setupRelativeEncoder(backRightController);
+        frontLeftEncoderRev = setupAbsoluteEncoder(frontLeftController);
+        backLeftEncoderRev = setupAbsoluteEncoder(backLeftController);
+        frontRightEncoderRev = setupAbsoluteEncoder(frontRightController);
+        backRightEncoderRev = setupAbsoluteEncoder(backRightController);
 
         drive = new MecanumDrive(frontLeftController, backLeftController, frontRightController, backRightController);
     }
@@ -162,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * @return
      */
-    private MecanumDriveWheelPositions getWheelPositions() {
+    public MecanumDriveWheelPositions getWheelPositions() {
         return new MecanumDriveWheelPositions(
                 frontLeftEncoderRev.getPosition(),
                 frontRightEncoderRev.getPosition(),
@@ -425,10 +428,10 @@ public class DriveSubsystem extends SubsystemBase {
         // }
 
         imu.zeroYaw();
-        frontLeftEncoderRev.setPosition(0);
-        frontRightEncoderRev.setPosition(0);
-        backLeftEncoderRev.setPosition(0);
-        backRightEncoderRev.setPosition(0);
+        //frontLeftEncoderRev.;
+        //frontRightEncoderRev.setPosition(0);
+        //backLeftEncoderRev.setPosition(0);
+        //backRightEncoderRev.setPosition(0);
     }
 
     /**
