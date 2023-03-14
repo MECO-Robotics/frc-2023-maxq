@@ -110,6 +110,9 @@ public class RobotContainer {
         driveMode.addOption("Tank", DriveMode.Tank);
         SmartDashboard.putData("Drive mode", driveMode);
         SmartDashboard.putData(new AutoTest(driveSubsystem));
+        SmartDashboard.putData("red", new SetColor(lightSubsystem, Color.kRed));
+        SmartDashboard.putData("green",new SetColor(lightSubsystem, Color.kGreen));
+        SmartDashboard.putData("blue",new SetColor(lightSubsystem, Color.kBlue));
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
