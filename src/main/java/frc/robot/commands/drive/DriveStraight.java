@@ -48,8 +48,8 @@ public class DriveStraight extends CommandBase {
   @Override
   public void initialize() {
     // TODO: Setup distance (or use path planning)\
-    MecanumDriveWheelPositions d = driveTrain.getWheelPositions();
-    distanceDesired = d.frontRightMeters + distanceDesired;
+   // MecanumDriveWheelPositions d = driveTrain.getWheelPositions();
+   // distanceDesired = d.frontRightMeters + distanceDesired;
     initialHeading = driveTrain.getHeadingDegrees();
   }
 

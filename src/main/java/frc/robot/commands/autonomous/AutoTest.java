@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.DriveStraight;
 import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.SpinRightAngle;
+import frc.robot.commands.drive.Stop;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
@@ -18,8 +19,8 @@ public class AutoTest extends SequentialCommandGroup {
     public AutoTest(DriveSubsystem drive) {
 
        addCommands(
-        new DriveStraight(drive, 24)
-       
+        new DriveStraight(drive, 24),
+       new Stop(drive)
 
        );
 
