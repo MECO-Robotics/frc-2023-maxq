@@ -30,6 +30,7 @@ import frc.robot.commands.arm.GoNodeHigh;
 import frc.robot.commands.arm.GoNodeMid;
 import frc.robot.commands.arm.TeleopArmControl;
 import frc.robot.commands.autonomous.AutoTest;
+import frc.robot.commands.autonomous.LowNodeCube;
 import frc.robot.commands.brakes.LowerBrakes;
 import frc.robot.commands.brakes.RaiseBrakes;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
@@ -93,6 +94,8 @@ public class RobotContainer {
         // By using the class name as the name, it will be easy to remember which goes
         // with which.
 
+        autoCommands.put("AUto1", new AutoTest(driveSubsystem));
+        autoCommands.put("Cube", new LowNodeCube(driveSubsystem, armSubsystem));
         //
         //
         // ------------------------------------------------------------------------
@@ -113,6 +116,7 @@ public class RobotContainer {
         SmartDashboard.putData("red", new SetColor(lightSubsystem, Color.kRed));
         SmartDashboard.putData("green", new SetColor(lightSubsystem, Color.kGreen));
         SmartDashboard.putData("blue", new SetColor(lightSubsystem, Color.kBlue));
+        
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
@@ -161,11 +165,11 @@ public class RobotContainer {
         // :)
 
         // coPilot controls
-        coPilotAButton.onTrue(new ArmIntake(armSubsystem));
-        coPilotRightBumper.onTrue(new ArmStow(armSubsystem));
+        coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
+        coPilotRightBumper.onTrue(makeArmCommand(new ArmStow(armSubsystem)));
         coPilotBButton.onTrue(makeArmCommand(new GoNodeMid(armSubsystem)));
-        coPilotYButton.onTrue(new GoNodeHigh(armSubsystem));
-        coPilotXButton.onTrue(new ArmLoadingStation(armSubsystem));
+        coPilotYButton.onTrue(makeArmCommand(new GoNodeHigh(armSubsystem)));
+        coPilotXButton.onTrue(makeArmCommand(new ArmLoadingStation(armSubsystem)));
         // TODO: Redo commands
         // 1. Change all arm commands to work like the following:
         // coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
@@ -184,7 +188,7 @@ public class RobotContainer {
         return new SequentialCommandGroup(
                 new ParallelRaceGroup(
                         armCmd,
-                        new WaitCommand(5.0)),
+                        new WaitCommand(2.0)),
                 new TeleopArmControl(armSubsystem, controllerSubsystem));
     }
     // --------------------------------------------------------------------

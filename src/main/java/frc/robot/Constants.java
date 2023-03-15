@@ -74,10 +74,9 @@ public final class Constants {
     // Arm shoulder motors
     public static final int LEFT_SHOULDER_CAN = 20;
     public static final int RIGHT_SHOULDER_CAN = 21;
-    public static final int LEFT_SHOULDER_ENC_A_DIO = 0;
-    public static final int LEFT_SHOULDER_ENC_B_DIO = 1;
-    public static final int RIGHT_SHOULDER_ENC_A_DIO = 2;
-    public static final int RIGHT_SHOULDER_ENC_B_DIO = 3;
+    public static final int RED_DIO = 0;
+    public static final int GREEN_DIO = 1;
+    public static final int BLUE_DIO = 2;
 
     // shoulder limit switches
     public static final int LEFT_SHOULDER_FRONT_LIMIT_DIO = 4;

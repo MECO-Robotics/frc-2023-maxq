@@ -21,8 +21,10 @@ public class GoNodeMid extends CommandBase {
         addRequirements(arm);
     }
 
+    int logger = 0;
     @Override
     public void execute() {
+        
         if (!doneElbow) {
             doneElbow = armSubsystem.move(ElbowPosition.middle_MiddleNode);
         }
@@ -30,6 +32,8 @@ public class GoNodeMid extends CommandBase {
         if (!doneShoulder) {
             doneShoulder = armSubsystem.move(ShoulderPosition.middle_MiddleNode);
         }
+
+        if(logger++ % 10 == 0) System.out.println(String.format("GoNodeMid: %s, %s", doneElbow?"DONE":"MOVING", doneShoulder?"DONE":"MOVING"));
     }
 
     @Override

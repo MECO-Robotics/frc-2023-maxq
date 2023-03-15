@@ -18,9 +18,13 @@ public class LightSubsystem extends SubsystemBase {
 
 //    CANLight canLight = new CANLight(0);
 
-    PWM r = new PWM(Constants.LIGHTS_R_PWM);
-    PWM g = new PWM(Constants.LIGHTS_G_PWM);
-    PWM b = new PWM(Constants.LIGHTS_B_PWM);
+    // PWM r = new PWM(Constants.LIGHTS_R_PWM);
+    // PWM g = new PWM(Constants.LIGHTS_G_PWM);
+    // PWM b = new PWM(Constants.LIGHTS_B_PWM);
+
+    DigitalOutput r = new DigitalOutput(Constants.RED_DIO);
+    DigitalOutput g = new DigitalOutput(Constants.GREEN_DIO);
+    DigitalOutput b = new DigitalOutput(Constants.BLUE_DIO);
 
     public LightSubsystem() {
 
@@ -30,9 +34,9 @@ public class LightSubsystem extends SubsystemBase {
         // and 0 to be 0% duty cycle - all off.
         // The timer runs every 5.005 ms, so 5.005 is the largest width possible.
         // Setting the center pulse width to zero ensures
-        r.setBounds(5.005, 0, 0, 0, 0);
-        g.setBounds(5.005, 0, 0, 0, 0);
-        b.setBounds(5.005, 0, 0, 0, 0);
+        // r.setBounds(5.005, 0, 0, 0, 0);
+        // g.setBounds(5.005, 0, 0, 0, 0);
+        // b.setBounds(5.005, 0, 0, 0, 0);
 
         SmartDashboard.putData(this);
     }
@@ -49,9 +53,13 @@ public class LightSubsystem extends SubsystemBase {
         // Color8Bit c = new Color8Bit(color);
         // canLight.showRGB(c.red, c.green, c.blue);
 
-        r.setSpeed(color.red);
-        g.setSpeed(color.green);
-        b.setSpeed(color.blue);
+        // r.setSpeed(color.red);
+        // g.setSpeed(color.green);
+        // b.setSpeed(color.blue);
+
+        r.set(color.red > .9);
+        g.set(color.green > .9);
+        b.set(color.blue > .9);
     }
 
 

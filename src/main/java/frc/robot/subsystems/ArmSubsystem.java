@@ -162,7 +162,7 @@ public class ArmSubsystem extends SubsystemBase {
     public void openGripper() {
         gripperButtonControl = true;
         gripperStartTime = Timer.getFPGATimestamp();
-        gripperController.set(1.0);
+        gripperController.set(-1.0);
     }
 
     /**
@@ -171,7 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
     public void closeGripper() {
         gripperButtonControl = true;
         gripperStartTime = Timer.getFPGATimestamp();
-        gripperController.set(-1.0);
+        gripperController.set(1.0);
     }
 
     // -------------------------------------------------------------------
@@ -195,7 +195,7 @@ public class ArmSubsystem extends SubsystemBase {
         elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, motor);
         elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, motor);
 
-        System.out.println(String.format("ELBOW PID: ERROR:%f; MOTOR:%f", error, motor));
+        //System.out.println(String.format("ELBOW PID: ERROR:%f; MOTOR:%f", error, motor));
 
         return Math.abs(error) < 10;
     }
@@ -232,11 +232,16 @@ public class ArmSubsystem extends SubsystemBase {
 
     public boolean move(Constants.ShoulderPosition shoulderPositionIn) {
         // TODO: remove allowManualControl once commands are set to interupt each other
-        allowManualControl = false;
+        //allowManualControl = false;
         double setPoint = getShoulderPos(shoulderPositionIn);
-        double measurement = (getLeftShoulderPosition() + getRightShoulderPosition()) / 2.0; // average position
-        double level = shoulderPid.calculate(measurement, setPoint);
-        level = shoulderRateLimiter.calculate(level);
+        //double measurement = (getLeftShoulderPosition() + getRightShoulderPosition()) / 2.0; // average position
+        double measurement = (getLeftShoulderPosition() );//right is broke
+        
+        //        double level = shoulderPid.calculate(measurement, setPoint);
+//        level = shoulderRateLimiter.calculate(level);
+        double error = setPoint - measurement;
+        double level = error * .9;
+        System.out.println(String.format("SHOULDER PID: Error:%f; Level:%f", error, level));
         setShoulderLevels(level);
         return shoulderPid.atSetpoint();
     }
@@ -250,7 +255,7 @@ public class ArmSubsystem extends SubsystemBase {
                 return -0.789; // L: -0.806, R: -0.772
             // OLD: 0; L: -0.804, R: -0.818
             case middle_MiddleNode:
-                return 0.682; // L: 0.453, R: 0.458
+                return 0.45; // L: 0.453, R: 0.458
             // OLD: -0.48; L: -0.466, R: -0.498
             case middle_LowNode:
                 return -0.3945; // L: -0.407, R: -0.382
@@ -288,6 +293,7 @@ public class ArmSubsystem extends SubsystemBase {
     private void setShoulderLevels(double level) {
 
         double deltaArmMotor = getShoulderEncoderDelta() * MOTOR_ERROR_CONVERSION;
+        deltaArmMotor = 0;
         double rightLevel = level - deltaArmMotor;
         double leftLevel = level + deltaArmMotor;
 

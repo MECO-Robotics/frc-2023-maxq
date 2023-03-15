@@ -58,27 +58,19 @@ public class SpinRightAngle extends CommandBase {
       a = driveTrain.getHeadingDegrees() - angleDesired;
     }
     
-    
-        // if (a < 25) {
-    //   s = 0.5;
-    // } else if (a < 35) {
-    //   s = 0.5;
-    // }
-    
     // If we're CCW, flip the motor direction
     if(!cw) {
       s = -s;
     }
 
-    System.out.println("angle:" + a + " speed:" + s);
-    
-   // driveTrain.tankDrive(s, -s);
+    System.out.println("IMU: " + driveTrain.getHeadingDegrees() + "angle:" + a + " speed:" + s);
+    driveTrain.robotDrive(0, 0, -s);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-   // driveTrain.tankDrive(0, 0);
+    driveTrain.robotDrive(0, 0, 0);
   }
 
   // Returns true when the command should end.
