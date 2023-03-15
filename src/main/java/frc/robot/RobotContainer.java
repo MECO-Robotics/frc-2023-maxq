@@ -188,7 +188,7 @@ public class RobotContainer {
         return new SequentialCommandGroup(
                 new ParallelRaceGroup(
                         armCmd,
-                        new WaitCommand(2.0)),
+                        new WaitCommand(5.0)),
                 new TeleopArmControl(armSubsystem, controllerSubsystem));
     }
     // --------------------------------------------------------------------

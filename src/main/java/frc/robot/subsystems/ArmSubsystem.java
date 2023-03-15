@@ -210,16 +210,16 @@ public class ArmSubsystem extends SubsystemBase {
             case allIn:
                 return LINEAR_MIN;
             case middle_MiddleNode:
-                return 670;
+                return 590;
             // 632
             case middle_HighNode:
-                return 735;
+                return 621;
             // 750
             case middle_PickUp:
-                return 1493;
+                return 1317;
             // 1480
             case stow:
-                return 1186;
+                return 1013;
             // 1138
         }
 
@@ -252,16 +252,16 @@ public class ArmSubsystem extends SubsystemBase {
             case NoChange:
                 return 0;
             case allBackStow:
-                return -0.789; // L: -0.806, R: -0.772
+                return 0.00386; // L: -0.806, R: -0.772
             // OLD: 0; L: -0.804, R: -0.818
             case middle_MiddleNode:
-                return 0.45; // L: 0.453, R: 0.458
+                return 0.415; // L: 0.453, R: 0.458
             // OLD: -0.48; L: -0.466, R: -0.498
             case middle_LowNode:
-                return -0.3945; // L: -0.407, R: -0.382
+                return -0.395; // L: -0.407, R: -0.382
             // OLD: -0.375; L: -0.379, R: -0.367
             case middle_HighNode: // 3.1 in extended
-                return 0.1735; // all forward (L: 0.150, R: 0.197)
+                return 0.965; // all forward (L: 0.150, R: 0.197)
             // OLD: 0.2; all forward (L: 0.131, R: 0.136)
         }
 
