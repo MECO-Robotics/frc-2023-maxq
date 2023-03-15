@@ -11,12 +11,12 @@ import frc.robot.subsystems.LightSubsystem;
 public class Blink extends CommandBase {
     private final LightSubsystem lights;
     int i = 0;
-    Color c = Color.kBlack;
+    Color desiredColor = Color.kBlack;
     Color currentColor = Color.kBlack;
 
     public Blink(LightSubsystem lightSubsystem, Color color) {
         lights = lightSubsystem;
-        c = color;
+        desiredColor = color;
     }
     
     //This line of code makes it so that the LEDs on the robot slowly blink between white & black when called.
@@ -29,15 +29,15 @@ public class Blink extends CommandBase {
 
             i = 0;
 
-            if (currentColor == c) {
+            if (currentColor == desiredColor) {
                 currentColor = Color.kBlack;
             } else {
-                currentColor = c;
+                currentColor = desiredColor;
             }
             
         }
 
-        lights.set(c);
+        lights.set(currentColor);
     }
 
     @Override
