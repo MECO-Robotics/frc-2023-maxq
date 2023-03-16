@@ -64,7 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
     TalonSRX leftShoulderController;
     TalonSRX rightShoulderController;
     ShoulderPosition desiredShoulderPosition = ShoulderPosition.NoChange;
-    PIDController shoulderPid = new PIDController(.1, 0, 0);
+    PIDController shoulderPid = new PIDController(.9, 0, 0, 0.020); // 20ms period
     // 0.5 of a second to get to full power on sholder motors
     SlewRateLimiter shoulderRateLimiter = new SlewRateLimiter(2);
 
@@ -95,7 +95,7 @@ public class ArmSubsystem extends SubsystemBase {
         rightShoulderController = new TalonSRX(Constants.RIGHT_SHOULDER_CAN);
         leftShoulderController.setInverted(true);
         rightShoulderController.setInverted(true);
-        shoulderPid.setTolerance(0.3); // Revolutions
+        shoulderPid.setTolerance(0.1); // Revolutions
 
         addChild("Elbow Pos", elbowExtension);
         addChild("Elbow PID", elbowPid);
@@ -180,7 +180,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     public boolean move(Constants.ElbowPosition elbowPositionIn) {
 
-        // System.out.println("moving elbow");
         double setPoint = getElbowExtension(elbowPositionIn);
 
         // double motor = elbowPid.calculate(elbowExtension.getValue(), setPoint);
@@ -189,15 +188,17 @@ public class ArmSubsystem extends SubsystemBase {
 
         // return elbowPid.atSetpoint();
 
-        double error = elbowExtension.getValue() - setPoint;
-        double motor = error * 0.1;
+        double error = setPoint - elbowExtension.getValue();
+        if (Math.abs(error) > 10) {
+            double motor = error * -0.02;
 
-        elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, motor);
-        elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, motor);
+            elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, motor);
+            elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, motor);
 
-        //System.out.println(String.format("ELBOW PID: ERROR:%f; MOTOR:%f", error, motor));
-
-        return Math.abs(error) < 10;
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private double getElbowExtension(Constants.ElbowPosition elbowPos) {
@@ -210,16 +211,16 @@ public class ArmSubsystem extends SubsystemBase {
             case allIn:
                 return LINEAR_MIN;
             case middle_MiddleNode:
-                return 590;
+                return 522;
             // 632
             case middle_HighNode:
-                return 621;
+                return 580;
             // 750
             case middle_PickUp:
-                return 1317;
+                return 1323;
             // 1480
             case stow:
-                return 1013;
+                return 1028;
             // 1138
         }
 
@@ -230,19 +231,31 @@ public class ArmSubsystem extends SubsystemBase {
     // SHOULDER
     //
 
+    public void resetEncoders() {
+        leftShoulderController.setSelectedSensorPosition(0);
+        rightShoulderController.setSelectedSensorPosition(0);
+    }
+
     public boolean move(Constants.ShoulderPosition shoulderPositionIn) {
-        // TODO: remove allowManualControl once commands are set to interupt each other
-        //allowManualControl = false;
+
         double setPoint = getShoulderPos(shoulderPositionIn);
-        //double measurement = (getLeftShoulderPosition() + getRightShoulderPosition()) / 2.0; // average position
-        double measurement = (getLeftShoulderPosition() );//right is broke
-        
-        //        double level = shoulderPid.calculate(measurement, setPoint);
-//        level = shoulderRateLimiter.calculate(level);
-        double error = setPoint - measurement;
-        double level = error * .9;
-        System.out.println(String.format("SHOULDER PID: Error:%f; Level:%f", error, level));
+        // double measurement = (getLeftShoulderPosition() + getRightShoulderPosition())
+        // / 2.0; // average position
+        double measurement = (getLeftShoulderPosition());// right is broke
+
+        double level = shoulderPid.calculate(measurement, setPoint);
+        // level = shoulderRateLimiter.calculate(level);
+        //double error = setPoint - measurement;
+
         setShoulderLevels(level);
+        // if (Math.abs(error) > 0.01) {
+        //     double level = error * 0.9;
+        //     setShoulderLevels(level);
+        //     return false;
+        // } else {
+        //     return true;
+        // }
+
         return shoulderPid.atSetpoint();
     }
 
@@ -252,16 +265,16 @@ public class ArmSubsystem extends SubsystemBase {
             case NoChange:
                 return 0;
             case allBackStow:
-                return 0.00386; // L: -0.806, R: -0.772
+                return 0; // L: -0.806, R: -0.772
             // OLD: 0; L: -0.804, R: -0.818
             case middle_MiddleNode:
-                return 0.415; // L: 0.453, R: 0.458
+                return 0.337; // L: 0.453, R: 0.458
             // OLD: -0.48; L: -0.466, R: -0.498
             case middle_LowNode:
-                return -0.395; // L: -0.407, R: -0.382
+                return 0.384; // L: -0.407, R: -0.382
             // OLD: -0.375; L: -0.379, R: -0.367
             case middle_HighNode: // 3.1 in extended
-                return 0.965; // all forward (L: 0.150, R: 0.197)
+                return 0.955; // all forward (L: 0.150, R: 0.197)
             // OLD: 0.2; all forward (L: 0.131, R: 0.136)
         }
 

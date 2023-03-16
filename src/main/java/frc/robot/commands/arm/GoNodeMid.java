@@ -14,6 +14,10 @@ public class GoNodeMid extends CommandBase {
     private final ArmSubsystem armSubsystem;
     boolean doneElbow = false;
     boolean doneShoulder = false;
+    int logger = 0;
+    private boolean almostDone = false;
+
+
 
     public GoNodeMid(ArmSubsystem arm) {
         armSubsystem = arm;
@@ -21,25 +25,28 @@ public class GoNodeMid extends CommandBase {
         addRequirements(arm);
     }
 
-    int logger = 0;
+    
+    @Override
+    public void initialize() {
+        System.out.println("GoNodeMid: STARTED");
+    }
+    
     @Override
     public void execute() {
         
-        if (!doneElbow) {
-            doneElbow = armSubsystem.move(ElbowPosition.middle_MiddleNode);
-        }
+        doneElbow = armSubsystem.move(ElbowPosition.middle_MiddleNode);
 
-        if (!doneShoulder) {
-            doneShoulder = armSubsystem.move(ShoulderPosition.middle_MiddleNode);
-        }
-
-        if(logger++ % 10 == 0) System.out.println(String.format("GoNodeMid: %s, %s", doneElbow?"DONE":"MOVING", doneShoulder?"DONE":"MOVING"));
+        doneShoulder = armSubsystem.move(ShoulderPosition.middle_MiddleNode);
     }
 
     @Override
     public boolean isFinished() {
-        return doneElbow && doneShoulder;
+        if(logger++ % 10 == 0) System.out.println("GoNodeMid: ELBOW:" + doneElbow + "; SHOULDER:" + doneShoulder);
 
+        if(doneElbow && doneShoulder) {
+            System.out.println("GoNodeMid: DONE");
+        }
+        return doneElbow && doneShoulder;
     }
 
 }

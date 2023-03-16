@@ -28,6 +28,7 @@ import frc.robot.commands.arm.ArmLoadingStation;
 import frc.robot.commands.arm.ArmStow;
 import frc.robot.commands.arm.GoNodeHigh;
 import frc.robot.commands.arm.GoNodeMid;
+import frc.robot.commands.arm.ResetArm;
 import frc.robot.commands.arm.TeleopArmControl;
 import frc.robot.commands.autonomous.AutoTest;
 import frc.robot.commands.autonomous.LowNodeCube;
@@ -116,7 +117,6 @@ public class RobotContainer {
         SmartDashboard.putData("red", new SetColor(lightSubsystem, Color.kRed));
         SmartDashboard.putData("green", new SetColor(lightSubsystem, Color.kGreen));
         SmartDashboard.putData("blue", new SetColor(lightSubsystem, Color.kBlue));
-        
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
@@ -146,6 +146,7 @@ public class RobotContainer {
         JoystickButton coPilotYButton = new JoystickButton(coPilot, XboxController.Button.kY.value);
         JoystickButton coPilotRightBumper = new JoystickButton(coPilot, XboxController.Button.kRightBumper.value);
         JoystickButton coPilotStartButton = new JoystickButton(coPilot, XboxController.Button.kStart.value);
+        JoystickButton coPilotLeftBumper = new JoystickButton(coPilot, XboxController.Button.kLeftBumper.value);
 
         JoystickButton triggerJoystickButton = new JoystickButton(pilot, XboxController.Button.kY.value);
         POVButton dpadButton = new POVButton(pilot, 0);
@@ -157,10 +158,10 @@ public class RobotContainer {
         pilotXButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
 
         // pilot status light controls
-        pilotYButton.toggleOnTrue(new Blink(lightSubsystem, Color.kYellow));
-        pilotYButton.toggleOnFalse(new SetColorToAlliance(lightSubsystem));
-        pilotAButton.toggleOnTrue(new Blink(lightSubsystem, Color.kPurple));
-        pilotAButton.toggleOnFalse(new SetColorToAlliance(lightSubsystem));
+        pilotYButton.onTrue(new Blink(lightSubsystem, Color.kYellow));
+        pilotYButton.onFalse(new SetColorToAlliance(lightSubsystem));
+        pilotAButton.onTrue(new Blink(lightSubsystem, Color.kPurple));
+        pilotAButton.onFalse(new SetColorToAlliance(lightSubsystem));
 
         // :)
 
@@ -170,6 +171,7 @@ public class RobotContainer {
         coPilotBButton.onTrue(makeArmCommand(new GoNodeMid(armSubsystem)));
         coPilotYButton.onTrue(makeArmCommand(new GoNodeHigh(armSubsystem)));
         coPilotXButton.onTrue(makeArmCommand(new ArmLoadingStation(armSubsystem)));
+        coPilotLeftBumper.onTrue(makeArmCommand(new ResetArm(armSubsystem)));
         // TODO: Redo commands
         // 1. Change all arm commands to work like the following:
         // coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
@@ -188,8 +190,10 @@ public class RobotContainer {
         return new SequentialCommandGroup(
                 new ParallelRaceGroup(
                         armCmd,
-                        new WaitCommand(5.0)),
-                new TeleopArmControl(armSubsystem, controllerSubsystem));
+                        new WaitCommand(10.0)),
+                new ParallelCommandGroup(
+                        new TeleopDrive(driveSubsystem, controllerSubsystem, DriveMode.RobotOrientedOpenLoop),
+                        new TeleopArmControl(armSubsystem, controllerSubsystem)));
     }
     // --------------------------------------------------------------------
 
@@ -200,6 +204,9 @@ public class RobotContainer {
     private int testWheel = Constants.FRONT_LEFT_CAN;
 
     public void testPeriodic() {
+
+        lightSubsystem.test();
+
         XboxController pilot = controllerSubsystem.getPilotController();
         double testThrottle = pilot.getLeftY() * .25;
 

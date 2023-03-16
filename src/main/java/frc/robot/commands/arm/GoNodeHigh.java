@@ -14,11 +14,17 @@ public class GoNodeHigh extends CommandBase {
     private final ArmSubsystem armSubsystem;
     boolean doneElbow = false;
     boolean doneShoulder = false;
+    private boolean almostDone = false;
 
     public GoNodeHigh(ArmSubsystem arm) {
         armSubsystem = arm;
 
         addRequirements(arm);
+    }
+
+    @Override
+    public void initialize() {
+        System.out.println("GoNodeHigh: STARTED");
     }
 
     @Override
@@ -34,6 +40,12 @@ public class GoNodeHigh extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        if (doneElbow || doneShoulder) {
+            if (!almostDone || (doneElbow && doneShoulder)) {
+                System.out.println("GoNodeHigh: ELBOW:" + doneElbow + "; SHOULDER:" + doneShoulder);
+                almostDone = true;
+            }
+        }
         return doneElbow && doneShoulder;
 
     }

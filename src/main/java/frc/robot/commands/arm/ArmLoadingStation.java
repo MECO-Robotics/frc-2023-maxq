@@ -14,10 +14,17 @@ public class ArmLoadingStation extends CommandBase {
     private final ArmSubsystem armSubsystem;
     boolean doneElbow = false;
     boolean doneShoulder = false;
+    private boolean almostDone = false;
 
     public ArmLoadingStation(ArmSubsystem arm) {
         armSubsystem = arm;
     }
+
+    @Override
+    public void initialize() {
+        System.out.println("ArmLoadingStation: STARTED");
+    }
+
 
     @Override
     public void execute() {
@@ -34,6 +41,12 @@ public class ArmLoadingStation extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        if (doneElbow || doneShoulder) {
+            if (!almostDone || (doneElbow && doneShoulder)) {
+                System.out.println("ArmLoadingStation: ELBOW:" + doneElbow + "; SHOULDER:" + doneShoulder);
+                almostDone = true;
+            }
+        }
         return doneElbow && doneShoulder;
 
     }

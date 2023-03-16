@@ -7,6 +7,8 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.GripperPosition;
+import frc.robot.commands.arm.ArmIntake;
+import frc.robot.commands.arm.GoNodeHigh;
 import frc.robot.commands.arm.GripperManualControl;
 import frc.robot.commands.arm.SetGripperPosition;
 import frc.robot.commands.drive.DriveStraight;
@@ -25,7 +27,19 @@ public class LowNodeCube extends SequentialCommandGroup {
     public LowNodeCube(DriveSubsystem drive, ArmSubsystem arm) {
 
         addCommands(
-               new DriveStraightByTime(drive, .2, .5),
+        
+        new GoNodeHigh(arm),
+        new WaitCommand(.5),
+        new DriveStraightByTime(drive, 1, .5),
+        new WaitCommand(.5),
+        new SetGripperPosition(arm, GripperPosition.GripOpen),
+        new DriveStraightByTime(drive, 2, -.5)
+        
+        
+        
+        
+        
+        /*   new DriveStraightByTime(drive, .2, .5),
                new DriveStraightByTime(drive, 1.65, -.8),
                new WaitCommand(1.5),
                new SetGripperPosition(arm, GripperPosition.GripClose),
@@ -34,7 +48,7 @@ public class LowNodeCube extends SequentialCommandGroup {
                new SpinRightAngle(drive, 180),
                new DriveStraightByTime(drive, .5, -.5),
                new SetGripperPosition(arm, GripperPosition.GripOpen),
-               new Stop(drive)
+               new Stop(drive) */
         
         
         

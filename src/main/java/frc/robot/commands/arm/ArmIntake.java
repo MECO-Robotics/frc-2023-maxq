@@ -18,10 +18,15 @@ public class ArmIntake extends CommandBase {
         armSubsystem = arm;
     }
 
+    @Override
+    public void initialize() {
+        System.out.println("ArmIntake: STARTED");
+    }
+
     int logger = 0;
+
     @Override
     public void execute() {
-        if(logger++ % 1 == 0) System.out.println("ArmIntake");
 
         if (!doneElbow) {
             doneElbow = armSubsystem.move(ElbowPosition.middle_PickUp);
@@ -32,10 +37,17 @@ public class ArmIntake extends CommandBase {
         }
     }
 
+    boolean almostDone = false;
+
     @Override
     public boolean isFinished() {
+        if (doneElbow || doneShoulder) {
+            if (!almostDone || (doneElbow && doneShoulder)) {
+                System.out.println("ArmIntake: ELBOW:" + doneElbow + "; SHOULDER:" + doneShoulder);
+                almostDone = true;
+            }
+        }
         return doneElbow && doneShoulder;
-
     }
 
 }

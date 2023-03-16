@@ -16,7 +16,7 @@ import frc.robot.Constants;
 
 public class LightSubsystem extends SubsystemBase {
 
-//    CANLight canLight = new CANLight(0);
+    // CANLight canLight = new CANLight(0);
 
     // PWM r = new PWM(Constants.LIGHTS_R_PWM);
     // PWM g = new PWM(Constants.LIGHTS_G_PWM);
@@ -50,20 +50,46 @@ public class LightSubsystem extends SubsystemBase {
      */
     public void set(Color color) {
 
-        // Color8Bit c = new Color8Bit(color);
-        // canLight.showRGB(c.red, c.green, c.blue);
+        if (color == Color.kBlue) {
+            r.set(false);
+            g.set(false);
+            b.set(true);
+        } else if (color == Color.kRed) {
+            r.set(true);
+            g.set(false);
+            b.set(false);
+        } else if (color == Color.kYellow) {
+            r.set(true);
+            g.set(true);
+            b.set(false);
+        } else if (color == Color.kPurple) {
+            r.set(true);
+            g.set(false);
+            b.set(true);
+        } else if(color == Color.kBlack) {
+            r.set(false);
+            g.set(false);
+            b.set(false);
+        }
 
-        // r.setSpeed(color.red);
-        // g.setSpeed(color.green);
-        // b.setSpeed(color.blue);
-
-        r.set(color.red > .9);
-        g.set(color.green > .9);
-        b.set(color.blue > .9);
     }
 
+    int testCount = 0;
+    int color = 0;
 
+    public void test() {
+        testCount++;
 
+        if (testCount % 30 == 0) {
+            r.set(color == 0);
+            g.set(color == 1);
+            b.set(color == 2);
+            color++;
+            if (color == 6) {
+                color = 0;
+            }
+        }
+    }
 
     // THE CODE BELOW THIS LINE IS AN ALTERNATE APPROACH IF WE HAVE TO USE DIGITAL
     // I/O
@@ -95,20 +121,22 @@ public class LightSubsystem extends SubsystemBase {
     }
 
     /*
-    DutyCycle red = new DutyCycle(0), green = new DutyCycle(0), blue = new DutyCycle(0);
-    DigitalOutput redOut = new DigitalOutput(0), greenOut = new DigitalOutput(0), blueOut = new DigitalOutput(0);
-
-    public void setDigital(Color color) {
-        red = new DutyCycle(Math.round(color.red * CYCLES));
-        green = new DutyCycle(Math.round(color.green * CYCLES));
-        blue = new DutyCycle(Math.round(color.blue * CYCLES));
-    }
-
-    @Override
-    public void periodic() {
-        redOut.set(red.get());
-        greenOut.set(green.get());
-        blueOut.set(blue.get());
-    }
-    */
+     * DutyCycle red = new DutyCycle(0), green = new DutyCycle(0), blue = new
+     * DutyCycle(0);
+     * DigitalOutput redOut = new DigitalOutput(0), greenOut = new DigitalOutput(0),
+     * blueOut = new DigitalOutput(0);
+     * 
+     * public void setDigital(Color color) {
+     * red = new DutyCycle(Math.round(color.red * CYCLES));
+     * green = new DutyCycle(Math.round(color.green * CYCLES));
+     * blue = new DutyCycle(Math.round(color.blue * CYCLES));
+     * }
+     * 
+     * @Override
+     * public void periodic() {
+     * redOut.set(red.get());
+     * greenOut.set(green.get());
+     * blueOut.set(blue.get());
+     * }
+     */
 }
