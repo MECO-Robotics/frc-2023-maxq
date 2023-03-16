@@ -4,6 +4,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.GripperPosition;
@@ -27,9 +28,7 @@ public class LowNodeCube extends SequentialCommandGroup {
     public LowNodeCube(DriveSubsystem drive, ArmSubsystem arm) {
 
         addCommands(
-        
-        new GoNodeHigh(arm),
-        new WaitCommand(.5),
+        new ParallelDeadlineGroup(new WaitCommand(9), new GoNodeHigh(arm)),
         new DriveStraightByTime(drive, 1, .5),
         new WaitCommand(.5),
         new SetGripperPosition(arm, GripperPosition.GripOpen),
