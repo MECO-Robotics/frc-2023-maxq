@@ -27,7 +27,7 @@ public class Blink extends CommandBase {
 
         i = i + 1;
 
-        if (i == 50) {
+        if (i == 12.5) {
 
             i = 0;
 

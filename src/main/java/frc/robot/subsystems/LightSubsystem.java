@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.lights.SetColorToAlliance;
 
 public class LightSubsystem extends SubsystemBase {
 
@@ -29,6 +30,8 @@ public class LightSubsystem extends SubsystemBase {
     public LightSubsystem() {
 
         setName("LIGHTS");
+
+        setDefaultCommand(new SetColorToAlliance(this));
 
         // The idea here is to set the max value (1.0) to be 100% duty cycle - all on,
         // and 0 to be 0% duty cycle - all off.

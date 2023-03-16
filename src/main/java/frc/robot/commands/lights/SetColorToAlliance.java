@@ -16,6 +16,7 @@ public class SetColorToAlliance extends CommandBase {
 
     public SetColorToAlliance(LightSubsystem lightSubsystem) {
         lights = lightSubsystem;
+        addRequirements(lightSubsystem);
     }
 
     @Override
