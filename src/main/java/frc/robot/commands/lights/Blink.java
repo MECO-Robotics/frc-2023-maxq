@@ -17,6 +17,8 @@ public class Blink extends CommandBase {
     public Blink(LightSubsystem lightSubsystem, Color color) {
         lights = lightSubsystem;
         desiredColor = color;
+
+        addRequirements(lightSubsystem);
     }
     
     //This line of code makes it so that the LEDs on the robot slowly blink between white & black when called.
@@ -38,6 +40,11 @@ public class Blink extends CommandBase {
         }
 
         lights.set(currentColor);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        lights.set(Color.kBlack);
     }
 
     @Override

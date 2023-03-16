@@ -41,6 +41,7 @@ import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.lights.Blink;
 import frc.robot.commands.lights.SetColor;
 import frc.robot.commands.lights.SetColorToAlliance;
+import frc.robot.commands.lights.Signal;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.BrakesSubsystem;
 import frc.robot.subsystems.ControllerSubsystem;
@@ -158,20 +159,19 @@ public class RobotContainer {
         pilotXButton.whileTrue(new AutoLevelOnChargeStation(driveSubsystem));
 
         // pilot status light controls
-        pilotYButton.onTrue(new Blink(lightSubsystem, Color.kYellow));
-        pilotYButton.onFalse(new SetColorToAlliance(lightSubsystem));
-        pilotAButton.onTrue(new Blink(lightSubsystem, Color.kPurple));
-        pilotAButton.onFalse(new SetColorToAlliance(lightSubsystem));
+        coPilotLeftBumper.onTrue(new Signal(lightSubsystem, Color.kYellow));
+        coPilotRightBumper.onTrue(new Signal(lightSubsystem, Color.kPurple));
 
         // :)
 
         // coPilot controls
-        coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
-        coPilotRightBumper.onTrue(makeArmCommand(new ArmStow(armSubsystem)));
-        coPilotBButton.onTrue(makeArmCommand(new GoNodeMid(armSubsystem)));
-        coPilotYButton.onTrue(makeArmCommand(new GoNodeHigh(armSubsystem)));
-        coPilotXButton.onTrue(makeArmCommand(new ArmLoadingStation(armSubsystem)));
-        coPilotLeftBumper.onTrue(makeArmCommand(new ResetArm(armSubsystem)));
+        // coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
+        // coPilotRightBumper.onTrue(makeArmCommand(new ArmStow(armSubsystem)));
+        // coPilotBButton.onTrue(makeArmCommand(new GoNodeMid(armSubsystem)));
+        // coPilotYButton.onTrue(makeArmCommand(new GoNodeHigh(armSubsystem)));
+        // coPilotXButton.onTrue(makeArmCommand(new ArmLoadingStation(armSubsystem)));
+        // coPilotLeftBumper.onTrue(makeArmCommand(new ResetArm(armSubsystem)));
+
         // TODO: Redo commands
         // 1. Change all arm commands to work like the following:
         // coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
