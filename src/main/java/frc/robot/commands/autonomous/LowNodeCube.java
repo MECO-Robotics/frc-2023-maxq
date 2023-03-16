@@ -12,12 +12,15 @@ import frc.robot.commands.arm.ArmIntake;
 import frc.robot.commands.arm.GoNodeHigh;
 import frc.robot.commands.arm.GripperManualControl;
 import frc.robot.commands.arm.SetGripperPosition;
+import frc.robot.commands.brakes.LowerBrakes;
+import frc.robot.commands.brakes.RaiseBrakes;
 import frc.robot.commands.drive.DriveStraight;
 import frc.robot.commands.drive.DriveStraightByTime;
 import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.SpinRightAngle;
 import frc.robot.commands.drive.Stop;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.BrakesSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
@@ -25,9 +28,12 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class LowNodeCube extends SequentialCommandGroup {
 
+    //THIS ONE private BrakesSubsystem brakesSubsystem;
+
     public LowNodeCube(DriveSubsystem drive, ArmSubsystem arm) {
 
         addCommands(
+        //THIS ONE new RaiseBrakes(brakesSubsystem),
         new ParallelDeadlineGroup(new WaitCommand(9), new GoNodeHigh(arm)),
         new DriveStraightByTime(drive, 1, .5),
         new WaitCommand(.5),

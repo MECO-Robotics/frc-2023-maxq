@@ -25,6 +25,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -87,10 +88,10 @@ public class DriveSubsystem extends SubsystemBase {
     CANSparkMax backLeftController;
     CANSparkMax backRightController;
 
-    AbsoluteEncoder frontLeftEncoderRev;
-    AbsoluteEncoder backRightEncoderRev;
-    AbsoluteEncoder frontRightEncoderRev;
-    AbsoluteEncoder backLeftEncoderRev;
+    RelativeEncoder frontLeftEncoderRev;
+    RelativeEncoder backRightEncoderRev;
+    RelativeEncoder frontRightEncoderRev;
+    RelativeEncoder backLeftEncoderRev;
 
     /* Creates a new Subsystem. */
     public DriveSubsystem() {
@@ -137,9 +138,10 @@ public class DriveSubsystem extends SubsystemBase {
         return controller;
     }
 
-    private AbsoluteEncoder setupAbsoluteEncoder(CANSparkMax controller) {
+    private RelativeEncoder setupAbsoluteEncoder(CANSparkMax controller) {
         //RelativeEncoder encoder = controller.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-        SparkMaxAbsoluteEncoder encoder = controller.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+        //SparkMaxAbsoluteEncoder encoder = controller.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+        RelativeEncoder encoder = controller.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, ENCODER_RESOLUTION);
         encoder.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
         encoder.setInverted(controller.getInverted());
         return encoder;
