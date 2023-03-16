@@ -28,12 +28,12 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class LowNodeCube extends SequentialCommandGroup {
 
-    //THIS ONE private BrakesSubsystem brakesSubsystem;
+    private BrakesSubsystem brakesSubsystem;
 
     public LowNodeCube(DriveSubsystem drive, ArmSubsystem arm) {
 
         addCommands(
-        //THIS ONE new RaiseBrakes(brakesSubsystem),
+        new RaiseBrakes(brakesSubsystem),
         new ParallelDeadlineGroup(new WaitCommand(9), new GoNodeHigh(arm)),
         new DriveStraightByTime(drive, 1, .5),
         new WaitCommand(.5),
