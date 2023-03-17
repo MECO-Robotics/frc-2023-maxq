@@ -104,7 +104,7 @@ public class ArmSubsystem extends SubsystemBase {
         addChild("shoulderRFL", shoulderRightFrontLimit);
         addChild("shoulderRBL", shoulderRightBackLimit);
         addChild("Shoulder PID", shoulderPid);
-        SmartDashboard.putData(this);
+        // SmartDashboard.putData(this);
     }
 
     @Override

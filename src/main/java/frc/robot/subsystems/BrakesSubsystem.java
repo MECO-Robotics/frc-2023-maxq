@@ -21,7 +21,7 @@ public class BrakesSubsystem extends SubsystemBase {
     public BrakesSubsystem() {
         setName("BRAKES");
 
-        SmartDashboard.putData(this);
+        // SmartDashboard.putData(this);
     }
 
     DoubleSolenoid leftBrakes = new DoubleSolenoid(

@@ -41,7 +41,7 @@ public class LightSubsystem extends SubsystemBase {
         // g.setBounds(5.005, 0, 0, 0, 0);
         // b.setBounds(5.005, 0, 0, 0, 0);
 
-        SmartDashboard.putData(this);
+        // SmartDashboard.putData(this);
     }
 
     /**

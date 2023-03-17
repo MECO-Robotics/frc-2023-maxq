@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem() {
         setName("INTAKE");
 
-        SmartDashboard.putData(this);
+        // SmartDashboard.putData(this);
     }
     
     DoubleSolenoid intakeSolenoid = new DoubleSolenoid(

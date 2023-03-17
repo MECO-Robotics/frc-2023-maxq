@@ -34,7 +34,7 @@ public class VisionSubsystem extends SubsystemBase {
             limeLight = NetworkTableInstance.getDefault().getTable("limelight");
 
             if (limeLight != null) {
-                System.out.println("found the Limelight!!!!!!!!!!!!!!");
+                System.out.println("found the Limelight!!!!!!!1!!!1!!1!!");
                 // Get the latency. Assuming this only needs to be queried once
                 double tl = limeLight.getEntry("tl").getDouble(0);
                 double cl = limeLight.getEntry("cl").getDouble(0);
@@ -49,7 +49,7 @@ public class VisionSubsystem extends SubsystemBase {
             }
         }
 
-        SmartDashboard.putData(this);
+        //SmartDashboard.putData(this);
     }
 
     @Override

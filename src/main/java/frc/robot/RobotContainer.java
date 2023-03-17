@@ -32,6 +32,7 @@ import frc.robot.commands.arm.ResetArm;
 import frc.robot.commands.arm.TeleopArmControl;
 import frc.robot.commands.autonomous.AutoTest;
 import frc.robot.commands.autonomous.LowNodeCube;
+import frc.robot.commands.autonomous.LowNodeCubeLevel;
 import frc.robot.commands.brakes.LowerBrakes;
 import frc.robot.commands.brakes.RaiseBrakes;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
@@ -97,7 +98,8 @@ public class RobotContainer {
         // with which.
 
         autoCommands.put("AUto1", new AutoTest(driveSubsystem));
-        autoCommands.put("Cube", new LowNodeCube(driveSubsystem, armSubsystem));
+        autoCommands.put("Cube", new LowNodeCube(driveSubsystem, armSubsystem, brakesSubsystem));
+        autoCommands.put("Cubelevel", new LowNodeCubeLevel(driveSubsystem, armSubsystem, brakesSubsystem));
         //
         //
         // ------------------------------------------------------------------------

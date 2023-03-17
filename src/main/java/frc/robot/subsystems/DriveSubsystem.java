@@ -111,7 +111,7 @@ public class DriveSubsystem extends SubsystemBase {
         addChild("IMU", imu);
         addChild("Field", field2d);
 
-        SmartDashboard.putData(this);
+        // SmartDashboard.putData(this);
     }
 
     private CANSparkMax setupMotorController(int canID, boolean inverted) {
@@ -128,9 +128,11 @@ public class DriveSubsystem extends SubsystemBase {
         // A value of 0.5 basically means "add on 1/2 the expected input level"
         controller.getPIDController().setFF(0.5);
 
-        // At max speed of 15mps, our RPMS would be 4.62m/s X 1/0.4787646 rev/s * 60sec/min = 579 rpm
-        // So, to jump to max speed, if our FF gets us half way there - 289.5, then the P term gets us
-        // the rest of the way:  289.5 X kP = 0.5.  kP = 0.01727
+        // At max speed of 15mps, our RPMS would be 4.62m/s X 1/0.4787646 rev/s *
+        // 60sec/min = 579 rpm
+        // So, to jump to max speed, if our FF gets us half way there - 289.5, then the
+        // P term gets us
+        // the rest of the way: 289.5 X kP = 0.5. kP = 0.01727
         controller.getPIDController().setP(0.01727);
         controller.getPIDController().setI(0);
         controller.getPIDController().setD(0);
@@ -139,9 +141,12 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private RelativeEncoder setupAbsoluteEncoder(CANSparkMax controller) {
-        //RelativeEncoder encoder = controller.getEncoder(Type.kQuadrature, ENCODER_RESOLUTION);
-        //SparkMaxAbsoluteEncoder encoder = controller.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
-        RelativeEncoder encoder = controller.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, ENCODER_RESOLUTION);
+        // RelativeEncoder encoder = controller.getEncoder(Type.kQuadrature,
+        // ENCODER_RESOLUTION);
+        // SparkMaxAbsoluteEncoder encoder =
+        // controller.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+        RelativeEncoder encoder = controller.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature,
+                ENCODER_RESOLUTION);
         encoder.setPositionConversionFactor(WHEEL_CIRCUM_METERS);
         encoder.setInverted(controller.getInverted());
         return encoder;
@@ -363,17 +368,12 @@ public class DriveSubsystem extends SubsystemBase {
      * @return true if the robot is level on the charge station (energized) and
      *         false if not
      */
-    public boolean chargeStationEnergize(boolean strafeClimb) {
+    public boolean chargeStationEnergize() {
 
         // NOTES
         /*
          * The pitch is currently negated, but that looks backwards now, relative to the
          * code here. Need to switch back
-         * 
-         * Algorithm approach for strafe climb:
-         * 1. Orient field left or right
-         * 2. Pitch -> Twist right, or use heading to maintain field left orientation
-         * 3. Roll -> Left
          * 
          * Algorithm approah for straight climb:
          * 1. Orient field forward or backward
@@ -384,18 +384,22 @@ public class DriveSubsystem extends SubsystemBase {
 
         double MAX_ANGLE = 12.0;
         double MAX_MOTOR = 0.7;
-        if (strafeClimb) {
-            double twist = getPitch() / MAX_ANGLE * MAX_MOTOR;
-            double left = getRoll() / MAX_ANGLE * MAX_MOTOR;
-            if (Math.abs(twist) > 0.1 || Math.abs(left) > 0.1) {
-                robotDrive(0, left, twist);
-            }
+        double forward;
+        double pitch = -getRoll();
+        double roll = getPitch();
+        // ONCE AGAIN, NOT CRAZY
+
+        if (Math.abs(pitch) > 5) {
+            forward = Math. signum(pitch);
+
         } else {
-            double twist = getRoll() / MAX_ANGLE * MAX_MOTOR;
-            double forward = getPitch() / MAX_ANGLE * MAX_MOTOR;
-            if (Math.abs(twist) > 0.1 || Math.abs(forward) > 0.1) {
-                robotDrive(forward, 0, twist);
-            }
+            forward = pitch / MAX_ANGLE * MAX_MOTOR;
+        }
+
+        double twist = roll / MAX_ANGLE * MAX_MOTOR;
+
+        if (Math.abs(twist) > 0.1 || Math.abs(forward) > 0.1) {
+            robotDrive(forward, 0, twist);
         }
 
         return false;
@@ -430,10 +434,10 @@ public class DriveSubsystem extends SubsystemBase {
         // }
 
         imu.zeroYaw();
-        //frontLeftEncoderRev.;
-        //frontRightEncoderRev.setPosition(0);
-        //backLeftEncoderRev.setPosition(0);
-        //backRightEncoderRev.setPosition(0);
+        // frontLeftEncoderRev.;
+        // frontRightEncoderRev.setPosition(0);
+        // backLeftEncoderRev.setPosition(0);
+        // backRightEncoderRev.setPosition(0);
     }
 
     /**
@@ -502,7 +506,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        
+
         super.initSendable(builder);
 
         builder.addDoubleProperty("Pitch", this::getPitch, null);

@@ -26,7 +26,7 @@ public class PowerSubsystem extends SubsystemBase {
   public PowerSubsystem() {
     setName("POWER");
 
-    SmartDashboard.putData(this);
+    // SmartDashboard.putData(this);
   }
 
   // Called when the susystem scheduled.

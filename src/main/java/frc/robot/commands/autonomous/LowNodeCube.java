@@ -28,17 +28,15 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class LowNodeCube extends SequentialCommandGroup {
 
-    private BrakesSubsystem brakesSubsystem;
-
-    public LowNodeCube(DriveSubsystem drive, ArmSubsystem arm) {
+    public LowNodeCube(DriveSubsystem drive, ArmSubsystem arm, BrakesSubsystem brakes) {
 
         addCommands(
-        new RaiseBrakes(brakesSubsystem),
+        new RaiseBrakes(brakes),
         new ParallelDeadlineGroup(new WaitCommand(9), new GoNodeHigh(arm)),
         new DriveStraightByTime(drive, 1, .5),
         new WaitCommand(.5),
         new SetGripperPosition(arm, GripperPosition.GripOpen),
-        new DriveStraightByTime(drive, 2, -.5)
+        new DriveStraightByTime(drive, 3.2, -.5)
         
         
         
