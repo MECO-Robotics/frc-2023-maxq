@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.arm.ArmIntake;
 import frc.robot.commands.arm.ArmLoadingStation;
 import frc.robot.commands.arm.ArmStow;
-import frc.robot.commands.arm.GoNodeHigh;
+import frc.robot.commands.arm.GoNodeHighCube;
 import frc.robot.commands.arm.GoNodeMid;
 import frc.robot.commands.arm.ResetArm;
 import frc.robot.commands.arm.TeleopArmControl;
@@ -116,10 +116,6 @@ public class RobotContainer {
         driveMode.addOption("Split Arcade", DriveMode.SplitArcade);
         driveMode.addOption("Tank", DriveMode.Tank);
         SmartDashboard.putData("Drive mode", driveMode);
-        SmartDashboard.putData(new AutoTest(driveSubsystem));
-        SmartDashboard.putData("red", new SetColor(lightSubsystem, Color.kRed));
-        SmartDashboard.putData("green", new SetColor(lightSubsystem, Color.kGreen));
-        SmartDashboard.putData("blue", new SetColor(lightSubsystem, Color.kBlue));
 
         // Set default commands
         driveSubsystem.setDefaultCommand(new Stop(driveSubsystem));
@@ -167,12 +163,13 @@ public class RobotContainer {
         // :)
 
         // coPilot controls
-        // coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
-        // coPilotRightBumper.onTrue(makeArmCommand(new ArmStow(armSubsystem)));
-        // coPilotBButton.onTrue(makeArmCommand(new GoNodeMid(armSubsystem)));
-        // coPilotYButton.onTrue(makeArmCommand(new GoNodeHigh(armSubsystem)));
-        // coPilotXButton.onTrue(makeArmCommand(new ArmLoadingStation(armSubsystem)));
-        // coPilotLeftBumper.onTrue(makeArmCommand(new ResetArm(armSubsystem)));
+        // Pinching works better
+        //coPilotAButton.onTrue(makeArmCommand(new ArmIntake(armSubsystem)));
+        coPilotAButton.onTrue(makeArmCommand(new ArmStow(armSubsystem)));
+        coPilotBButton.onTrue(makeArmCommand(new GoNodeMid(armSubsystem)));
+        coPilotYButton.onTrue(makeArmCommand(new GoNodeHighCube(armSubsystem)));
+        coPilotXButton.onTrue(makeArmCommand(new ArmLoadingStation(armSubsystem)));
+        //coPilotLeftBumper.onTrue(makeArmCommand(new ResetArm(armSubsystem)));
 
         // TODO: Redo commands
         // 1. Change all arm commands to work like the following:

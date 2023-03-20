@@ -13,6 +13,7 @@ import frc.robot.subsystems.LightSubsystem;
 public class SetColorToAlliance extends CommandBase {
 
     private final LightSubsystem lights;
+    private Alliance alliance;
 
     public SetColorToAlliance(LightSubsystem lightSubsystem) {
         lights = lightSubsystem;
@@ -20,8 +21,13 @@ public class SetColorToAlliance extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        alliance = DriverStation.getAlliance();
+    }
+
+
+    @Override
     public void execute() {
-        Alliance alliance = DriverStation.getAlliance();
         Color allianceColor = Color.kBlack;
 
         if (alliance == Alliance.Red) {

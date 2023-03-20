@@ -22,7 +22,7 @@ public class TeleopArmControl extends CommandBase {
     @Override
     public void execute() {
 
-        if(logger++ % 10 ==0 ) System.out.println(String.format("TeleoparmControl"));
+        //if(logger++ % 10 ==0 ) System.out.println(String.format("TeleoparmControl"));
         boolean copilotConnected = controllerSubsystem.getCopilotController() != null;
 
         // Only run the arm if we have a copilot controller connected.

@@ -9,14 +9,14 @@ import frc.robot.Constants;
 import frc.robot.Constants.ElbowPosition;
 import frc.robot.Constants.ShoulderPosition;
 
-public class GoNodeHigh extends CommandBase {
+public class GoNodeHighCube extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
     boolean doneElbow = false;
     boolean doneShoulder = false;
     private boolean almostDone = false;
 
-    public GoNodeHigh(ArmSubsystem arm) {
+    public GoNodeHighCube(ArmSubsystem arm) {
         armSubsystem = arm;
 
         addRequirements(arm);
@@ -24,13 +24,15 @@ public class GoNodeHigh extends CommandBase {
 
     @Override
     public void initialize() {
+        doneElbow = false;
+        doneShoulder = false;
         System.out.println("GoNodeHigh: STARTED");
     }
 
     @Override
     public void execute() {
         if (!doneElbow) {
-            doneElbow = armSubsystem.move(ElbowPosition.middle_HighNode);
+            doneElbow = armSubsystem.move(ElbowPosition.middle_HighNodeCube);
         }
 
         if (!doneShoulder) {

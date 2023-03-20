@@ -184,13 +184,14 @@ public class DriveSubsystem extends SubsystemBase {
      * This method will be called once per scheduler run
      */
     @Override
+
     public void periodic() {
 
-        odometry.update(imu.getRotation2d(), getWheelPositions());
+        //odometry.update(imu.getRotation2d(), getWheelPositions());
 
         // This allows us to see the robot's position and orientation on the
         // Shuffleboard
-        field2d.setRobotPose(getPoseMeters());
+        //field2d.setRobotPose(getPoseMeters());
 
         // Update the motor safety. This makes sure the system knows we're in control of
         // the motors.
@@ -536,6 +537,11 @@ public class DriveSubsystem extends SubsystemBase {
         builder.addDoubleProperty("BR Encoder", () -> {
             return backRightEncoderRev.getPosition();
         }, null);
+
+        builder.addDoubleProperty("FLW", () -> { return frontLeftController.get();}, null);
+        builder.addDoubleProperty("FRW", () -> { return frontRightController.get();}, null);
+        builder.addDoubleProperty("BLW", () -> { return backLeftController.get();}, null);
+        builder.addDoubleProperty("BRW", () -> { return backRightController.get();}, null);
     }
 
 }

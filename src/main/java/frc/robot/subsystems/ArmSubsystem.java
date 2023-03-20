@@ -104,7 +104,7 @@ public class ArmSubsystem extends SubsystemBase {
         addChild("shoulderRFL", shoulderRightFrontLimit);
         addChild("shoulderRBL", shoulderRightBackLimit);
         addChild("Shoulder PID", shoulderPid);
-        // SmartDashboard.putData(this);
+        SmartDashboard.putData(this);
     }
 
     @Override
@@ -182,15 +182,14 @@ public class ArmSubsystem extends SubsystemBase {
 
         double setPoint = getElbowExtension(elbowPositionIn);
 
-        // double motor = elbowPid.calculate(elbowExtension.getValue(), setPoint);
-
-        // motor = elbowRateLimiter.calculate(motor);
-
-        // return elbowPid.atSetpoint();
-
         double error = setPoint - elbowExtension.getValue();
+
+        System.out.println(String.format("ELBOW: setPoint:%f, measurement:%d", setPoint, elbowExtension.getValue()));
         if (Math.abs(error) > 10) {
             double motor = error * -0.02;
+
+            // Temporary limit to elbow speed to +/- 0.5
+            motor = Math.signum(motor) * Math.min(0.5, Math.abs(motor));
 
             elbowLinearControllerLeft.set(TalonSRXControlMode.PercentOutput, motor);
             elbowLinearControllerRight.set(TalonSRXControlMode.PercentOutput, motor);
@@ -213,9 +212,11 @@ public class ArmSubsystem extends SubsystemBase {
             case middle_MiddleNode:
                 return 522;
             // 632
-            case middle_HighNode:
+            case middle_HighNodeCone:
                 return 580;
             // 750
+            case middle_HighNodeCube:
+                return 660;
             case middle_PickUp:
                 return 1323;
             // 1480
@@ -239,24 +240,14 @@ public class ArmSubsystem extends SubsystemBase {
     public boolean move(Constants.ShoulderPosition shoulderPositionIn) {
 
         double setPoint = getShoulderPos(shoulderPositionIn);
-        // double measurement = (getLeftShoulderPosition() + getRightShoulderPosition())
-        // / 2.0; // average position
-        double measurement = (getLeftShoulderPosition());// right is broke
+
+        double measurement = getLeftShoulderPosition();// right is broke
 
         double level = shoulderPid.calculate(measurement, setPoint);
-        // level = shoulderRateLimiter.calculate(level);
-        //double error = setPoint - measurement;
 
-        setShoulderLevels(level);
-        // if (Math.abs(error) > 0.01) {
-        //     double level = error * 0.9;
-        //     setShoulderLevels(level);
-        //     return false;
-        // } else {
-        //     return true;
-        // }
-
-        return shoulderPid.atSetpoint();
+        boolean atLimit = setShoulderLevels(level);
+        
+        return atLimit || shoulderPid.atSetpoint();
     }
 
     private double getShoulderPos(ShoulderPosition pos) {
@@ -303,7 +294,7 @@ public class ArmSubsystem extends SubsystemBase {
      * 
      * @param level
      */
-    private void setShoulderLevels(double level) {
+    private boolean setShoulderLevels(double level) {
 
         double deltaArmMotor = getShoulderEncoderDelta() * MOTOR_ERROR_CONVERSION;
         deltaArmMotor = 0;
@@ -312,19 +303,28 @@ public class ArmSubsystem extends SubsystemBase {
 
         if (!shoulderLeftFrontLimit.get() || !shoulderRightFrontLimit.get()) {
             if (rightLevel > 0 || leftLevel > 0) {
-                return;
+                // Still trying to go forward, but limits are hit, so stop and return true,
+                // which means we're done
+                leftShoulderController.set(ControlMode.PercentOutput, 0);
+                rightShoulderController.set(ControlMode.PercentOutput, 0);
+                return true;
             }
         }
 
         if (!shoulderLeftBackLimit.get() || !shoulderRightBackLimit.get()) {
+            resetEncoders();
             if (rightLevel < 0 || leftLevel < 0) {
-                return;
+                // Still trying to go backwards, but we've reached the back limits
+                leftShoulderController.set(ControlMode.PercentOutput, 0);
+                rightShoulderController.set(ControlMode.PercentOutput, 0);
+                return true;
             }
         }
 
         leftShoulderController.set(ControlMode.PercentOutput, leftLevel);
         rightShoulderController.set(ControlMode.PercentOutput, rightLevel);
 
+        return false;
     }
 
     /**

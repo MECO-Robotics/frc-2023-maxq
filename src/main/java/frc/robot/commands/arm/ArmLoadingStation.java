@@ -22,21 +22,22 @@ public class ArmLoadingStation extends CommandBase {
 
     @Override
     public void initialize() {
+        doneElbow = false;
+        doneShoulder = false;
         System.out.println("ArmLoadingStation: STARTED");
     }
 
 
     @Override
     public void execute() {
-        // if (!doneElbow) {
-        //     doneElbow = armSubsystem.move(ElbowPosition._______);
-        // }
+        if (!doneElbow) {
+            doneElbow = armSubsystem.move(ElbowPosition.middle_PickUp);
+        }
 
-        // if (!doneShoulder) {
-        //     doneShoulder = armSubsystem.move(ShoulderPosition.allBackStow);
-        // }
-        
-        
+        if (!doneShoulder) {
+            doneShoulder = armSubsystem.move(ShoulderPosition.allBackStow);
+        }
+            
     }
 
     @Override

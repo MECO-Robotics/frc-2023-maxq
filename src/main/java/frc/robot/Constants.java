@@ -44,7 +44,8 @@ public final class Constants {
         allOut, 
         allIn,
         middle_MiddleNode,  // 2.3 in extended
-        middle_HighNode,    // 3.1 in extended
+        middle_HighNodeCone,    // 3.1 in extended
+        middle_HighNodeCube,
         middle_PickUp,      // 8.0 in extended
         stow
     };

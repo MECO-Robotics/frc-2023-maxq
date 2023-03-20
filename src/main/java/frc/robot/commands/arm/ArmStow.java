@@ -22,6 +22,8 @@ public class ArmStow extends CommandBase {
 
     @Override
     public void initialize() {
+        doneElbow = false;
+        doneShoulder = false;
         System.out.println("ArmStow: STARTED");
     }
 

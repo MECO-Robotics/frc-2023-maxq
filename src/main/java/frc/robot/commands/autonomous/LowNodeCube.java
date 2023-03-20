@@ -5,11 +5,12 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.GripperPosition;
 import frc.robot.commands.arm.ArmIntake;
-import frc.robot.commands.arm.GoNodeHigh;
+import frc.robot.commands.arm.GoNodeHighCube;
 import frc.robot.commands.arm.GripperManualControl;
 import frc.robot.commands.arm.SetGripperPosition;
 import frc.robot.commands.brakes.LowerBrakes;
@@ -31,38 +32,35 @@ public class LowNodeCube extends SequentialCommandGroup {
     public LowNodeCube(DriveSubsystem drive, ArmSubsystem arm, BrakesSubsystem brakes) {
 
         addCommands(
-        new RaiseBrakes(brakes),
-        new ParallelDeadlineGroup(new WaitCommand(9), new GoNodeHigh(arm)),
-        new DriveStraightByTime(drive, 1, .5),
-        new WaitCommand(.5),
-        new SetGripperPosition(arm, GripperPosition.GripOpen),
-        new DriveStraightByTime(drive, 3.2, -.5)
-        
-        
-        
-        
-        
-        /*   new DriveStraightByTime(drive, .2, .5),
-               new DriveStraightByTime(drive, 1.65, -.8),
-               new WaitCommand(1.5),
-               new SetGripperPosition(arm, GripperPosition.GripClose),
-               new WaitCommand(1),
-               new DriveStraightByTime(drive, 2, .5),
-               new SpinRightAngle(drive, 180),
-               new DriveStraightByTime(drive, .5, -.5),
-               new SetGripperPosition(arm, GripperPosition.GripOpen),
-               new Stop(drive) */
-        
-        
-        
-        
-        
-        //new SetGripperPosition(arm, GripperPosition.GripOpen),
-               // new DriveStraightByTime(drive, 2, .4),
-                //new SpinRightAngle(drive, 180),
-                //new DriveStraightByTime(drive, 1, .4)
-                
-                );
-                
+                new RaiseBrakes(brakes),
+                new DriveStraightByTime(drive, 1.3, -.5),
+                new ParallelRaceGroup(new WaitCommand(10), new GoNodeHighCube(arm)),
+                new DriveStraightByTime(drive, 1.9, .5),
+                new WaitCommand(.5),
+                new SetGripperPosition(arm, GripperPosition.GripOpen),
+                new WaitCommand(.5),
+                new DriveStraightByTime(drive, 4.0, -.5),
+                new SpinRightAngle(drive, 180)
+
+        /*
+         * new DriveStraightByTime(drive, .2, .5),
+         * new DriveStraightByTime(drive, 1.65, -.8),
+         * new WaitCommand(1.5),
+         * new SetGripperPosition(arm, GripperPosition.GripClose),
+         * new WaitCommand(1),
+         * new DriveStraightByTime(drive, 2, .5),
+         * new SpinRightAngle(drive, 180),
+         * new DriveStraightByTime(drive, .5, -.5),
+         * new SetGripperPosition(arm, GripperPosition.GripOpen),
+         * new Stop(drive)
+         */
+
+        // new SetGripperPosition(arm, GripperPosition.GripOpen),
+        // new DriveStraightByTime(drive, 2, .4),
+        // new SpinRightAngle(drive, 180),
+        // new DriveStraightByTime(drive, 1, .4)
+
+        );
+
     }
 }
