@@ -258,7 +258,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
      */
     public void robotDrive(double forwardX, double leftY, double twist) {
-        drive.driveCartesian(forwardX / 2.0, leftY / 2.0, twist / 2.0);
+        drive.driveCartesian(forwardX, leftY, twist);
     }
 
     /**
