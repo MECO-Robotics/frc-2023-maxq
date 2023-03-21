@@ -35,11 +35,11 @@ public class LowNodeCube extends SequentialCommandGroup {
                 new RaiseBrakes(brakes),
                 new DriveStraightByTime(drive, 1.3, -.5),
                 new ParallelRaceGroup(new WaitCommand(10), new GoNodeHighCube(arm)),
-                new DriveStraightByTime(drive, 1.9, .5),
+                new DriveStraightByTime(drive, 1.9, .25),
                 new WaitCommand(.5),
                 new SetGripperPosition(arm, GripperPosition.GripOpen),
                 new WaitCommand(.5),
-                new DriveStraightByTime(drive, 4.0, -.5),
+                new DriveStraightByTime(drive, 4.0, -.25),
                 new SpinRightAngle(drive, 180)
 
         /*

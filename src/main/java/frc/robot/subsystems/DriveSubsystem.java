@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -187,11 +188,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void periodic() {
 
-        //odometry.update(imu.getRotation2d(), getWheelPositions());
+        // odometry.update(imu.getRotation2d(), getWheelPositions());
 
         // This allows us to see the robot's position and orientation on the
         // Shuffleboard
-        //field2d.setRobotPose(getPoseMeters());
+        // field2d.setRobotPose(getPoseMeters());
 
         // Update the motor safety. This makes sure the system knows we're in control of
         // the motors.
@@ -250,6 +251,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
+    // Take at least 0.5 seconds to go from stop to full speed.
+    SlewRateLimiter robotDriveOpenLoopForwardLimiter = new SlewRateLimiter(2.0);
+
+    // Take at least 0.25 seconds to strafe from stop to full speed.
+    SlewRateLimiter robotDriveOpenLoopLeftLimiter = new SlewRateLimiter(4.0);
+
+    // Take at least 0.25 seconds to spin from stop to full spin
+    SlewRateLimiter robotDriveOpenLoopTwistLimiter = new SlewRateLimiter(4.0);
+
     /**
      * Move relative to the robot's orientation
      * 
@@ -258,7 +268,10 @@ public class DriveSubsystem extends SubsystemBase {
      * @param twist    CCW rotation rate demand, [-1.0 .. 1.0]
      */
     public void robotDrive(double forwardX, double leftY, double twist) {
-        drive.driveCartesian(forwardX, leftY, twist);
+        double forward = robotDriveOpenLoopForwardLimiter.calculate(forwardX);
+        double left = robotDriveOpenLoopLeftLimiter.calculate(leftY);
+        double turn = robotDriveOpenLoopTwistLimiter.calculate(twist);
+        drive.driveCartesian(forward, left, turn);
     }
 
     /**
@@ -391,7 +404,7 @@ public class DriveSubsystem extends SubsystemBase {
         // ONCE AGAIN, NOT CRAZY
 
         if (Math.abs(pitch) > 5) {
-            forward = Math. signum(pitch);
+            forward = Math.signum(pitch);
 
         } else {
             forward = pitch / MAX_ANGLE * MAX_MOTOR;
@@ -538,10 +551,18 @@ public class DriveSubsystem extends SubsystemBase {
             return backRightEncoderRev.getPosition();
         }, null);
 
-        builder.addDoubleProperty("FLW", () -> { return frontLeftController.get();}, null);
-        builder.addDoubleProperty("FRW", () -> { return frontRightController.get();}, null);
-        builder.addDoubleProperty("BLW", () -> { return backLeftController.get();}, null);
-        builder.addDoubleProperty("BRW", () -> { return backRightController.get();}, null);
+        builder.addDoubleProperty("FLW", () -> {
+            return frontLeftController.get();
+        }, null);
+        builder.addDoubleProperty("FRW", () -> {
+            return frontRightController.get();
+        }, null);
+        builder.addDoubleProperty("BLW", () -> {
+            return backLeftController.get();
+        }, null);
+        builder.addDoubleProperty("BRW", () -> {
+            return backRightController.get();
+        }, null);
     }
 
 }

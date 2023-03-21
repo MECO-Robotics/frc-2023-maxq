@@ -49,7 +49,7 @@ public class SpinRightAngle extends CommandBase {
   @Override
   public void execute() {
 
-    double s = 0.5f;
+    double s = 0.4f;
     double a = 0f;
 
     if(cw) {
