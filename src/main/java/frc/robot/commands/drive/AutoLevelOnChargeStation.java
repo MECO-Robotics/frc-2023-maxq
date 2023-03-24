@@ -40,7 +40,7 @@ public class AutoLevelOnChargeStation extends CommandBase {
     // Command is never finished.
     @Override
     public boolean isFinished() {
-        return false;
+        return energized;
     }
 
 };

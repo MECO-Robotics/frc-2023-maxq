@@ -30,9 +30,8 @@ import frc.robot.commands.arm.GoNodeHighCube;
 import frc.robot.commands.arm.GoNodeMid;
 import frc.robot.commands.arm.ResetArm;
 import frc.robot.commands.arm.TeleopArmControl;
-import frc.robot.commands.autonomous.AutoTest;
+import frc.robot.commands.autonomous.AutoLevel;
 import frc.robot.commands.autonomous.LowNodeCube;
-import frc.robot.commands.autonomous.LowNodeCubeLevel;
 import frc.robot.commands.brakes.LowerBrakes;
 import frc.robot.commands.brakes.RaiseBrakes;
 import frc.robot.commands.drive.AutoLevelOnChargeStation;
@@ -97,9 +96,8 @@ public class RobotContainer {
         // By using the class name as the name, it will be easy to remember which goes
         // with which.
 
-        autoCommands.put("AUto1", new AutoTest(driveSubsystem));
-        autoCommands.put("Cube", new LowNodeCube(driveSubsystem, armSubsystem, brakesSubsystem));
-        autoCommands.put("Cubelevel", new LowNodeCubeLevel(driveSubsystem, armSubsystem, brakesSubsystem));
+        autoCommands.put("LEVEL", new AutoLevel(driveSubsystem, brakesSubsystem));
+        autoCommands.put("CUBE", new LowNodeCube(driveSubsystem, armSubsystem, brakesSubsystem));
         //
         //
         // ------------------------------------------------------------------------

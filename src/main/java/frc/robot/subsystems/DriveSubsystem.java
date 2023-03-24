@@ -399,8 +399,8 @@ public class DriveSubsystem extends SubsystemBase {
         double MAX_ANGLE = 12.0;
         double MAX_MOTOR = 0.7;
         double forward;
-        double pitch = -getRoll();
-        double roll = getPitch();
+        double pitch = getPitch();
+        double roll = getRoll();
         // ONCE AGAIN, NOT CRAZY
 
         if (Math.abs(pitch) > 5) {
@@ -510,12 +510,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     public double getPitch() {
         // TODO: Verify rio is mounted properly to return pitch
-        return -imu.getPitch();
+        return -imu.getRoll();
     }
 
     public double getRoll() {
-        // TODO: Verify rio is mounted properly to return pitch
-        return imu.getRoll();
+        return imu.getPitch();
     }
 
     @Override
