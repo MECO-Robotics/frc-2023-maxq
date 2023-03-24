@@ -1,21 +1,12 @@
 package frc.robot.commands.autonomous;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.GripperPosition;
-import frc.robot.commands.arm.ArmIntake;
 import frc.robot.commands.arm.GoNodeHighCube;
-import frc.robot.commands.arm.GripperManualControl;
 import frc.robot.commands.arm.SetGripperPosition;
-import frc.robot.commands.brakes.LowerBrakes;
 import frc.robot.commands.brakes.RaiseBrakes;
-import frc.robot.commands.drive.DriveStraight;
 import frc.robot.commands.drive.DriveStraightByTime;
 import frc.robot.commands.drive.ResetSensors;
 import frc.robot.commands.drive.SpinRightAngle;
