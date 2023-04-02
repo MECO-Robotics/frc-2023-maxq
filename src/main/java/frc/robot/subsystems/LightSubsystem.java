@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.hal.can.CANJNI;
+import edu.wpi.first.hal.can.CANStatus;
+
 // import com.mindsensors.CANLight;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
@@ -44,6 +47,23 @@ public class LightSubsystem extends SubsystemBase {
         // SmartDashboard.putData(this);
     }
 
+    private static final int MS_API_COLOR_SET = 0x08070000;
+    private int canLightID = 0;
+
+    public void setCAN(Color color) {
+
+        Color8Bit color8 = new Color8Bit(color);
+
+        // Set to red:
+        CANJNI.FRCNetCommCANSessionMuxSendMessage(
+            MS_API_COLOR_SET | canLightID,
+            new byte[] { 0, (byte) color8.red, (byte)color8.green, (byte)color8.blue },
+            edu.wpi.first.hal.can.CANJNI.CAN_SEND_PERIOD_NO_REPEAT);
+
+        // CANStatus canStatus = new CANStatus();
+        // CANJNI.getCANStatus(canStatus);
+
+    }
     /**
      * Set the color of the strip. Each color can have a value from 0.0 to 1.0.
      * 
